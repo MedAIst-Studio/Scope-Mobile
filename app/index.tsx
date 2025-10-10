@@ -46,7 +46,7 @@ export default function Screen() {
             </Button>
           </Link>
           <Link href="https://github.com/founded-labs/react-native-reusables" asChild>
-            <Button variant="ghost">
+            <Button variant="outline">
               <Text>Star the Repo</Text>
               <Icon as={StarIcon} />
             </Button>
