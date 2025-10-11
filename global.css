@@ -31,11 +31,11 @@
   }
 
   .dark:root {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --background: 300 0% 9%;
+    --foreground: 340 0% 90%;
+    --card: 300 0% 15%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 300 0% 15%;
     --popover-foreground: 0 0% 98%;
     --primary: 217.22 91% 60%;
     --primary-foreground: 300 50% 100%;
