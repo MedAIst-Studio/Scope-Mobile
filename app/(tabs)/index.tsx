@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
-import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
+import { Textarea } from '@/components/ui/textarea';
 import { Edit, MoreHorizontal, RotateCcw, Send } from 'lucide-react-native';
 import React, { useRef, useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, View } from 'react-native';
@@ -16,6 +16,7 @@ interface Message {
 
 const ChatScreen = () => {
   const [message, setMessage] = useState('');
+  const [inputHeight, setInputHeight] = useState(40);
   const scrollViewRef = useRef<ScrollView>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -110,14 +111,14 @@ const ChatScreen = () => {
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
-    <View className={`mb-3 ${item.isUser ? 'items-end' : 'items-start'}`}>
+    <View className={`mb-6 ${item.isUser ? 'items-end' : 'items-start'}`}>
       <View className="max-w-[80%]">
         {item.isUser ? (
-          <View className="rounded-2xl rounded-br-sm bg-primary px-4 py-3">
+          <View className="rounded-2xl rounded-br-sm border-2 border-b-4 border-primary-darker bg-primary px-4 py-3">
             <Text className="text-sm leading-5 text-primary-foreground">{item.text}</Text>
           </View>
         ) : (
-          <Text className="text-sm leading-5 text-foreground">{item.text}</Text>
+          <Text className="leading-5 text-foreground">{item.text}</Text>
         )}
       </View>
     </View>
@@ -135,7 +136,7 @@ const ChatScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-background pt-12" edges={['top', 'left', 'right']}>
       {/* Header */}
-      <View className="absolute left-0 right-0 top-0 z-10 h-20 flex-row items-center justify-between bg-background px-4 pt-6">
+      <View className="absolute left-0 right-0 top-0 z-10 h-20 flex-row items-center justify-between border-b border-border bg-background px-4 pt-6">
         <View className="flex-row items-center gap-3">
           <Button size={'icon'} variant={'outline'}>
             <Icon as={RotateCcw} size={20} />
@@ -182,26 +183,29 @@ const ChatScreen = () => {
         </ScrollView>
 
         {/* Input Area */}
-        <View className="px-2 py-2">
-          <View className="flex-row items-center gap-3">
-            <View className="bg-inputS max-h-20 min-h-10 flex-1 rounded-xl border-2 border-b-4 border-border">
-              <Input
-                value={message}
-                onChangeText={setMessage}
-                placeholder="Sorunuzu yazın..."
-                multiline
-                className="h-11 !border-transparent !bg-transparent !p-0"
-              />
-            </View>
+        <View className="mx-2 pb-2">
+          <View className="flex-row items-end gap-3">
+            <Textarea
+              value={message}
+              onChangeText={setMessage}
+              placeholder="Sorunuzu yazın..."
+              className="flex-1 bg-white text-sm dark:bg-background"
+              style={{
+                maxHeight: 120,
+                minHeight: 48,
+              }}
+              onContentSizeChange={(event) => {
+                setInputHeight(event.nativeEvent.contentSize.height);
+              }}
+            />
 
             <Button
               variant={'outline'}
               onPress={handleSendMessage}
-              className={`h-12 w-12 items-center justify-center rounded-full ${
-                message.trim() ? 'bg-primary' : 'bg-muted'
-              }`}
+              aria-disabled={!message.trim()}
+              className={`h-12 w-12 items-center justify-center rounded-full`}
               disabled={!message.trim()}>
-              <Icon as={Send} size={18} color="white" />
+              <Icon as={Send} size={18} />
             </Button>
           </View>
         </View>
