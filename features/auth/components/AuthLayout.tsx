@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { StatusBar } from 'expo-status-bar';
-import { Facebook, Mail } from 'lucide-react-native';
+import { ArrowLeft, Facebook, Mail } from 'lucide-react-native';
 import React, { ReactNode, useState } from 'react';
 import { Animated, Image, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,14 +31,14 @@ const providerConfig = {
     backgroundColor: 'bg-primary',
     textColor: 'text-white',
     borderColor: 'border-primary-darker',
-    icon: <Facebook size={20} color="#FFFFFF" />,
+    icon: <Icon as={Facebook} size={20} color="#FFFFFF" />,
   },
   email: {
     label: 'E-posta ile devam et',
     backgroundColor: 'bg-gray-100',
     textColor: 'text-gray-900',
     borderColor: 'border-gray-300',
-    icon: <Mail size={20} color="#000000" />,
+    icon: <Icon as={Mail} size={20} color="#000000" />,
   },
 };
 
@@ -143,7 +144,7 @@ export function AuthLayout({
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100}>
         <ScrollView
           className="flex-1"
           contentContainerStyle={{
@@ -205,6 +206,7 @@ export function AuthLayout({
                   {enableSocialLogin && (
                     <View className="mb-4">
                       <Button variant={'outline'} onPress={handleBackToSocial}>
+                        <Icon as={ArrowLeft} />
                         <Text>Geri Dön</Text>
                       </Button>
                     </View>

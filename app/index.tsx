@@ -40,6 +40,12 @@ export default function Screen() {
           </Text>
         </View>
         <View className="flex-row gap-2">
+          <Link href="/(tabs)" asChild>
+            <Button>
+              <Text>Go to Chat</Text>
+            </Button>
+          </Link>
+          <View className="w-2" />
           <Link href="/login" asChild>
             <Button>
               <Text>Go to Login</Text>

@@ -14,7 +14,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: cn(
-          'border-primary-darker border-2 border-b-4 bg-primary shadow-sm shadow-black/5 active:bg-primary/90',
+          'border-2 border-b-4 border-primary-darker bg-primary shadow-sm shadow-black/5 active:bg-primary/90',
           Platform.select({ web: 'hover:bg-primary/90' })
         ),
         destructive: cn(
@@ -47,6 +47,7 @@ const buttonVariants = cva(
         ),
         lg: cn('h-12 rounded-xl px-6 sm:h-10', Platform.select({ web: 'has-[>svg]:px-4' })),
         icon: 'h-10 w-10 sm:h-9 sm:w-9',
+        'icon-sm': 'h-8 w-8 sm:h-7 sm:w-7',
       },
     },
     defaultVariants: {
@@ -82,6 +83,7 @@ const buttonTextVariants = cva(
         sm: '',
         lg: '',
         icon: '',
+        'icon-sm': '',
       },
     },
     defaultVariants: {
