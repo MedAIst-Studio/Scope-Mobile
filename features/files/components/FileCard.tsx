@@ -35,7 +35,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
           <Text>{statusBadge.text}</Text>
         </Badge>
 
-        <Button size="icon-sm" variant="outline">
+        <Button size="icon-sm" variant="outline" className="!border-zinc-700 !bg-background">
           <Icon as={MoreVertical} size={16} />
         </Button>
       </CardHeader>
