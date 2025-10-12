@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Brain, FileText, MessageCircle } from 'lucide-react-native';
+import { Brain, FileText, MessageCircle, Settings } from 'lucide-react-native';
 import React from 'react';
 import { useColorScheme } from 'react-native';
 
@@ -43,6 +43,19 @@ const TabsLayout = () => {
         options={{
           title: 'Quiz',
           tabBarIcon: ({ color }) => <Brain size={20} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="(settings)/settings"
+        options={{
+          title: 'Ayarlar',
+          tabBarIcon: ({ color }) => <Settings size={20} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="(settings)/profile"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
