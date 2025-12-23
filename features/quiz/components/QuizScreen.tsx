@@ -2,7 +2,6 @@ import React from 'react';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuiz } from '../hooks/useQuiz';
-import { FilterSection } from './FilterSection';
 import { QuizList } from './QuizList';
 
 export const QuizScreen: React.FC = () => {
@@ -11,9 +10,6 @@ export const QuizScreen: React.FC = () => {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top', 'left', 'right']}>
       <View className="flex-1 px-4 pt-4">
-        {/* Filters */}
-        <FilterSection filters={filters} onUpdateFilter={updateFilter} />
-
         {/* Quiz List */}
         <QuizList quizzes={quizzes} onStartQuiz={handleStartQuiz} />
       </View>

@@ -1,20 +1,17 @@
 import { Text } from '@/components/ui/text';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { Message as MessageType, QuickQuestion as QuickQuestionType } from '../types';
+import { Message as MessageType } from '../types';
 import { Message } from './Message';
-import { QuickQuestion } from './QuickQuestion';
 
 interface ChatMessageListProps {
   messages: MessageType[];
-  quickQuestions: QuickQuestionType[];
   scrollViewRef: React.RefObject<ScrollView | null>;
   onQuestionPress: (text: string) => void;
 }
 
 export const ChatMessageList: React.FC<ChatMessageListProps> = ({
   messages,
-  quickQuestions,
   scrollViewRef,
   onQuestionPress,
 }) => (
@@ -36,19 +33,7 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
         <Text className="mb-6 text-center text-sm text-muted-foreground">
           Tıbbi sorularınızı sorun ve hızlı cevaplar alın
         </Text>
-        <View className="w-full gap-2">
-          {quickQuestions.map((question) => (
-            <QuickQuestion key={question.id} question={question} onPress={onQuestionPress} />
-          ))}
-        </View>
       </View>
-    ) : (
-      <View className="mt-4 gap-2">
-        <Text className="mb-2 text-center text-sm text-muted-foreground">Hızlı sorular:</Text>
-        {quickQuestions.map((question) => (
-          <QuickQuestion key={question.id} question={question} onPress={onQuestionPress} />
-        ))}
-      </View>
-    )}
+    ) : null}
   </ScrollView>
 );

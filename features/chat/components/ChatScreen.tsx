@@ -5,7 +5,7 @@ import React, { useLayoutEffect } from 'react';
 import { KeyboardAvoidingView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useChat } from '../hooks/useChat';
-import { quickQuestions } from '../utils/mockData';
+
 import { ChatInput } from './ChatInput';
 import { ChatMessageList } from './ChatMessageList';
 
@@ -39,7 +39,6 @@ export const ChatScreen: React.FC = () => {
       <KeyboardAvoidingView behavior={'padding'} className="flex-1">
         <ChatMessageList
           messages={messages}
-          quickQuestions={quickQuestions}
           scrollViewRef={scrollViewRef}
           onQuestionPress={setMessage}
         />

@@ -9,7 +9,7 @@ function Input({
   return (
     <TextInput
       className={cn(
-        'dark:focused:border-primary flex h-12 w-full min-w-0 flex-row items-center rounded-xl border-2 border-b-4 border-slate-300 bg-white px-3 py-2 text-base leading-5 text-foreground shadow-sm shadow-black/5 dark:border-input dark:bg-background sm:h-9',
+        'dark:focused:border-primary flex h-12 w-full min-w-0 flex-row items-center rounded-lg border-2 border-b-4 border-slate-300 bg-white px-3 py-2 text-base leading-5 text-foreground shadow-sm shadow-black/5 dark:border-input dark:bg-background sm:h-9',
         props.editable === false &&
           cn(
             'opacity-50',

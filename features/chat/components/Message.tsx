@@ -8,15 +8,13 @@ interface MessageProps {
 }
 
 export const Message: React.FC<MessageProps> = ({ message }) => (
-  <View className={`mb-6 ${message.isUser ? 'items-end' : 'items-start'}`}>
-    <View className="max-w-[80%]">
-      {message.isUser ? (
-        <View className="rounded-2xl rounded-br-sm border-b-4 border-primary-darker bg-primary px-4 py-3">
-          <Text className="text-sm leading-5 text-primary-foreground">{message.text}</Text>
-        </View>
-      ) : (
-        <Text className="leading-5 text-foreground">{message.text}</Text>
-      )}
+  <View className={`mb-4 w-full flex-row ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+    <View
+      className={`max-w-[85%] rounded-2xl px-4 py-3 ${message.isUser ? 'rounded-tr-sm bg-secondary' : ''}`}>
+      <Text
+        className={`text-base leading-6 ${message.isUser ? 'text-secondary-foreground' : 'text-foreground'}`}>
+        {message.text}
+      </Text>
     </View>
   </View>
 );
