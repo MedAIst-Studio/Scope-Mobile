@@ -2,18 +2,18 @@ import { mockChats } from '@/features/chat/utils/mockChats';
 import { cn } from '@/lib/utils';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { Portal } from '@rn-primitives/portal';
-import {
-  Brain,
-  FileText,
-  History,
-  Menu,
-  MessageCircle,
-  MessageSquarePlus,
-  Settings,
-  X,
-} from 'lucide-react-native';
 import React from 'react';
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  AcademicCapIcon,
+  Bars3Icon,
+  ChatBubbleLeftRightIcon,
+  ChatBubbleOvalLeftIcon,
+  ClockIcon,
+  Cog6ToothIcon,
+  DocumentTextIcon,
+  XMarkIcon,
+} from 'react-native-heroicons/outline';
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '../ui/icon';
@@ -46,7 +46,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
         style={{ paddingTop: Math.max(insets.top, 20) }}>
         {/* Left: Menu Trigger */}
         <TouchableOpacity onPress={toggleMenu} className="h-10 w-10 items-center justify-center">
-          <Icon as={Menu} size={24} className="text-foreground" />
+          <Icon as={Bars3Icon} size={24} className="text-foreground" />
         </TouchableOpacity>
 
         {/* Center: Title */}
@@ -89,7 +89,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
               <View className="flex-row items-center justify-between border-b border-border p-4">
                 <Text className="text-xl font-bold text-foreground">MedAIst</Text>
                 <TouchableOpacity onPress={closeMenu} className="p-1">
-                  <X size={24} className="text-muted-foreground" />
+                  <XMarkIcon size={24} color="#6B7280" />
                 </TouchableOpacity>
               </View>
 
@@ -107,10 +107,10 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                     */}
 
                   {[
-                    { name: 'index', label: 'Sohbet', icon: MessageCircle },
-                    { name: 'files', label: 'Dosyalar', icon: FileText },
-                    { name: 'quiz', label: 'Quiz', icon: Brain },
-                    { name: '(settings)/settings', label: 'Ayarlar', icon: Settings },
+                    { name: 'index', label: 'Sohbet', icon: ChatBubbleOvalLeftIcon },
+                    { name: 'files', label: 'Dosyalar', icon: DocumentTextIcon },
+                    { name: 'quiz', label: 'Quiz', icon: AcademicCapIcon },
+                    { name: '(settings)/settings', label: 'Ayarlar', icon: Cog6ToothIcon },
                   ].map((item) => {
                     // Check active state... simplistic approach: check route.name
                     const isFocused =
@@ -152,7 +152,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                       Geçmiş Sohbetler
                     </Text>
                     <TouchableOpacity>
-                      <MessageSquarePlus size={16} className="text-primary" />
+                      <ChatBubbleLeftRightIcon size={16} color="#F97316" />
                     </TouchableOpacity>
                   </View>
 
@@ -160,7 +160,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                     <TouchableOpacity
                       key={chat.id}
                       className="flex-row items-center gap-3 rounded-md border border-transparent px-3 py-2 hover:border-border active:bg-secondary">
-                      <History size={16} className="text-muted-foreground" />
+                      <ClockIcon size={16} color="#6B7280" />
                       <View className="flex-1">
                         <Text className="text-sm font-medium text-foreground" numberOfLines={1}>
                           {chat.title}

@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Textarea } from '@/components/ui/textarea';
-import { Send } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
+import { PaperAirplaneIcon } from 'react-native-heroicons/outline';
 
 interface ChatInputProps {
   message: string;
@@ -39,7 +39,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         className="h-10 w-10 items-center justify-center rounded-full p-0 active:bg-transparent"
         disabled={!message.trim()}>
         <Icon
-          as={Send}
+          as={PaperAirplaneIcon}
           size={22}
           className={message.trim() ? 'text-primary' : 'text-muted-foreground'}
         />

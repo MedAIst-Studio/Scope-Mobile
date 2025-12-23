@@ -2,18 +2,18 @@ import { mockChats } from '@/features/chat/utils/mockChats';
 import { cn } from '@/lib/utils';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Portal } from '@rn-primitives/portal';
-import {
-  Brain,
-  FileText,
-  History,
-  Menu,
-  MessageCircle,
-  MessageSquarePlus,
-  Settings,
-  X,
-} from 'lucide-react-native';
 import React from 'react';
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  AcademicCapIcon,
+  Bars3Icon,
+  ChatBubbleLeftRightIcon,
+  ChatBubbleOvalLeftIcon,
+  ClockIcon,
+  Cog6ToothIcon,
+  DocumentTextIcon,
+  XMarkIcon,
+} from 'react-native-heroicons/outline';
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '../ui/icon';
@@ -36,7 +36,7 @@ export function NavigationSheet({ state, descriptors, navigation }: BottomTabBar
         <TouchableOpacity
           onPress={toggleMenu}
           className="h-10 w-10 items-center justify-center active:opacity-70">
-          <Icon as={Menu} size={20} className="text-foreground" />
+          <Icon as={Bars3Icon} size={20} className="text-foreground" />
         </TouchableOpacity>
       </View>
 
@@ -62,7 +62,7 @@ export function NavigationSheet({ state, descriptors, navigation }: BottomTabBar
               <View className="flex-row items-center justify-between border-b border-border p-4">
                 <Text className="text-xl font-bold text-foreground">MedAIst</Text>
                 <TouchableOpacity onPress={closeMenu} className="p-1">
-                  <Icon as={X} size={24} className="text-muted-foreground" />
+                  <Icon as={XMarkIcon} size={24} className="text-muted-foreground" />
                 </TouchableOpacity>
               </View>
 
@@ -92,11 +92,11 @@ export function NavigationSheet({ state, descriptors, navigation }: BottomTabBar
                       closeMenu();
                     };
 
-                    let MenuIcon = MessageCircle;
-                    if (route.name === 'index') MenuIcon = MessageCircle;
-                    else if (route.name === 'files') MenuIcon = FileText;
-                    else if (route.name === 'quiz') MenuIcon = Brain;
-                    else if (route.name.includes('settings')) MenuIcon = Settings;
+                    let MenuIcon = ChatBubbleOvalLeftIcon;
+                    if (route.name === 'index') MenuIcon = ChatBubbleOvalLeftIcon;
+                    else if (route.name === 'files') MenuIcon = DocumentTextIcon;
+                    else if (route.name === 'quiz') MenuIcon = AcademicCapIcon;
+                    else if (route.name.includes('settings')) MenuIcon = Cog6ToothIcon;
 
                     return (
                       <TouchableOpacity
@@ -131,7 +131,7 @@ export function NavigationSheet({ state, descriptors, navigation }: BottomTabBar
                       Geçmiş Sohbetler
                     </Text>
                     <TouchableOpacity>
-                      <Icon as={MessageSquarePlus} size={16} className="text-primary" />
+                      <Icon as={ChatBubbleLeftRightIcon} size={16} className="text-primary" />
                     </TouchableOpacity>
                   </View>
 
@@ -139,7 +139,12 @@ export function NavigationSheet({ state, descriptors, navigation }: BottomTabBar
                     <TouchableOpacity
                       key={chat.id}
                       className="flex-row items-center gap-3 rounded-md border border-transparent px-3 py-2 hover:border-border active:bg-secondary">
-                      <Icon as={History} size={16} className="text-muted-foreground" color="gray" />
+                      <Icon
+                        as={ClockIcon}
+                        size={16}
+                        className="text-muted-foreground"
+                        color="gray"
+                      />
                       <View className="flex-1">
                         <Text className="text-sm font-medium text-foreground" numberOfLines={1}>
                           {chat.title}

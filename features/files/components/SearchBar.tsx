@@ -1,8 +1,8 @@
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
+import { MagnifyingGlassIcon } from 'react-native-heroicons/outline';
 
 interface SearchBarProps {
   value: string;
@@ -17,7 +17,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 }) => (
   <View className="relative mb-4">
     <View className="absolute left-3 top-1/2 z-10 -translate-y-1/2">
-      <Icon as={Search} size={20} className="text-muted-foreground" />
+      <Icon as={MagnifyingGlassIcon} size={20} className="text-muted-foreground" />
     </View>
     <Input value={value} onChangeText={onChangeText} placeholder={placeholder} className="pl-10" />
   </View>

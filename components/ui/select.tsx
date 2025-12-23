@@ -3,9 +3,9 @@ import { NativeOnlyAnimatedView } from '@/components/ui/native-only-animated-vie
 import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import * as SelectPrimitive from '@rn-primitives/select';
-import { Check, ChevronDown, ChevronDownIcon, ChevronUpIcon } from 'lucide-react-native';
 import * as React from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'react-native-heroicons/outline';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { FullWindowOverlay as RNFullWindowOverlay } from 'react-native-screens';
 
@@ -62,7 +62,7 @@ function SelectTrigger({
       )}
       {...props}>
       <>{children}</>
-      <Icon as={ChevronDown} aria-hidden={true} className="size-4 text-muted-foreground" />
+      <Icon as={ChevronDownIcon} aria-hidden={true} className="size-4 text-muted-foreground" />
     </SelectPrimitive.Trigger>
   );
 }
@@ -162,7 +162,7 @@ function SelectItem({
       {...props}>
       <View className="absolute right-2 flex size-3.5 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Icon as={Check} className="size-4 shrink-0 text-muted-foreground" />
+          <Icon as={CheckIcon} className="size-4 shrink-0 text-muted-foreground" />
         </SelectPrimitive.ItemIndicator>
       </View>
       <SelectPrimitive.ItemText className="select-none text-sm text-foreground group-active:text-accent-foreground" />

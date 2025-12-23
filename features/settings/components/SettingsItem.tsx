@@ -1,9 +1,9 @@
 import { Icon } from '@/components/ui/icon';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
-import { ChevronRight } from 'lucide-react-native';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
+import { ChevronRightIcon } from 'react-native-heroicons/outline';
 import { SettingsItemProps } from '../types';
 
 export const SettingsItem: React.FC<SettingsItemProps> = ({
@@ -23,11 +23,11 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
         return (
           <View className="flex-row items-center">
             <Text className="mr-2 text-sm text-muted-foreground">{value}</Text>
-            {showArrow && <Icon as={ChevronRight} size={24} color="#9CA3AF" />}
+            {showArrow && <Icon as={ChevronRightIcon} size={20} color="#9CA3AF" />}
           </View>
         );
       default:
-        return showArrow ? <Icon as={ChevronRight} size={24} color="#9CA3AF" /> : null;
+        return showArrow ? <Icon as={ChevronRightIcon} size={20} color="#9CA3AF" /> : null;
     }
   };
 

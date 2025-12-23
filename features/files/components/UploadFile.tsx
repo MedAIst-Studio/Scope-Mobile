@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { Plus, Upload } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Alert, View } from 'react-native';
+import { ArrowUpTrayIcon, PlusIcon } from 'react-native-heroicons/outline';
 
 interface UploadFileProps {
   onFileUpload: (fileName: string, fileSize: string) => void;
@@ -45,7 +45,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({ onFileUpload }) => {
           {isUploading ? (
             <View className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           ) : (
-            <Upload size={20} color="#3B82F6" />
+            <ArrowUpTrayIcon size={20} color="#3B82F6" />
           )}
         </View>
 
@@ -67,7 +67,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({ onFileUpload }) => {
               </>
             ) : (
               <>
-                <Plus size={14} color="white" />
+                <PlusIcon size={14} color="white" />
                 <Text className="text-xs font-medium text-primary-foreground">Ekle</Text>
               </>
             )}

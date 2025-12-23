@@ -3,9 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { FileText, MessageSquare, MoreVertical } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
+import {
+  ChatBubbleLeftIcon,
+  DocumentTextIcon,
+  EllipsisVerticalIcon,
+} from 'react-native-heroicons/outline';
 import { PDFFile } from '../types';
 import { getFileStatusBadge } from '../utils/mockData';
 
@@ -23,7 +27,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
       {/* File Header */}
       <CardHeader className="flex-row items-start gap-3">
         <View className="h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-          <FileText size={24} color="#3B82F6" />
+          <DocumentTextIcon size={24} color="#3B82F6" />
         </View>
 
         <View className="flex-1">
@@ -36,7 +40,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
         </Badge>
 
         <Button size="icon-sm" variant="outline" className="!border-zinc-700 !bg-background">
-          <Icon as={MoreVertical} size={16} />
+          <Icon as={EllipsisVerticalIcon} size={16} />
         </Button>
       </CardHeader>
 
@@ -65,7 +69,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
       {file.status === 'ready' ? (
         <CardFooter className="flex-row items-center justify-between">
           <View className="flex-row items-center gap-1">
-            <MessageSquare size={16} color="#6B7280" />
+            <ChatBubbleLeftIcon size={16} color="#6B7280" />
             <Text className="text-sm text-muted-foreground">{file.messageCount} mesaj</Text>
           </View>
 

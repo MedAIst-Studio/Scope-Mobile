@@ -1,9 +1,14 @@
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { router } from 'expo-router';
-import { Bell, ChevronLeft, HelpCircle, Palette } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
+import {
+  BellIcon,
+  ChevronLeftIcon,
+  QuestionMarkCircleIcon,
+  SwatchIcon,
+} from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSettings } from '../hooks/useSettings';
 import { AccountSection } from './AccountSection';
@@ -29,7 +34,7 @@ export const SettingsScreen: React.FC = () => {
         <TouchableOpacity
           onPress={() => router.back()}
           className="mr-4 flex-row items-center gap-4">
-          <Icon as={ChevronLeft} size={24} className="text-foreground" />
+          <Icon as={ChevronLeftIcon} size={24} className="text-foreground" />
           <Text className="text-2xl font-bold text-foreground">Ayarlar</Text>
         </TouchableOpacity>
       </View>
@@ -48,7 +53,7 @@ export const SettingsScreen: React.FC = () => {
           {/* Theme Setting with Custom Selector */}
           <View className="flex-row items-center px-1 py-4">
             <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-orange-500/20">
-              <Icon as={Palette} size={20} color="#F97316" />
+              <Icon as={SwatchIcon} size={20} color="#F97316" />
             </View>
             <View className="flex-1">
               <Text className="text-lg font-medium text-foreground">Tema</Text>
@@ -57,7 +62,7 @@ export const SettingsScreen: React.FC = () => {
           </View>
 
           <SettingsItem
-            icon={Bell}
+            icon={BellIcon}
             title="Bildirimler"
             type="switch"
             value={settings.notifications}
@@ -66,7 +71,7 @@ export const SettingsScreen: React.FC = () => {
           />
 
           {/* Help */}
-          <SettingsItem icon={HelpCircle} title="Destek" onPress={handleHelpPress} />
+          <SettingsItem icon={QuestionMarkCircleIcon} title="Destek" onPress={handleHelpPress} />
         </View>
       </ScrollView>
     </SafeAreaView>

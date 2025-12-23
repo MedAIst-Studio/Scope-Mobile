@@ -10,9 +10,9 @@ import {
 } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
-import { Clock, HelpCircle, Play } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
+import { ClockIcon, PlayIcon, QuestionMarkCircleIcon } from 'react-native-heroicons/outline';
 import { Quiz } from '../types';
 import { getDifficultyColor, getStatusColor, getStatusText } from '../utils/mockData';
 
@@ -48,12 +48,12 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStartQuiz }) => {
         {/* Quiz Stats */}
         <View className="mb-4 flex-row items-center gap-4">
           <View className="flex-row items-center gap-1">
-            <HelpCircle size={16} color="#6B7280" />
+            <QuestionMarkCircleIcon size={16} color="#6B7280" />
             <Text className="text-sm text-muted-foreground">{quiz.questionCount} soru</Text>
           </View>
 
           <View className="flex-row items-center gap-1">
-            <Clock size={16} color="#6B7280" />
+            <ClockIcon size={16} color="#6B7280" />
             <Text className="text-sm text-muted-foreground">{quiz.duration} dk</Text>
           </View>
 
@@ -86,7 +86,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStartQuiz }) => {
           className={cn('w-full', quiz.status === 'completed' && '!border-zinc-700 !bg-background')}
           variant={quiz.status === 'completed' ? 'outline' : 'default'}>
           <View className="flex-row items-center gap-2">
-            <Play size={16} color={quiz.status === 'completed' ? '#6B7280' : 'white'} />
+            <PlayIcon size={16} color={quiz.status === 'completed' ? '#6B7280' : 'white'} />
             <Text
               className={`font-medium ${
                 quiz.status === 'completed' ? 'text-foreground' : 'text-primary-foreground'
