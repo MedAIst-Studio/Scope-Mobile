@@ -21,6 +21,7 @@ export default function RootLayout() {
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
       <PortalHost />
+      <PortalHost name="navigation-portal" />
     </ThemeProvider>
   );
 }
