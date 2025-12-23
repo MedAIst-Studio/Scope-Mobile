@@ -13,15 +13,19 @@ export {
   ErrorBoundary,
 } from 'expo-router';
 
+import { AuthProvider } from '@/features/auth/context/AuthContext';
+
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
 
   return (
-    <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
-      <PortalHost />
-      <PortalHost name="navigation-portal" />
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+        <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
+        <PortalHost />
+        <PortalHost name="navigation-portal" />
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

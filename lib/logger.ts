@@ -52,7 +52,7 @@ class Logger {
   private flushTimer?: NodeJS.Timeout;
   private requestStats: Map<
     string,
-    {method: string; url: string; startTime: number; timestamp: Date}
+    { method: string; url: string; startTime: number; timestamp: Date }
   > = new Map();
 
   constructor(config: LoggerConfig) {
@@ -72,8 +72,8 @@ class Logger {
       timestamp: new Date(),
       userId: this.getCurrentUserId(),
       sessionId: this.getSessionId(),
-      url: typeof window !== "undefined" ? window.location.href : undefined,
-      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
+      url: typeof window !== 'undefined' ? window.location.href : undefined,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
       stack: error?.stack,
     };
   }
@@ -96,9 +96,9 @@ class Logger {
   }
 
   private logToConsole(entry: LogEntry) {
-    const {level, message, data} = entry;
+    const { level, message, data } = entry;
 
-    const isDev = process.env.NODE_ENV !== "production";
+    const isDev = process.env.NODE_ENV !== 'production';
 
     switch (level) {
       case LogLevel.DEBUG:
@@ -144,15 +144,15 @@ class Logger {
     try {
       if (this.config.remoteEndpoint) {
         await fetch(this.config.remoteEndpoint, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({logs}),
+          body: JSON.stringify({ logs }),
         });
       }
     } catch (error) {
-      console.error("Failed to send logs to remote endpoint:", error);
+      console.error('Failed to send logs to remote endpoint:', error);
       // Re-add logs to buffer if failed
       this.buffer.unshift(...logs);
     }
@@ -165,14 +165,18 @@ class Logger {
 
     this.flushTimer = setInterval(() => {
       this.flush();
-    }, this.config.flushInterval);
+    }, this.config.flushInterval) as any;
   }
 
   private getCurrentUserId(): string | undefined {
     // Get from your auth store
     try {
-      if (typeof window === "undefined") return undefined;
-      const userStore = localStorage.getItem("user-store");
+      if (typeof window === 'undefined') return undefined;
+
+      // Safe check for localStorage
+      if (typeof localStorage === 'undefined') return undefined;
+
+      const userStore = localStorage.getItem('user-store');
 
       if (userStore) {
         const parsed = JSON.parse(userStore);
@@ -185,16 +189,25 @@ class Logger {
   }
 
   private getSessionId(): string {
-    if (typeof window === "undefined") return "server";
+    if (typeof window === 'undefined') return 'server';
 
-    let sessionId = sessionStorage.getItem("session-id");
+    try {
+      if (typeof sessionStorage !== 'undefined') {
+        let sessionId = sessionStorage.getItem('session-id');
 
-    if (!sessionId) {
-      sessionId = Math.random().toString(36).substring(2, 15);
-      sessionStorage.setItem("session-id", sessionId);
+        if (!sessionId) {
+          sessionId = Math.random().toString(36).substring(2, 15);
+          sessionStorage.setItem('session-id', sessionId);
+        }
+
+        return sessionId;
+      }
+    } catch {
+      // Ignore errors if sessionStorage is restricted or unavailable
     }
 
-    return sessionId;
+    // Fallback for React Native or restricted environments
+    return 'mobile-session-' + Math.random().toString(36).substring(2, 15);
   }
 
   debug(message: string, data?: any) {
@@ -220,7 +233,7 @@ class Logger {
   }
 
   logApiRequest(request: RequestLog) {
-    const isDev = process.env.NODE_ENV !== "production";
+    const isDev = process.env.NODE_ENV !== 'production';
 
     // Store request info for statistics
     this.requestStats.set(request.id, {
@@ -234,27 +247,27 @@ class Logger {
       // Detaylı log - Development
       console.group(
         `%c→ ${request.method} %c${request.url}`,
-        "color: #22c55e; font-weight: bold",
-        "color: #94a3b8",
+        'color: #22c55e; font-weight: bold',
+        'color: #94a3b8'
       );
 
-      console.log("%cRequest ID:", "color: #64748b; font-weight: bold", request.id);
+      console.log('%cRequest ID:', 'color: #64748b; font-weight: bold', request.id);
 
       if (request.headers) {
-        const filteredHeaders = {...request.headers};
+        const filteredHeaders = { ...request.headers };
 
         // Sensitive headers'ı maskele
         if (filteredHeaders.Authorization) {
-          filteredHeaders.Authorization = "Bearer ****";
+          filteredHeaders.Authorization = 'Bearer ****';
         }
 
-        console.log("%cHeaders:", "color: #64748b; font-weight: bold", filteredHeaders);
+        console.log('%cHeaders:', 'color: #64748b; font-weight: bold', filteredHeaders);
       }
 
       if (request.data) {
         // FormData ise özel işlem
         if (request.data instanceof FormData) {
-          console.log("%cBody:", "color: #64748b; font-weight: bold", "FormData");
+          console.log('%cBody:', 'color: #64748b; font-weight: bold', 'FormData');
           const formDataEntries: Record<string, any> = {};
 
           request.data.forEach((value, key) => {
@@ -266,24 +279,24 @@ class Logger {
           });
           console.table(formDataEntries);
         } else {
-          console.log("%cBody:", "color: #64748b; font-weight: bold", request.data);
+          console.log('%cBody:', 'color: #64748b; font-weight: bold', request.data);
         }
       }
 
       console.log(
-        "%cTimestamp:",
-        "color: #64748b; font-weight: bold",
-        request.timestamp.toLocaleTimeString(),
+        '%cTimestamp:',
+        'color: #64748b; font-weight: bold',
+        request.timestamp.toLocaleTimeString()
       );
       console.groupEnd();
     } else {
       // Basit log - Production
-      this.debug(`→ ${request.method} ${request.url}`, {id: request.id});
+      this.debug(`→ ${request.method} ${request.url}`, { id: request.id });
     }
   }
 
   logApiResponse(response: ResponseLog) {
-    const isDev = process.env.NODE_ENV !== "production";
+    const isDev = process.env.NODE_ENV !== 'production';
     const isError = response.status >= 400;
     const isSuccess = response.status >= 200 && response.status < 300;
 
@@ -297,50 +310,50 @@ class Logger {
 
     if (isDev) {
       // Detaylı log - Development
-      const statusColor = isError ? "#ef4444" : isSuccess ? "#22c55e" : "#f59e0b";
-      const statusIcon = isError ? "❌" : isSuccess ? "✅" : "⚠️";
+      const statusColor = isError ? '#ef4444' : isSuccess ? '#22c55e' : '#f59e0b';
+      const statusIcon = isError ? '❌' : isSuccess ? '✅' : '⚠️';
 
       console.group(
-        `%c${statusIcon} ${response.status} %c${response.duration}ms %c${requestInfo?.method || ""} ${requestInfo?.url || ""}`,
+        `%c${statusIcon} ${response.status} %c${response.duration}ms %c${requestInfo?.method || ''} ${requestInfo?.url || ''}`,
         `color: ${statusColor}; font-weight: bold`,
-        "color: #94a3b8",
-        "color: #64748b; font-size: 0.9em",
+        'color: #94a3b8',
+        'color: #64748b; font-size: 0.9em'
       );
 
-      console.log("%cRequest ID:", "color: #64748b; font-weight: bold", response.requestId);
-      console.log("%cStatus:", "color: #64748b; font-weight: bold", response.statusText);
+      console.log('%cRequest ID:', 'color: #64748b; font-weight: bold', response.requestId);
+      console.log('%cStatus:', 'color: #64748b; font-weight: bold', response.statusText);
 
       if (response.data) {
         if (isError) {
-          console.error("%cResponse:", "color: #64748b; font-weight: bold", response.data);
+          console.error('%cResponse:', 'color: #64748b; font-weight: bold', response.data);
         } else {
-          console.log("%cResponse:", "color: #64748b; font-weight: bold", response.data);
+          console.log('%cResponse:', 'color: #64748b; font-weight: bold', response.data);
         }
       }
 
       if (response.errors && response.errors.length > 0) {
-        console.error("%cErrors:", "color: #ef4444; font-weight: bold", response.errors);
+        console.error('%cErrors:', 'color: #ef4444; font-weight: bold', response.errors);
       }
 
       // Performance warning
       if (response.duration > 3000) {
         console.warn(
-          "%c🐌 Slow Response",
-          "color: #f59e0b; font-weight: bold",
-          `${response.duration}ms`,
+          '%c🐌 Slow Response',
+          'color: #f59e0b; font-weight: bold',
+          `${response.duration}ms`
         );
       } else if (response.duration > 1000) {
         console.warn(
-          "%c⏱️ Moderate Response",
-          "color: #f59e0b; font-weight: bold",
-          `${response.duration}ms`,
+          '%c⏱️ Moderate Response',
+          'color: #f59e0b; font-weight: bold',
+          `${response.duration}ms`
         );
       }
 
       console.log(
-        "%cTimestamp:",
-        "color: #64748b; font-weight: bold",
-        response.timestamp.toLocaleTimeString(),
+        '%cTimestamp:',
+        'color: #64748b; font-weight: bold',
+        response.timestamp.toLocaleTimeString()
       );
       console.groupEnd();
     } else {
@@ -363,19 +376,19 @@ class Logger {
   // Request summary
   getRequestSummary() {
     if (this.requestStats.size === 0) {
-      this.info("No pending requests");
+      this.info('No pending requests');
 
       return;
     }
 
-    console.group("%c📊 Pending Requests Summary", "color: #3b82f6; font-weight: bold");
+    console.group('%c📊 Pending Requests Summary', 'color: #3b82f6; font-weight: bold');
     console.log(`Total: ${this.requestStats.size}`);
 
     const requests = Array.from(this.requestStats.entries()).map(([id, info]) => ({
       ID: id,
       Method: info.method,
       URL: info.url,
-      "Elapsed Time": `${Date.now() - info.startTime}ms`,
+      'Elapsed Time': `${Date.now() - info.startTime}ms`,
       Started: info.timestamp.toLocaleTimeString(),
     }));
 
@@ -385,13 +398,13 @@ class Logger {
 
   // Performance logging
   time(label: string) {
-    if (typeof performance !== "undefined") {
+    if (typeof performance !== 'undefined') {
       performance.mark(`${label}-start`);
     }
   }
 
   timeEnd(label: string) {
-    if (typeof performance !== "undefined") {
+    if (typeof performance !== 'undefined') {
       performance.mark(`${label}-end`);
       performance.measure(label, `${label}-start`, `${label}-end`);
 
@@ -424,9 +437,9 @@ class Logger {
 }
 
 const loggerConfig: LoggerConfig = {
-  level: process.env.NODE_ENV === "production" ? LogLevel.WARN : LogLevel.DEBUG,
+  level: process.env.NODE_ENV === 'production' ? LogLevel.WARN : LogLevel.DEBUG,
   enableConsole: true,
-  enableRemote: process.env.NODE_ENV === "production",
+  enableRemote: process.env.NODE_ENV === 'production',
   remoteEndpoint: process.env.NEXT_PUBLIC_LOG_ENDPOINT,
   bufferSize: 10,
   flushInterval: 30000, // 30 seconds
@@ -434,18 +447,20 @@ const loggerConfig: LoggerConfig = {
 
 export const logger = new Logger(loggerConfig);
 
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   // Make logger accessible in development console
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== 'production') {
     (window as any).__logger = logger;
     console.info(
-      "%c🔍 Logger available in console as __logger",
-      "color: #3b82f6; font-weight: bold",
+      '%c🔍 Logger available in console as __logger',
+      'color: #3b82f6; font-weight: bold'
     );
-    console.info("%c💡 Try: __logger.getRequestSummary()", "color: #64748b");
+    console.info('%c💡 Try: __logger.getRequestSummary()', 'color: #64748b');
   }
 
-  window.addEventListener("beforeunload", () => {
-    logger.destroy();
-  });
+  if (typeof window.addEventListener === 'function') {
+    window.addEventListener('beforeunload', () => {
+      logger.destroy();
+    });
+  }
 }

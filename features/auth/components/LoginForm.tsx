@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Link } from 'expo-router';
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { useLoginForm, useSocialAuth } from '../hooks/useAuthForms';
 import { LoginLayout } from './AuthLayout';
 
@@ -53,8 +53,9 @@ function LoginFormContent({
       <Button
         onPress={form.handleSubmit(onSubmit)}
         disabled={isLoading}
-        className="w-full"
+        className="w-full flex-row gap-2"
         size="lg">
+        {isLoading && <ActivityIndicator color="white" />}
         <Text>{isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}</Text>
       </Button>
 

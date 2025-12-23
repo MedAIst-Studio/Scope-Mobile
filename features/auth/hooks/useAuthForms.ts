@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Alert } from 'react-native';
 import { z } from 'zod';
+import { useAuth } from '../context/AuthContext';
 import { loginSchema, signupSchema } from '../utils/validation';
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -10,6 +12,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 // Login form hook'u
 export function useLoginForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -19,13 +22,16 @@ export function useLoginForm() {
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    console.log('Email login data:', data);
-    // API çağrısı burada yapılacak
-    setTimeout(() => {
+    try {
+      await login(data);
+    } catch (error: any) {
+      console.error('Login error', error);
+      Alert.alert('Giriş Hatası', error.message || 'Bir hata oluştu');
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   return { form, isLoading, onSubmit, setIsLoading };
@@ -34,12 +40,12 @@ export function useLoginForm() {
 // Signup form hook'u
 export function useSignupForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const { signup } = useAuth();
 
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -47,13 +53,16 @@ export function useSignupForm() {
     },
   });
 
-  const onSubmit = (data: SignupFormData) => {
+  const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
-    console.log('Email signup data:', data);
-    // API çağrısı burada yapılacak
-    setTimeout(() => {
+    try {
+      await signup(data);
+    } catch (error: any) {
+      console.error('Signup error', error);
+      Alert.alert('Kayıt Hatası', error.message || 'Bir hata oluştu');
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   return { form, isLoading, onSubmit, setIsLoading };

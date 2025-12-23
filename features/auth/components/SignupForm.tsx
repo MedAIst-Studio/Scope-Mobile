@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Link } from 'expo-router';
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { useSignupForm, useSocialAuth } from '../hooks/useAuthForms';
 import { SignupLayout } from './AuthLayout';
 
@@ -21,29 +21,16 @@ function SignupFormContent({
   return (
     <View className="flex flex-col gap-6">
       <View className="flex flex-col gap-4">
-        <View className="flex-row gap-4">
-          <View className="flex-1">
-            <DynamicFormField
-              control={form.control}
-              disabled={isLoading}
-              label="Ad"
-              name="firstName"
-              placeholder="Adınız"
-              type={FormFieldType.INPUT}
-              required
-            />
-          </View>
-          <View className="flex-1">
-            <DynamicFormField
-              control={form.control}
-              disabled={isLoading}
-              label="Soyad"
-              name="lastName"
-              placeholder="Soyadınız"
-              type={FormFieldType.INPUT}
-              required
-            />
-          </View>
+        <View className="flex-1">
+          <DynamicFormField
+            control={form.control}
+            disabled={isLoading}
+            label="Kullanıcı Adı"
+            name="username"
+            placeholder="Kullanıcı adınız"
+            type={FormFieldType.INPUT}
+            required
+          />
         </View>
 
         <DynamicFormField
@@ -90,8 +77,9 @@ function SignupFormContent({
       <Button
         onPress={form.handleSubmit(onSubmit)}
         disabled={isLoading}
-        className="w-full"
+        className="w-full flex-row gap-2"
         size="lg">
+        {isLoading && <ActivityIndicator color="white" />}
         <Text>{isLoading ? 'Hesap Oluşturuluyor...' : 'Hesap Oluştur'}</Text>
       </Button>
 

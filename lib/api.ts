@@ -33,12 +33,14 @@ export const axiosInstance: AxiosInstance = axios.create({
   },
 });
 
+import * as SecureStore from 'expo-secure-store';
+
 axiosInstance.interceptors.request.use(
-  (config: any) => {
+  async (config: any) => {
     config.requestId = logger.generateRequestId();
     config.startTime = Date.now();
 
-    const accessToken = getCookie('accessToken');
+    const accessToken = await SecureStore.getItemAsync('accessToken');
 
     if (accessToken && config.headers) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -103,10 +105,11 @@ axiosInstance.interceptors.response.use(
       if (originalRequest.url?.includes('/auth/refresh')) {
         logger.error('Refresh token failed, logging out');
 
-        if (typeof window !== 'undefined') {
-          clearAuthTokens();
-          window.location.href = '/login';
-        }
+        await SecureStore.deleteItemAsync('accessToken');
+        await SecureStore.deleteItemAsync('refreshToken');
+        // Navigation should be handled by the context/listener, or we can't easily do it here without circular deps
+        // Ideally we emit an event or rely on the next request failing to trigger a logout flow in the UI
+        // For now, we just clear tokens.
 
         return Promise.reject(createApiError(error, 'AUTH_REFRESH_FAILED'));
       }
@@ -116,14 +119,11 @@ axiosInstance.interceptors.response.use(
       if (!isRefreshing) {
         isRefreshing = true;
 
-        const { data, error: refreshError } = await AuthAPI.refreshToken(
-          getCookie('refreshToken') || ''
-        );
+        const refreshToken = await SecureStore.getItemAsync('refreshToken');
+        const { data, error: refreshError } = await AuthAPI.refreshToken(refreshToken || '');
 
         if (data?.access_token) {
-          if (typeof document !== 'undefined') {
-            document.cookie = `accessToken=${data.access_token}; path=/; max-age=86400; SameSite=Strict; Secure`;
-          }
+          await SecureStore.setItemAsync('accessToken', data.access_token);
 
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${data.access_token}`;
@@ -141,11 +141,8 @@ axiosInstance.interceptors.response.use(
 
         logger.error('Token refresh failed', refreshError);
 
-        if (typeof window !== 'undefined') {
-          document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-          document.cookie = 'refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-          window.location.href = '/login';
-        }
+        await SecureStore.deleteItemAsync('accessToken');
+        await SecureStore.deleteItemAsync('refreshToken');
 
         return Promise.reject(createApiError(refreshError, 'TOKEN_REFRESH_ERROR'));
       }
