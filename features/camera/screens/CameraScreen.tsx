@@ -20,12 +20,10 @@ export default function CameraScreen() {
   const router = useRouter();
 
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background p-4">
         <Text className="mb-4 text-center">Soru çözmek için kamera iznine ihtiyacımız var.</Text>
@@ -71,10 +69,8 @@ export default function CameraScreen() {
     setIsAnalyzing(true);
     try {
       const result = await MockPhotoService.analyzePhoto(uri);
-      // Navigate to chat with the result
-      // We'll pass the result as params. In a real app, maybe store in context or global state.
       router.push({
-        pathname: '/(tabs)', // Go to Chat (Home)
+        pathname: '/(tabs)',
         params: {
           initialMessage: `Fotoğraftaki soruyu analiz et: ${result.extractedText}`,
           imageUri: uri,
@@ -82,7 +78,7 @@ export default function CameraScreen() {
       });
     } catch (error) {
       console.error('Analysis failed', error);
-      setCapturedImage(null); // Reset to try again
+      setCapturedImage(null);
     } finally {
       setIsAnalyzing(false);
     }
@@ -119,8 +115,6 @@ export default function CameraScreen() {
               <TouchableOpacity onPress={closeCamera} className="rounded-full bg-black/40 p-2">
                 <Icon as={XMarkIcon} color="white" size={24} />
               </TouchableOpacity>
-
-              {/* Flash or other controls could go here */}
             </View>
 
             <View className="flex-row items-center justify-between bg-black/20 p-8">
