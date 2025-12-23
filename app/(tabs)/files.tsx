@@ -1,3 +1,67 @@
-import { FilesScreen } from '@/features/files';
+import { Text } from '@/components/ui/text';
+import { FilesList } from '@/features/files/components/FilesList';
+import { SearchBar } from '@/features/files/components/SearchBar';
+import { UploadFile } from '@/features/files/components/UploadFile';
+import { useDeleteFile, useFiles } from '@/features/files/hooks';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ActivityIndicator, Alert, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default FilesScreen;
+export default function FilesScreen() {
+  const { data: files, isLoading, error } = useFiles();
+  const { mutate: deleteFile } = useDeleteFile();
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
+  const filteredFiles =
+    files?.filter((f) => f.title.toLowerCase().includes(searchQuery.toLowerCase())) || [];
+
+  const handleChatStart = (fileId: string) => {
+    // Navigate to chat with context of this file
+    router.push({
+      pathname: '/(tabs)/chat',
+      params: { fileId },
+    });
+  };
+
+  const handleDeleteFile = (fileId: string) => {
+    Alert.alert('Dosyayı Sil', 'Bu dosyayı silmek istediğinizden emin misiniz?', [
+      { text: 'İptal', style: 'cancel' },
+      { text: 'Sil', style: 'destructive', onPress: () => deleteFile(fileId) },
+    ]);
+  };
+
+  return (
+    <SafeAreaView className="flex-1 bg-background px-4" edges={['top', 'left', 'right']}>
+      <View className="mb-4 pt-2">
+        <Text className="mb-1 text-2xl font-bold text-foreground">Dosyalarım</Text>
+        <Text className="text-sm text-muted-foreground">
+          Dokümanlarınızı yönetin ve analiz edin
+        </Text>
+      </View>
+
+      <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
+
+      <View className="mb-4">
+        <UploadFile />
+      </View>
+
+      {isLoading ? (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" />
+        </View>
+      ) : error ? (
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-red-500">Dosyalar yüklenirken hata oluştu.</Text>
+        </View>
+      ) : (
+        <FilesList
+          files={filteredFiles}
+          onChatStart={handleChatStart}
+          onDeleteFile={handleDeleteFile}
+        />
+      )}
+    </SafeAreaView>
+  );
+}

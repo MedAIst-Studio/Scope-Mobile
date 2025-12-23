@@ -5,22 +5,18 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import React from 'react';
 import { View } from 'react-native';
-import {
-  ChatBubbleLeftIcon,
-  DocumentTextIcon,
-  EllipsisVerticalIcon,
-} from 'react-native-heroicons/outline';
-import { PDFFile } from '../types';
-import { getFileStatusBadge } from '../utils/mockData';
+import { ChatBubbleLeftIcon, DocumentTextIcon, TrashIcon } from 'react-native-heroicons/outline';
+import { File } from '../types';
 
 interface FileCardProps {
-  file: PDFFile;
+  file: File;
   onChatStart: (fileId: string) => void;
   onDelete?: (fileId: string) => void;
 }
 
 export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete }) => {
-  const statusBadge = getFileStatusBadge(file);
+  const formattedSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+  const formattedDate = new Date(file.created_at).toLocaleDateString('tr-TR');
 
   return (
     <Card className="mb-4">
@@ -31,59 +27,34 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
         </View>
 
         <View className="flex-1">
-          <Text className="text-base font-semibold text-foreground">{file.name}</Text>
-          <Text className="text-sm text-muted-foreground">{file.fileName}</Text>
+          <Text className="text-base font-semibold text-foreground">{file.title}</Text>
+          <Text className="text-xs text-muted-foreground">{formattedDate}</Text>
         </View>
 
-        <Badge variant={statusBadge.variant}>
-          <Text>{statusBadge.text}</Text>
-        </Badge>
-
-        <Button size="icon-sm" variant="outline" className="!border-zinc-700 !bg-background">
-          <Icon as={EllipsisVerticalIcon} size={16} />
-        </Button>
+        {onDelete && (
+          <Button size="icon-sm" variant="ghost" onPress={() => onDelete(file.id)}>
+            <Icon as={TrashIcon} size={20} className="text-red-500" />
+          </Button>
+        )}
       </CardHeader>
 
-      {/* Processing Progress */}
-      {file.isProcessing && file.processingProgress !== undefined && (
-        <CardContent>
-          <View className="h-2 rounded-full bg-muted">
-            <View
-              className="h-full rounded-full bg-orange-500"
-              style={{ width: `${file.processingProgress}%` }}
-            />
-          </View>
-          <Text className="mt-1 text-xs text-muted-foreground">
-            Doküman işleniyor... {file.processingProgress}%
-          </Text>
-        </CardContent>
-      )}
-
       {/* File Info */}
-      <CardContent className="flex-row items-center justify-between">
-        <Text className="text-sm text-muted-foreground">Boyut: {file.size}</Text>
-        <Text className="text-sm text-muted-foreground">{file.uploadDate}</Text>
+      <CardContent className="flex-row items-center justify-between pb-2">
+        <Text className="text-sm text-muted-foreground">Boyut: {formattedSize}</Text>
+        <Badge variant="default" className="bg-green-500/10">
+          <Text className="text-xs text-green-600">Hazır</Text>
+        </Badge>
       </CardContent>
 
-      {/* Message Count & Chat Button */}
-      {file.status === 'ready' ? (
-        <CardFooter className="flex-row items-center justify-between">
-          <View className="flex-row items-center gap-1">
-            <ChatBubbleLeftIcon size={16} color="#6B7280" />
-            <Text className="text-sm text-muted-foreground">{file.messageCount} mesaj</Text>
+      {/* Actions */}
+      <CardFooter className="flex-row items-center justify-end py-3">
+        <Button onPress={() => onChatStart(file.id)} className="h-8 rounded-full px-4" size="sm">
+          <View className="flex-row items-center gap-2">
+            <Icon as={ChatBubbleLeftIcon} size={14} color="white" />
+            <Text className="text-xs font-medium text-primary-foreground">Sohbet</Text>
           </View>
-
-          <Button onPress={() => onChatStart(file.id)} className="rounded-full">
-            <Text className="font-medium text-primary-foreground">Chat Başlat</Text>
-          </Button>
-        </CardFooter>
-      ) : (
-        <CardFooter className="items-center">
-          <Text className="text-sm text-muted-foreground">
-            {file.isProcessing ? 'Doküman hazırlanıyor...' : 'Sohbet için hazırlanıyor'}
-          </Text>
-        </CardFooter>
-      )}
+        </Button>
+      </CardFooter>
     </Card>
   );
 };

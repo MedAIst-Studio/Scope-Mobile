@@ -1,41 +1,36 @@
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import React, { useState } from 'react';
-import { Alert, View } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
+import React from 'react';
+import { View } from 'react-native';
 import { ArrowUpTrayIcon, PlusIcon } from 'react-native-heroicons/outline';
+import { useUploadFile } from '../hooks';
 
-interface UploadFileProps {
-  onFileUpload: (fileName: string, fileSize: string) => void;
-}
+export const UploadFile: React.FC = () => {
+  const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
 
-export const UploadFile: React.FC<UploadFileProps> = ({ onFileUpload }) => {
-  const [isUploading, setIsUploading] = useState(false);
+  const handleFileUpload = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/pdf',
+        copyToCacheDirectory: true,
+      });
 
-  const handleFileUpload = () => {
-    if (isUploading) return;
+      if (result.canceled) return;
 
-    // Simulate file picker
-    Alert.alert('Dosya Seç', 'Hangi dosya türünü yüklemek istiyorsunuz?', [
-      {
-        text: 'PDF Dokümanı',
-        onPress: () => simulateUpload('Yeni-Dokuman.pdf', '3.2 MB'),
-      },
-      {
-        text: 'Tıbbi Rapor',
-        onPress: () => simulateUpload('Tibbi-Rapor-2024.pdf', '1.8 MB'),
-      },
-      { text: 'İptal', style: 'cancel' },
-    ]);
-  };
+      const file = result.assets[0];
 
-  const simulateUpload = (fileName: string, fileSize: string) => {
-    setIsUploading(true);
-
-    // Simulate upload delay
-    setTimeout(() => {
-      onFileUpload(fileName, fileSize);
-      setIsUploading(false);
-    }, 1000);
+      uploadFile({
+        file_title: file.name,
+        file_data: {
+          uri: file.uri,
+          name: file.name,
+          type: file.mimeType || 'application/pdf',
+        },
+      });
+    } catch (error) {
+      console.error('File pick error', error);
+    }
   };
 
   return (

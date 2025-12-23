@@ -15,17 +15,23 @@ export {
 
 import { AuthProvider } from '@/features/auth/context/AuthContext';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
 
   return (
-    <AuthProvider>
-      <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-        <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
-        <PortalHost />
-        <PortalHost name="navigation-portal" />
-      </ThemeProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+          <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
+          <PortalHost />
+          <PortalHost name="navigation-portal" />
+        </ThemeProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
