@@ -1,0 +1,156 @@
+import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
+import { Text } from '@/components/ui/text';
+import { MockPhotoService } from '@/services/MockPhotoService';
+import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
+import { useRouter } from 'expo-router';
+import React, { useRef, useState } from 'react';
+import { ActivityIndicator, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ArrowPathIcon, XMarkIcon } from 'react-native-heroicons/outline';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ImageCropper } from '../components/ImageCropper';
+
+export default function CameraScreen() {
+  const [permission, requestPermission] = useCameraPermissions();
+  const [facing, setFacing] = useState<CameraType>('back');
+  const [isanalyzing, setIsAnalyzing] = useState(false);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [croppingImage, setCroppingImage] = useState<string | null>(null);
+  const cameraRef = useRef<CameraView>(null);
+  const router = useRouter();
+
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center bg-background p-4">
+        <Text className="mb-4 text-center">Soru çözmek için kamera iznine ihtiyacımız var.</Text>
+        <Button onPress={requestPermission} className="w-full">
+          <Text className="text-primary-foreground">İzin Ver</Text>
+        </Button>
+      </SafeAreaView>
+    );
+  }
+
+  const toggleCameraFacing = () => {
+    setFacing((current) => (current === 'back' ? 'front' : 'back'));
+  };
+
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      try {
+        const photo = await cameraRef.current.takePictureAsync({
+          quality: 0.8,
+          base64: true,
+        });
+
+        if (photo?.uri) {
+          setCroppingImage(photo.uri);
+        }
+      } catch (error) {
+        console.error('Failed to take picture:', error);
+      }
+    }
+  };
+
+  const handleCropConfirm = (croppedUri: string) => {
+    setCroppingImage(null);
+    setCapturedImage(croppedUri);
+    analyzeImage(croppedUri);
+  };
+
+  const handleCropCancel = () => {
+    setCroppingImage(null);
+  };
+
+  const analyzeImage = async (uri: string) => {
+    setIsAnalyzing(true);
+    try {
+      const result = await MockPhotoService.analyzePhoto(uri);
+      // Navigate to chat with the result
+      // We'll pass the result as params. In a real app, maybe store in context or global state.
+      router.push({
+        pathname: '/(tabs)', // Go to Chat (Home)
+        params: {
+          initialMessage: `Fotoğraftaki soruyu analiz et: ${result.extractedText}`,
+          imageUri: uri,
+        },
+      });
+    } catch (error) {
+      console.error('Analysis failed', error);
+      setCapturedImage(null); // Reset to try again
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const closeCamera = () => {
+    router.back();
+  };
+
+  return (
+    <View style={styles.container}>
+      {croppingImage ? (
+        <ImageCropper
+          imageUri={croppingImage}
+          onCrop={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
+      ) : capturedImage ? (
+        <View className="flex-1 items-center justify-center bg-black">
+          <Image
+            source={{ uri: capturedImage }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="contain"
+          />
+          <View className="absolute inset-0 items-center justify-center bg-black/50">
+            <ActivityIndicator size="large" color="white" />
+            <Text className="mt-4 text-lg font-bold text-white">Soru Analiz Ediliyor...</Text>
+          </View>
+        </View>
+      ) : (
+        <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
+          <SafeAreaView className="flex-1 justify-between">
+            <View className="flex-row justify-between p-4">
+              <TouchableOpacity onPress={closeCamera} className="rounded-full bg-black/40 p-2">
+                <Icon as={XMarkIcon} color="white" size={24} />
+              </TouchableOpacity>
+
+              {/* Flash or other controls could go here */}
+            </View>
+
+            <View className="flex-row items-center justify-between bg-black/20 p-8">
+              <TouchableOpacity
+                onPress={toggleCameraFacing}
+                className="rounded-full bg-black/40 p-3">
+                <Icon as={ArrowPathIcon} color="white" size={24} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={takePicture}
+                className="h-20 w-20 items-center justify-center rounded-full border-4 border-gray-300 bg-white">
+                <View className="h-16 w-16 rounded-full border-2 border-black bg-white" />
+              </TouchableOpacity>
+
+              <View className="w-12" />
+            </View>
+          </SafeAreaView>
+        </CameraView>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  camera: {
+    flex: 1,
+  },
+});

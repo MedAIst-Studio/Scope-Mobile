@@ -7,13 +7,16 @@ import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-nativ
 import {
   AcademicCapIcon,
   Bars3Icon,
+  CameraIcon,
   ChatBubbleLeftRightIcon,
   ChatBubbleOvalLeftIcon,
   ClockIcon,
   Cog6ToothIcon,
   DocumentTextIcon,
+  HomeIcon,
   XMarkIcon,
 } from 'react-native-heroicons/outline';
+
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '../ui/icon';
@@ -59,7 +62,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
         {/* Right: Dynamic Actions */}
         <View className="h-10 w-10 items-center justify-center">
           {options.headerRight ? (
-            options.headerRight({})
+            options.headerRight({ canGoBack: navigation.canGoBack() })
           ) : (
             <View className="w-6" /> // Spacer
           )}
@@ -107,7 +110,9 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                     */}
 
                   {[
-                    { name: 'index', label: 'Sohbet', icon: ChatBubbleOvalLeftIcon },
+                    { name: 'index', label: 'Anasayfa', icon: HomeIcon },
+                    { name: 'chat', label: 'Sohbet', icon: ChatBubbleOvalLeftIcon },
+                    { name: 'scan', label: 'Soru Tarat', icon: CameraIcon },
                     { name: 'files', label: 'Dosyalar', icon: DocumentTextIcon },
                     { name: 'quiz', label: 'Quiz', icon: AcademicCapIcon },
                     { name: '(settings)/settings', label: 'Ayarlar', icon: Cog6ToothIcon },

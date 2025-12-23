@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setUser({ email: data.email }); // You should likely fetch the real user profile here or decode the token
 
-      router.replace('/(app)/(drawer)/(tabs)/home'); // Navigate to main app
+      router.replace('/(tabs)' as any); // Navigate to main app
     } catch (error) {
       throw error;
     } finally {
@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     setIsLoading(true);
     try {
-      await AuthAPI.logout(); // Optional: Tell backend to invalidate token
+      await AuthAPI.logout();
     } catch (error) {
       console.warn('Logout API call failed', error);
     } finally {

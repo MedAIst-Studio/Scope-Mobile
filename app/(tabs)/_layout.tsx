@@ -1,10 +1,13 @@
 import { CustomHeader } from '@/components/shared/CustomHeader';
-import { Tabs } from 'expo-router';
+import { Icon } from '@/components/ui/icon';
+import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
-import { useColorScheme } from 'react-native';
+import { TouchableOpacity, useColorScheme } from 'react-native';
+import { CameraIcon } from 'react-native-heroicons/outline';
 
 const TabsLayout = () => {
   const colorScheme = useColorScheme();
+  const router = useRouter();
 
   return (
     <Tabs
@@ -17,7 +20,28 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="index"
         options={{
+          title: 'Anasayfa',
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
           title: 'Sohbet',
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.push('/(tabs)/scan')}>
+              <Icon as={CameraIcon} size={24} className="text-foreground" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="scan"
+        options={{
+          title: 'Soru Tarat',
+          headerShown: false,
+          href: null,
+          tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen
