@@ -1,5 +1,6 @@
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
+import { useUserDetails } from '@/features/users/hooks';
 import { router } from 'expo-router';
 import React from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
@@ -17,6 +18,7 @@ import { ThemeSelector } from './ThemeSelector';
 
 export const SettingsScreen: React.FC = () => {
   const { settings, updateTheme, toggleNotifications } = useSettings();
+  const { data: user } = useUserDetails();
 
   const handleAccountPress = () => {
     router.push('/profile');
@@ -43,7 +45,7 @@ export const SettingsScreen: React.FC = () => {
         {/* Account Section */}
         <View className="mb-8">
           <Text className="mb-4 text-xl font-semibold text-foreground">Hesap</Text>
-          <AccountSection profile={settings.profile} onPress={handleAccountPress} />
+          <AccountSection user={user} onPress={handleAccountPress} />
         </View>
 
         {/* Settings Section */}

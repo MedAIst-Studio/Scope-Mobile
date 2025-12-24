@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
+import { User } from '@/features/users/types';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
@@ -20,40 +21,46 @@ import {
   ArrowRightOnRectangleIcon,
   CheckIcon,
   ChevronLeftIcon,
+  LockClosedIcon,
   TrashIcon,
   UserIcon,
 } from 'react-native-heroicons/outline';
-import { UserProfile } from '../types';
 
 interface AccountScreenProps {
-  profile: UserProfile;
-  onSave: (profile: UserProfile) => void;
+  user: User | undefined;
+  onSave: (username: string) => void;
   onLogout: () => void;
   onDeleteAccount: () => void;
 }
 
 export const AccountScreen: React.FC<AccountScreenProps> = ({
-  profile: initialProfile,
+  user,
   onSave,
   onLogout,
   onDeleteAccount,
 }) => {
-  const [profile, setProfile] = useState(initialProfile);
-  const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
-  const [age, setAge] = useState('28');
+  const [username, setUsername] = useState(user?.username || '');
   const [hasChanges, setHasChanges] = useState(false);
+
+  // Sync state with props
+  useEffect(() => {
+    if (user) {
+      setUsername(user.username);
+    }
+  }, [user]);
 
   // Track changes
   useEffect(() => {
-    const isChanged =
-      profile.name !== initialProfile.name || profile.email !== initialProfile.email;
+    if (!user) return;
+    const isChanged = username !== user.username;
     setHasChanges(isChanged);
-  }, [profile, initialProfile]);
+  }, [username, user]);
 
   const handleSave = () => {
-    onSave(profile);
+    onSave(username);
+    // Optimistically reset changes or wait for props update.
+    // Ideally mutation success would trigger prop update.
     setHasChanges(false);
-    router.back();
   };
 
   const handleUploadImage = () => {
@@ -63,12 +70,10 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
 
   const handleLogout = () => {
     onLogout();
-    router.push('/(auth)/login');
   };
 
   const handleDeleteAccount = () => {
     onDeleteAccount();
-    router.push('/(auth)/signup');
   };
 
   return (
@@ -104,29 +109,38 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
 
         {/* Form Fields */}
         <View>
-          {/* Name */}
+          {/* Username */}
           <View className="mb-6">
-            <Text className="mb-2 text-sm font-medium text-muted-foreground">İsim</Text>
-            <Input
-              value={profile.name}
-              onChangeText={(text) => setProfile((prev) => ({ ...prev, name: text }))}
-              className="border-border bg-card"
-            />
+            <Text className="mb-2 text-sm font-medium text-muted-foreground">Kullanıcı Adı</Text>
+            <Input value={username} onChangeText={setUsername} className="border-border bg-card" />
           </View>
 
-          {/* Email */}
+          {/* Email (Read Only) */}
           <View className="mb-6">
             <Text className="mb-2 text-sm font-medium text-muted-foreground">E-Posta</Text>
             <Input
-              value={profile.email}
-              onChangeText={(text) => setProfile((prev) => ({ ...prev, email: text }))}
-              className="border-border bg-card"
+              value={user?.email || ''}
+              className="border-border bg-card opacity-60"
               keyboardType="email-address"
+              editable={false}
             />
           </View>
 
           {/* Action Buttons */}
           <View className="mt-12">
+            {/* Change Password Button */}
+            <View className="mb-4">
+              <Button
+                onPress={() => router.push('/(tabs)/(settings)/change-password')}
+                variant="outline"
+                className="flex-row items-center justify-center border-border bg-card">
+                <View className="flex-row items-center">
+                  <Icon as={LockClosedIcon} size={16} className="text-foreground" />
+                  <Text className="ml-2 font-medium text-foreground">Şifreyi Değiştir</Text>
+                </View>
+              </Button>
+            </View>
+
             {/* Logout Button */}
             <View className="mb-4">
               <Button

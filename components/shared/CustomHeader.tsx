@@ -1,4 +1,5 @@
 import { useChats } from '@/features/chat/hooks';
+import { useUserDetails } from '@/features/users/hooks';
 import { cn } from '@/lib/utils';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { Portal } from '@rn-primitives/portal';
@@ -25,6 +26,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
   const [isOpen, setIsOpen] = React.useState(false);
   const insets = useSafeAreaInsets();
   const { data: chats } = useChats();
+  const { data: user } = useUserDetails();
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -193,10 +195,14 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
               <View className="border-t border-border p-5">
                 <View className="flex-row items-center gap-3">
                   <View className="h-10 w-10 items-center justify-center rounded-full bg-primary/20">
-                    <Text className="text-sm font-bold text-primary">ÖF</Text>
+                    <Text className="text-sm font-bold text-primary">
+                      {user?.username?.substring(0, 2).toUpperCase() || 'TR'}
+                    </Text>
                   </View>
                   <View>
-                    <Text className="text-sm font-semibold text-foreground">Ömer Faruk</Text>
+                    <Text className="text-sm font-semibold text-foreground">
+                      {user?.username || 'Misafir'}
+                    </Text>
                     <Text className="text-xs text-muted-foreground">Pro Plan</Text>
                   </View>
                 </View>

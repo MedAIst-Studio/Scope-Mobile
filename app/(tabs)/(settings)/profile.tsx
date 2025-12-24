@@ -1,28 +1,43 @@
-import { AccountScreen, useSettings } from '@/features/settings';
+import { AuthAPI } from '@/features/auth/api';
+import { handleLogout } from '@/features/auth/utils';
+import { AccountScreen } from '@/features/settings';
+import { useDeleteAccount, useUpdateUserDetails, useUserDetails } from '@/features/users/hooks';
+import { useRouter } from 'expo-router';
 import React from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
 const ProfileScreen = () => {
-  const { settings, updateProfile } = useSettings();
+  const { data: user, isLoading } = useUserDetails();
+  const updateUserDetails = useUpdateUserDetails();
+  const deleteAccount = useDeleteAccount();
+  const router = useRouter();
 
-  const handleSave = (updatedProfile: typeof settings.profile) => {
-    updateProfile(updatedProfile);
+  const handleSave = (username: string) => {
+    updateUserDetails.mutate(username);
   };
 
-  const handleLogout = () => {
-    // TODO: Clear user session/tokens
-    console.log('User logged out');
+  const handleLogoutPress = async () => {
+    await AuthAPI.logout();
+    await handleLogout();
   };
 
   const handleDeleteAccount = () => {
-    // TODO: Delete user account from backend
-    console.log('Account deleted');
+    deleteAccount.mutate();
   };
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" color="#F97316" />
+      </View>
+    );
+  }
 
   return (
     <AccountScreen
-      profile={settings.profile}
+      user={user}
       onSave={handleSave}
-      onLogout={handleLogout}
+      onLogout={handleLogoutPress}
       onDeleteAccount={handleDeleteAccount}
     />
   );
