@@ -7,6 +7,7 @@ import { PaperAirplaneIcon } from 'react-native-heroicons/outline';
 
 interface ChatInputProps {
   message: string;
+  isSending?: boolean;
   inputHeight: number;
   onChangeText: (text: string) => void;
   onSend: () => void;
@@ -15,6 +16,7 @@ interface ChatInputProps {
 
 export const ChatInput: React.FC<ChatInputProps> = ({
   message,
+  isSending = false,
   inputHeight,
   onChangeText,
   onSend,
@@ -37,7 +39,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         variant={'ghost'}
         onPress={onSend}
         className="h-10 w-10 items-center justify-center rounded-full p-0 active:bg-transparent"
-        disabled={!message.trim()}>
+        disabled={!message.trim() || isSending}>
         <Icon
           as={PaperAirplaneIcon}
           size={22}

@@ -15,6 +15,8 @@ export const ChatScreen: React.FC = () => {
     message,
     setMessage,
     messages,
+    isLoading,
+    isSending,
     inputHeight,
     scrollViewRef,
     handleSendMessage,
@@ -37,14 +39,25 @@ export const ChatScreen: React.FC = () => {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['left', 'right', 'bottom']}>
       <KeyboardAvoidingView behavior={'padding'} className="flex-1">
-        <ChatMessageList
-          messages={messages}
-          scrollViewRef={scrollViewRef}
-          onQuestionPress={setMessage}
-        />
+        {isLoading ? (
+          <View className="flex-1 items-center justify-center">
+            <Icon
+              as={EllipsisHorizontalIcon}
+              size={24}
+              className="animate-bounce text-muted-foreground"
+            />
+          </View>
+        ) : (
+          <ChatMessageList
+            messages={messages}
+            scrollViewRef={scrollViewRef}
+            onQuestionPress={setMessage}
+          />
+        )}
 
         <ChatInput
           message={message}
+          isSending={isSending}
           inputHeight={inputHeight}
           onChangeText={setMessage}
           onSend={handleSendMessage}

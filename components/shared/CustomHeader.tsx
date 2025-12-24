@@ -1,4 +1,4 @@
-import { mockChats } from '@/features/chat/utils/mockChats';
+import { useChats } from '@/features/chat/hooks';
 import { cn } from '@/lib/utils';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { Portal } from '@rn-primitives/portal';
@@ -24,6 +24,7 @@ import { Icon } from '../ui/icon';
 export function CustomHeader({ layout, options, route, navigation }: BottomTabHeaderProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const insets = useSafeAreaInsets();
+  const { data: chats } = useChats();
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -161,17 +162,26 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                     </TouchableOpacity>
                   </View>
 
-                  {mockChats.map((chat) => (
+                  {chats?.map((chat) => (
                     <TouchableOpacity
                       key={chat.id}
+                      onPress={() => {
+                        navigation.navigate('chat', { id: chat.id, file_id: chat.file_id });
+                        closeMenu();
+                      }}
                       className="flex-row items-center gap-4 rounded-xl border border-transparent px-4 py-2 hover:border-border active:bg-secondary">
                       <ClockIcon size={20} color="#6B7280" />
                       <View className="flex-1">
                         <Text className="text-sm font-medium text-foreground" numberOfLines={1}>
-                          {chat.title}
+                          {chat.title || 'Yeni Sohbet'}
                         </Text>
                         <Text className="text-xs text-muted-foreground" numberOfLines={1}>
-                          {chat.date}
+                          {new Date(chat.created_at).toLocaleDateString('tr-TR', {
+                            day: 'numeric',
+                            month: 'long',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
                         </Text>
                       </View>
                     </TouchableOpacity>

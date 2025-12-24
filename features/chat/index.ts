@@ -4,5 +4,3 @@ export { ChatMessageList } from './components/ChatMessageList';
 export { ChatScreen } from './components/ChatScreen';
 export { Message } from './components/Message';
 export { useChat } from './hooks/useChat';
-export * from './types';
-export * from './utils/mockData';

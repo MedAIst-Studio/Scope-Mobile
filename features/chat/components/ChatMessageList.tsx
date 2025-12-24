@@ -1,7 +1,7 @@
 import { Text } from '@/components/ui/text';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { Message as MessageType } from '../types';
+import { Message as MessageType } from '../validations';
 import { Message } from './Message';
 
 interface ChatMessageListProps {
@@ -21,8 +21,8 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
     contentContainerStyle={{ paddingTop: 16, paddingBottom: 20 }}
     showsVerticalScrollIndicator={false}
     keyboardShouldPersistTaps="handled">
-    {messages.map((message) => (
-      <Message key={message.id} message={message} />
+    {messages.map((message, index) => (
+      <Message key={`${message.timestamp}-${index}`} message={message} />
     ))}
 
     {messages.length === 0 ? (
