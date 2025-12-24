@@ -1,44 +1,23 @@
-import { useState } from 'react';
-import { Quiz, QuizFilters } from '../types';
-import { mockQuizzes } from '../utils/mockData';
+import { useRouter } from 'expo-router';
+import { useQuizzes } from './useQueries';
 
 export const useQuiz = () => {
-  const [quizzes] = useState<Quiz[]>(mockQuizzes);
-  const [filters, setFilters] = useState<QuizFilters>({
-    category: 'Tümü',
-    difficulty: 'Tümü',
-    status: 'Tümü',
-  });
-
-  const filteredQuizzes = quizzes.filter((quiz) => {
-    const categoryMatch = filters.category === 'Tümü' || quiz.category === filters.category;
-    const difficultyMatch = filters.difficulty === 'Tümü' || quiz.difficulty === filters.difficulty;
-    const statusMatch =
-      filters.status === 'Tümü' ||
-      (filters.status === 'Tamamlanan' && quiz.status === 'completed') ||
-      (filters.status === 'Tamamlanmayan' && quiz.status !== 'completed');
-
-    return categoryMatch && difficultyMatch && statusMatch;
-  });
-
-  const updateFilter = <K extends keyof QuizFilters>(key: K, value: QuizFilters[K]) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
+  const router = useRouter();
+  const { data: quizzes, isLoading, error, refetch } = useQuizzes();
 
   const handleStartQuiz = (quizId: string) => {
-    console.log('Starting quiz:', quizId);
-    // TODO: Navigate to quiz or implement quiz logic
+    router.push(`/quiz/${quizId}`);
   };
 
   const handleCreateQuiz = () => {
-    console.log('Creating new quiz');
-    // TODO: Navigate to quiz creation
+    router.push('/quiz/create');
   };
 
   return {
-    quizzes: filteredQuizzes,
-    filters,
-    updateFilter,
+    quizzes,
+    isLoading,
+    error,
+    refetch,
     handleStartQuiz,
     handleCreateQuiz,
   };

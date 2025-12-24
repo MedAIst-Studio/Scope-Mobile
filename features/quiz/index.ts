@@ -4,4 +4,3 @@ export { QuizList } from './components/QuizList';
 export { QuizScreen } from './components/QuizScreen';
 export { useQuiz } from './hooks/useQuiz';
 export * from './types';
-export * from './utils/mockData';
