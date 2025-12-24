@@ -29,7 +29,7 @@ export default function HomeScreen() {
       <ScrollView>
         <SafeAreaView edges={['top']} className="px-6 pb-8">
           {/* Header */}
-          <View className="mb-8 mt-2 flex-row items-center justify-between">
+          <View className="mb-8 mt-6 flex-row items-center justify-between">
             <View>
               <Text className="text-lg text-muted-foreground">{getGreeting()},</Text>
               <Text className="text-3xl font-bold capitalize text-foreground">

@@ -89,17 +89,17 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
             style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}>
             <View className="flex-1">
               {/* Sidebar Header */}
-              <View className="flex-row items-center justify-between border-b border-border p-4">
+              <View className="flex-row items-center justify-between border-b border-border p-5">
                 <Text className="text-xl font-bold text-foreground">MedAIst</Text>
-                <TouchableOpacity onPress={closeMenu} className="p-1">
-                  <XMarkIcon size={24} color="#6B7280" />
+                <TouchableOpacity onPress={closeMenu} className="-mr-2 p-2">
+                  <XMarkIcon size={26} color="#6B7280" />
                 </TouchableOpacity>
               </View>
 
-              <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, gap: 24 }}>
+              <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, gap: 32 }}>
                 {/* Main Navigation */}
-                <View className="gap-2">
-                  <Text className="mb-1 text-xs font-semibold uppercase text-muted-foreground">
+                <View className="gap-3">
+                  <Text className="mb-2 text-sm font-bold uppercase tracking-wider text-muted-foreground/50">
                     Menü
                   </Text>
                   {/* We need access to all tabs, but 'navigation' prop here is for the CURRENT tab. 
@@ -130,17 +130,17 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                           closeMenu();
                         }}
                         className={cn(
-                          'flex-row items-center gap-3 rounded-md px-3 py-2 transition-colors',
+                          'flex-row items-center gap-4 rounded-xl px-4 py-3 transition-colors',
                           isFocused ? 'bg-primary/10' : 'active:bg-secondary'
                         )}>
-                        <item.icon
-                          size={20}
+                        <Icon
+                          as={item.icon}
+                          size={24}
                           className={isFocused ? 'text-primary' : 'text-muted-foreground'}
-                          color={isFocused ? undefined : 'gray'}
                         />
                         <Text
                           className={cn(
-                            'text-sm font-medium',
+                            'text-base font-semibold',
                             isFocused ? 'text-primary' : 'text-foreground'
                           )}>
                           {item.label}
@@ -151,21 +151,21 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                 </View>
 
                 {/* Chat History Section */}
-                <View className="gap-2">
-                  <View className="flex-row items-center justify-between">
-                    <Text className="text-xs font-semibold uppercase text-muted-foreground">
+                <View className="gap-3">
+                  <View className="mb-2 flex-row items-center justify-between">
+                    <Text className="text-sm font-bold uppercase tracking-wider text-muted-foreground/50">
                       Geçmiş Sohbetler
                     </Text>
-                    <TouchableOpacity>
-                      <ChatBubbleLeftRightIcon size={16} color="#F97316" />
+                    <TouchableOpacity className="-mr-2 p-2">
+                      <ChatBubbleLeftRightIcon size={20} color="#F97316" />
                     </TouchableOpacity>
                   </View>
 
                   {mockChats.map((chat) => (
                     <TouchableOpacity
                       key={chat.id}
-                      className="flex-row items-center gap-3 rounded-md border border-transparent px-3 py-2 hover:border-border active:bg-secondary">
-                      <ClockIcon size={16} color="#6B7280" />
+                      className="flex-row items-center gap-4 rounded-xl border border-transparent px-4 py-2 hover:border-border active:bg-secondary">
+                      <ClockIcon size={20} color="#6B7280" />
                       <View className="flex-1">
                         <Text className="text-sm font-medium text-foreground" numberOfLines={1}>
                           {chat.title}
@@ -180,13 +180,13 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
               </ScrollView>
 
               {/* Footer */}
-              <View className="border-t border-border p-4">
+              <View className="border-t border-border p-5">
                 <View className="flex-row items-center gap-3">
-                  <View className="h-8 w-8 items-center justify-center rounded-full bg-primary/20">
-                    <Text className="text-xs font-bold text-primary">ÖF</Text>
+                  <View className="h-10 w-10 items-center justify-center rounded-full bg-primary/20">
+                    <Text className="text-sm font-bold text-primary">ÖF</Text>
                   </View>
                   <View>
-                    <Text className="text-sm font-medium text-foreground">Ömer Faruk</Text>
+                    <Text className="text-sm font-semibold text-foreground">Ömer Faruk</Text>
                     <Text className="text-xs text-muted-foreground">Pro Plan</Text>
                   </View>
                 </View>
