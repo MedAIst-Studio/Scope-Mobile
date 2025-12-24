@@ -13,7 +13,7 @@ export {
   ErrorBoundary,
 } from 'expo-router';
 
-import { AuthProvider } from '@/features/auth/context/AuthContext';
+import { AuthGuard, AuthProvider } from '@/features/auth';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -27,9 +27,11 @@ export default function RootLayout() {
       <AuthProvider>
         <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-          <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
-          <PortalHost />
-          <PortalHost name="navigation-portal" />
+          <AuthGuard>
+            <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
+            <PortalHost />
+            <PortalHost name="navigation-portal" />
+          </AuthGuard>
         </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>

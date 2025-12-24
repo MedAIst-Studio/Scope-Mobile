@@ -1,12 +1,5 @@
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import React from 'react';
 import { View } from 'react-native';
@@ -36,10 +29,6 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStartQuiz }) => {
           </View>
         </CardDescription>
       </CardHeader>
-
-      <CardContent>
-        {/* API currently provides minimal info for the list, so we keep this clean */}
-      </CardContent>
 
       <CardFooter>
         <Button onPress={() => onStartQuiz(quiz.quizId)} className="w-full">
