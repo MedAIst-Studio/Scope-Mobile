@@ -1,10 +1,10 @@
-import z from "zod";
+import z from 'zod';
 
 export const quizRequestSchema = z.object({
-  fileId: z.string().min(1, "Dosya seçimi gereklidir"),
-  quizName: z.string().min(1, "Quiz adı gereklidir"),
-  endPage: z.number().optional(),
-  startPage: z.number().optional(),
+  fileId: z.string().min(1, 'Dosya seçimi gereklidir'),
+  quizName: z.string().min(1, 'Quiz adı gereklidir'),
+  endPage: z.coerce.number().optional(),
+  startPage: z.coerce.number().optional(),
 });
 
 export const quizCreateResponseSchema = z.object({
@@ -21,21 +21,21 @@ export const quizResponseSchema = z.object({
         z.object({
           label: z.string(),
           text: z.string(),
-        }),
+        })
       ),
       text: z.string(),
-    }),
+    })
   ),
   title: z.string(),
 });
 
 export const attemptRequestSchema = z.object({
-  id: z.string().min(1, "Quiz ID is required"),
+  id: z.string().min(1, 'Quiz ID is required'),
   answers: z.array(
     z.object({
-      question_no: z.number().min(1, "Question ID is required"),
-      selected_option: z.string().min(1, "Selected option is required"),
-    }),
+      question_no: z.number().min(1, 'Question ID is required'),
+      selected_option: z.string().min(1, 'Selected option is required'),
+    })
   ),
 });
 
@@ -48,7 +48,7 @@ export const attemptDetailResponseSchema = z.object({
       question_no: z.number(),
       question_text: z.string(),
       selected_option: z.string(),
-    }),
+    })
   ),
   completed_at: z.string(),
   id: z.string(),
@@ -69,7 +69,7 @@ export const attemptsResponseSchema = z.object({
       score: z.number(),
       time_spent_seconds: z.number(),
       total_questions: z.number(),
-    }),
+    })
   ),
   total_count: z.number(),
 });
@@ -82,7 +82,7 @@ export const submitResponseSchema = z.object({
       is_correct: z.boolean(),
       question_no: z.number(),
       selected_option: z.string(),
-    }),
+    })
   ),
   attempt_id: z.string(),
   percentage: z.number(),
@@ -95,7 +95,7 @@ export const quizzesResponseSchema = z.array(
     quizId: z.string(),
     title: z.string(),
     createdAt: z.string(),
-  }),
+  })
 );
 
 export type AttemptRequestData = z.infer<typeof attemptRequestSchema>;
