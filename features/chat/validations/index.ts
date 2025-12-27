@@ -1,4 +1,4 @@
-import z from "zod";
+import z from 'zod';
 
 export const chat = z.object({
   id: z.string(),
@@ -14,12 +14,12 @@ export const messagesResponseSchema = z.array(
     content: z.string(),
     is_user: z.boolean(),
     timestamp: z.string(),
-  }),
+  })
 );
 
 export const messageRequestSchema = z.object({
   chat_id: z.string().optional(),
-  pdf_id: z.string(),
+  pdf_id: z.string().optional().nullable(),
   content: z.string(),
 });
 

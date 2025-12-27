@@ -37,10 +37,6 @@ export const fileAPI = {
   },
 
   getFile: async (fileId: string) => {
-    // For RN, we typically use Linking or WebBrowser to open PDFs,
-    // or DownloadAsync to file system.
-    // For now, we'll placeholder this or just return a download URL if available.
-    // Assuming backend returns binary, we might need to stream it to a file.
     console.warn('getFile implementation pending for React Native');
     return { data: null, error: null };
   },

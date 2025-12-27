@@ -23,7 +23,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   onContentSizeChange,
 }) => (
   <View className="bg-background px-4 pb-6">
-    <View className="flex-row items-end gap-3 rounded-3xl bg-secondary px-4 py-2">
+    <View className="flex-row items-end gap-3 rounded-3xl border-2 border-b-4 border-border bg-secondary px-3 py-2">
       <Textarea
         value={message}
         onChangeText={onChangeText}

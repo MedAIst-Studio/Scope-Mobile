@@ -52,6 +52,7 @@ export const ChatScreen: React.FC = () => {
             messages={messages}
             scrollViewRef={scrollViewRef}
             onQuestionPress={setMessage}
+            isTyping={isSending}
           />
         )}
 

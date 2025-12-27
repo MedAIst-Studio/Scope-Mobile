@@ -10,8 +10,6 @@ import { useChatMessages, useSendMessage } from './index';
 
 export const useChat = () => {
   const { id, file_id } = useLocalSearchParams<{ id: string; file_id: string }>();
-  // If id is not present or is a "new" indicator/array, handle appropriately.
-  // Assuming 'id' is the chat ID. If it's undefined, it's a new chat.
 
   const chatId = Array.isArray(id) ? id[0] : id;
   const fileId = Array.isArray(file_id) ? file_id[0] : file_id;
@@ -24,7 +22,7 @@ export const useChat = () => {
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
 
   const handleSendMessage = () => {
-    if (!message.trim() || !fileId) return;
+    if (!message.trim()) return;
 
     sendMessage(
       {
@@ -50,7 +48,7 @@ export const useChat = () => {
   return {
     message,
     setMessage,
-    messages: messages as Message[], // Ensure type compatibility
+    messages: messages as Message[],
     isLoading,
     isSending,
     inputHeight,

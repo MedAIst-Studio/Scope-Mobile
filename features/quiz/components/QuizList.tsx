@@ -10,7 +10,7 @@ interface QuizListProps {
 }
 
 export const QuizList: React.FC<QuizListProps> = ({ quizzes, onStartQuiz }) => {
-  if (quizzes.length === 0) {
+  if (quizzes?.length === 0) {
     return (
       <View className="flex-1 items-center justify-center py-12">
         <Text className="text-center text-lg font-medium text-muted-foreground">
@@ -28,7 +28,7 @@ export const QuizList: React.FC<QuizListProps> = ({ quizzes, onStartQuiz }) => {
       className="flex-1"
       contentContainerStyle={{ paddingBottom: 20 }}
       showsVerticalScrollIndicator={false}>
-      {quizzes.map((quiz) => (
+      {quizzes?.map((quiz) => (
         <QuizCard key={quiz.quizId} quiz={quiz} onStartQuiz={onStartQuiz} />
       ))}
     </ScrollView>
