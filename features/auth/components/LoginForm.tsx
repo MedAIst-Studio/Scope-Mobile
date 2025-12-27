@@ -1,4 +1,5 @@
 import { DynamicFormField, FormFieldType } from '@/components/shared/DynamicFormField';
+import { FormAlert } from '@/components/shared/FormAlert';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Link } from 'expo-router';
@@ -12,15 +13,18 @@ type LoginFormData = Parameters<ReturnType<typeof useLoginForm>['onSubmit']>[0];
 function LoginFormContent({
   form,
   isLoading,
+  error,
   onSubmit,
 }: {
   form: ReturnType<typeof useLoginForm>['form'];
   isLoading: boolean;
+  error: string | null;
   onSubmit: (data: LoginFormData) => void;
 }) {
   return (
     <View className="flex flex-col gap-6">
       <View className="flex flex-col gap-4">
+        <FormAlert message={error} />
         <DynamicFormField
           control={form.control}
           disabled={isLoading}
@@ -72,7 +76,7 @@ function LoginFormContent({
 }
 
 export function LoginForm() {
-  const { form, isLoading, onSubmit, setIsLoading } = useLoginForm();
+  const { form, isLoading, error, onSubmit, setIsLoading } = useLoginForm();
   const { handleGoogleLogin, handleFacebookLogin } = useSocialAuth(setIsLoading);
 
   return (
@@ -80,7 +84,7 @@ export function LoginForm() {
       onGoogleLogin={handleGoogleLogin}
       onFacebookLogin={handleFacebookLogin}
       isLoading={isLoading}>
-      <LoginFormContent form={form} isLoading={isLoading} onSubmit={onSubmit} />
+      <LoginFormContent form={form} isLoading={isLoading} error={error} onSubmit={onSubmit} />
     </LoginLayout>
   );
 }

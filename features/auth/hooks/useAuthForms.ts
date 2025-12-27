@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert } from 'react-native';
 import { z } from 'zod';
 import { useAuth } from '../context/AuthContext';
 import { loginSchema, signupSchema } from '../utils/validation';
@@ -12,6 +11,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 // Login form hook'u
 export function useLoginForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
 
   const form = useForm<LoginFormData>({
@@ -22,24 +22,33 @@ export function useLoginForm() {
     },
   });
 
+  // Clear error when user changes input
+  form.watch(() => {
+    if (error) setError(null);
+  });
+
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
+    setError(null);
     try {
       await login(data);
-    } catch (error: any) {
-      console.error('Login error', error);
-      Alert.alert('Giriş Hatası', error.message || 'Bir hata oluştu');
+    } catch (err: any) {
+      console.error('Login error', err);
+      // Extract specific error message if available, otherwise generic
+      const errorMessage = err?.message || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { form, isLoading, onSubmit, setIsLoading };
+  return { form, isLoading, error, onSubmit, setIsLoading };
 }
 
 // Signup form hook'u
 export function useSignupForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { signup } = useAuth();
 
   const form = useForm<SignupFormData>({
@@ -53,19 +62,26 @@ export function useSignupForm() {
     },
   });
 
+  // Clear error when user changes input
+  form.watch(() => {
+    if (error) setError(null);
+  });
+
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
+    setError(null);
     try {
       await signup(data);
-    } catch (error: any) {
-      console.error('Signup error', error);
-      Alert.alert('Kayıt Hatası', error.message || 'Bir hata oluştu');
+    } catch (err: any) {
+      console.error('Signup error', err);
+      const errorMessage = err?.message || 'Kayıt olunamadı. Lütfen bilgilerinizi kontrol edin.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { form, isLoading, onSubmit, setIsLoading };
+  return { form, isLoading, error, onSubmit, setIsLoading };
 }
 
 // Social login hook'u

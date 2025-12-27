@@ -1,4 +1,5 @@
 import { DynamicFormField, FormFieldType } from '@/components/shared/DynamicFormField';
+import { FormAlert } from '@/components/shared/FormAlert';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Link } from 'expo-router';
@@ -12,15 +13,18 @@ type SignupFormData = Parameters<ReturnType<typeof useSignupForm>['onSubmit']>[0
 function SignupFormContent({
   form,
   isLoading,
+  error,
   onSubmit,
 }: {
   form: ReturnType<typeof useSignupForm>['form'];
   isLoading: boolean;
+  error: string | null;
   onSubmit: (data: SignupFormData) => void;
 }) {
   return (
     <View className="flex flex-col gap-6">
       <View className="flex flex-col gap-4">
+        <FormAlert message={error} />
         <View className="flex-1">
           <DynamicFormField
             control={form.control}
@@ -96,7 +100,7 @@ function SignupFormContent({
 }
 
 export function SignupForm() {
-  const { form, isLoading, onSubmit, setIsLoading } = useSignupForm();
+  const { form, isLoading, error, onSubmit, setIsLoading } = useSignupForm();
   const { handleGoogleSignup, handleFacebookSignup } = useSocialAuth(setIsLoading);
 
   return (
@@ -104,7 +108,7 @@ export function SignupForm() {
       onGoogleLogin={handleGoogleSignup}
       onFacebookLogin={handleFacebookSignup}
       isLoading={isLoading}>
-      <SignupFormContent form={form} isLoading={isLoading} onSubmit={onSubmit} />
+      <SignupFormContent form={form} isLoading={isLoading} error={error} onSubmit={onSubmit} />
     </SignupLayout>
   );
 }
