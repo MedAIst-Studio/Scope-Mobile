@@ -6,9 +6,10 @@ import { QuizResultCard } from './QuizResultCard';
 
 interface QuizResultListProps {
   attempts: AttemptsResponseData['attempts'];
+  onViewResult: (id: string) => void;
 }
 
-export const QuizResultList: React.FC<QuizResultListProps> = ({ attempts }) => {
+export const QuizResultList: React.FC<QuizResultListProps> = ({ attempts, onViewResult }) => {
   if (!attempts || attempts.length === 0) {
     return (
       <View className="flex-1 items-center justify-center py-12">
@@ -28,7 +29,7 @@ export const QuizResultList: React.FC<QuizResultListProps> = ({ attempts }) => {
       contentContainerStyle={{ paddingBottom: 20 }}
       showsVerticalScrollIndicator={false}>
       {attempts.map((attempt) => (
-        <QuizResultCard key={attempt.id} attempt={attempt} />
+        <QuizResultCard key={attempt.id} attempt={attempt} onViewResult={onViewResult} />
       ))}
     </ScrollView>
   );

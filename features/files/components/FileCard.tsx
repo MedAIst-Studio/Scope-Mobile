@@ -22,7 +22,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
     <Card className="mb-4">
       {/* File Header */}
       <CardHeader className="flex-row items-start gap-3">
-        <View className="h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+        <View className="h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
           <DocumentTextIcon size={24} color="#3B82F6" />
         </View>
 

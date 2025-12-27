@@ -79,7 +79,7 @@ export default function HomeScreen() {
                 onPress={() => router.push('/(tabs)/chat')}
                 className="h-40 flex-1 overflow-hidden rounded-3xl border-2 border-b-4 border-border bg-card">
                 <View className="flex-1 justify-between p-5">
-                  <View className="self-start rounded-xl bg-orange-500/10 p-3">
+                  <View className="self-start rounded-lg bg-orange-500/10 p-3">
                     <Icon as={ChatBubbleLeftRightIcon} size={24} className="text-orange-500" />
                   </View>
                   <View>
@@ -95,7 +95,7 @@ export default function HomeScreen() {
                 onPress={() => router.push('/(tabs)/files')}
                 className="h-40 flex-1 overflow-hidden rounded-3xl border-2 border-b-4 border-border bg-card">
                 <View className="flex-1 justify-between p-5">
-                  <View className="self-start rounded-xl bg-blue-500/10 p-3">
+                  <View className="self-start rounded-lg bg-blue-500/10 p-3">
                     <Icon as={DocumentTextIcon} size={24} className="text-blue-500" />
                   </View>
                   <View>
@@ -110,7 +110,7 @@ export default function HomeScreen() {
               activeOpacity={0.9}
               onPress={() => router.push('/(tabs)/quiz')}
               className="h-24 w-full flex-row items-center gap-4 overflow-hidden rounded-3xl border-2 border-b-4 border-border bg-card px-6">
-              <View className="rounded-xl bg-green-500/10 p-3">
+              <View className="rounded-lg bg-green-500/10 p-3">
                 <Icon as={AcademicCapIcon} size={24} className="text-green-500" />
               </View>
               <View className="flex-1">

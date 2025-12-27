@@ -34,7 +34,7 @@ export const UploadFile: React.FC = () => {
   };
 
   return (
-    <View className="mb-2 rounded-xl border border-dashed border-muted-foreground/30 bg-muted p-4">
+    <View className="mb-2 rounded-lg border border-dashed border-muted-foreground/30 bg-muted p-4">
       <View className="flex-row items-center gap-3">
         <View className="h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
           {isUploading ? (

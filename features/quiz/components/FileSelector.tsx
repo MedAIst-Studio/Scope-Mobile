@@ -65,7 +65,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ selectedFileId, onSe
                       onSelect(file.id);
                       setModalVisible(false);
                     }}
-                    className={`mb-3 flex-row items-center gap-3 rounded-xl border p-4 ${
+                    className={`mb-3 flex-row items-center gap-3 rounded-lg border p-4 ${
                       file.id === selectedFileId
                         ? 'border-primary bg-primary/10'
                         : 'border-border bg-card'

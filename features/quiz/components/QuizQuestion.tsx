@@ -40,7 +40,7 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
                 key={option.label}
                 onPress={() => onSelectOption(option.label)}
                 activeOpacity={0.7}
-                className={`flex-row items-center rounded-xl border p-4 transition-all ${
+                className={`flex-row items-center rounded-lg border p-4 transition-all ${
                   isSelected ? 'border-primary bg-primary/10' : 'border-border bg-card'
                 }`}>
                 <View

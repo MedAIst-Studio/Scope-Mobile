@@ -133,7 +133,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                           closeMenu();
                         }}
                         className={cn(
-                          'flex-row items-center gap-4 rounded-xl px-4 py-3 transition-colors',
+                          'flex-row items-center gap-4 rounded-lg px-4 py-3 transition-colors',
                           isFocused ? 'bg-primary/10' : 'active:bg-secondary'
                         )}>
                         <Icon
@@ -171,7 +171,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                         navigation.navigate('chat', { id: chat.id, file_id: chat.file_id });
                         closeMenu();
                       }}
-                      className="flex-row items-center gap-4 rounded-xl border border-transparent px-4 py-2 hover:border-border active:bg-secondary">
+                      className="flex-row items-center gap-4 rounded-lg border border-transparent px-4 py-2 hover:border-border active:bg-secondary">
                       <ClockIcon size={20} color="#6B7280" />
                       <View className="flex-1">
                         <Text className="text-sm font-medium text-foreground" numberOfLines={1}>

@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { FilesList } from '@/features/files/components/FilesList';
 import { SearchBar } from '@/features/files/components/SearchBar';
@@ -9,7 +10,7 @@ import { ActivityIndicator, Alert, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FilesScreen() {
-  const { data: files, isLoading, error } = useFiles();
+  const { data: files, isLoading, error, refetch } = useFiles();
   const { mutate: deleteFile } = useDeleteFile();
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
@@ -53,7 +54,10 @@ export default function FilesScreen() {
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center">
-          <Text className="text-red-500">Dosyalar yüklenirken hata oluştu.</Text>
+          <Text className="mb-4 text-center text-red-500">Dosyalar yüklenirken hata oluştu.</Text>
+          <Button onPress={() => refetch()} variant="outline">
+            <Text>Tekrar Dene</Text>
+          </Button>
         </View>
       ) : (
         <FilesList

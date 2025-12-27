@@ -2,18 +2,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { AttemptsResponseData } from '@/features/quiz/validation';
-import { useRouter } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
-import { CalendarIcon, CheckCircleIcon, ClockIcon } from 'react-native-heroicons/outline';
+import { CalendarIcon, CheckCircleIcon } from 'react-native-heroicons/outline';
 
 interface QuizResultCardProps {
   attempt: AttemptsResponseData['attempts'][0];
+  onViewResult: (id: string) => void;
 }
 
-export const QuizResultCard: React.FC<QuizResultCardProps> = ({ attempt }) => {
-  const router = useRouter();
-
+export const QuizResultCard: React.FC<QuizResultCardProps> = ({ attempt, onViewResult }) => {
   return (
     <Card className="mb-4">
       <CardHeader>
@@ -22,18 +20,7 @@ export const QuizResultCard: React.FC<QuizResultCardProps> = ({ attempt }) => {
           <View className="flex-row items-center gap-4">
             <View className="flex-row items-center gap-1">
               <CalendarIcon size={14} color="#6B7280" />
-              <Text className="text-xs text-muted-foreground">
-                {/* Assuming createdAt is not in the attempt object based on validation schema, 
-                    using mock or if available in future. For now, maybe just show score/time if no date.
-                    Wait, schema has no date. Let's assume we can show score directly. */}
-                Tamamlandı
-              </Text>
-            </View>
-            <View className="flex-row items-center gap-1">
-              <ClockIcon size={14} color="#6B7280" />
-              <Text className="text-xs text-muted-foreground">
-                {Math.round(attempt.time_spent_seconds / 60)} dk
-              </Text>
+              <Text className="text-xs text-muted-foreground">Tamamlandı</Text>
             </View>
           </View>
         </CardDescription>
@@ -63,7 +50,7 @@ export const QuizResultCard: React.FC<QuizResultCardProps> = ({ attempt }) => {
       <CardFooter>
         <Button
           variant="outline"
-          onPress={() => router.push(`/quiz/result/${attempt.id}`)}
+          onPress={() => onViewResult(attempt.id)}
           className="w-full border-primary/20 bg-primary/5">
           <View className="flex-row items-center gap-2">
             <CheckCircleIcon size={16} className="text-primary" />

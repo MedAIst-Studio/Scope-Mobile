@@ -36,7 +36,7 @@ export default function QuizResultScreen() {
           gestureEnabled: false,
         }}
       />
-      <QuizResult result={result} />
+      <QuizResult result={result} onBack={() => router.replace('/(tabs)/quiz')} />
     </SafeAreaView>
   );
 }
