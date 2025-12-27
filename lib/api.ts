@@ -26,7 +26,7 @@ const defaultApiConfig: ApiConfig = {
 };
 
 export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   timeout: defaultApiConfig.timeout,
   headers: {
     'Content-Type': 'application/json',
