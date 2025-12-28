@@ -107,9 +107,6 @@ axiosInstance.interceptors.response.use(
 
         await SecureStore.deleteItemAsync('accessToken');
         await SecureStore.deleteItemAsync('refreshToken');
-        // Navigation should be handled by the context/listener, or we can't easily do it here without circular deps
-        // Ideally we emit an event or rely on the next request failing to trigger a logout flow in the UI
-        // For now, we just clear tokens.
 
         return Promise.reject(createApiError(error, 'AUTH_REFRESH_FAILED'));
       }

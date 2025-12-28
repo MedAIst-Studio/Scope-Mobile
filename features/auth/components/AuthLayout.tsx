@@ -38,7 +38,7 @@ const providerConfig = {
     backgroundColor: 'bg-gray-100',
     textColor: 'text-gray-900',
     borderColor: 'border-gray-300',
-    icon: <Icon as={EnvelopeIcon} size={20} color="#000000" />,
+    icon: <Icon as={EnvelopeIcon} size={20} />,
   },
 };
 

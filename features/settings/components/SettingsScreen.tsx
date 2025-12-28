@@ -21,11 +21,10 @@ export const SettingsScreen: React.FC = () => {
   const { data: user } = useUserDetails();
 
   const handleAccountPress = () => {
-    router.push('/profile');
+    router.push('/(app)/profile');
   };
 
   const handleHelpPress = () => {
-    // TODO: Navigate to help screen
     console.log('Help pressed');
   };
 

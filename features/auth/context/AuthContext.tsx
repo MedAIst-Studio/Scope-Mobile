@@ -80,10 +80,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!response.success) {
         throw new Error(response.error?.message || 'Signup failed');
       }
-
-      // Automatically login after signup if your API supports it, or redirect to login
-      // For this example, let's say we redirect to login to be safe, or auto login
-      // router.replace('/(auth)/login');
       await login({ email: data.email, password: data.password });
     } catch (error) {
       throw error;

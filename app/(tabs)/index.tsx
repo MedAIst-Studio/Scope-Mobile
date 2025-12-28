@@ -36,7 +36,7 @@ export default function HomeScreen() {
                 {user?.username || 'Ömer Faruk'}
               </Text>
             </View>
-            <TouchableOpacity onPress={() => router.push('/(tabs)/(settings)/profile')}>
+            <TouchableOpacity onPress={() => router.push('/(app)/profile')}>
               <View className="h-12 w-12 items-center justify-center rounded-full border border-primary/20 bg-primary/20">
                 <Text className="text-lg font-bold text-primary">
                   {user?.username?.charAt(0).toUpperCase() || 'Ö'}
@@ -119,14 +119,6 @@ export default function HomeScreen() {
               </View>
               <Icon as={ArrowRightIcon} size={20} className="text-muted-foreground" />
             </TouchableOpacity>
-          </View>
-
-          <View className="mt-8">
-            <Text className="mb-4 text-xl font-bold text-foreground">Son Aktiviteler</Text>
-            {/* Placeholder for Recent Activity */}
-            <View className="items-center justify-center rounded-2xl border-2 border-b-4 border-border bg-card p-4 py-8">
-              <Text className="text-muted-foreground">Henüz aktivite yok</Text>
-            </View>
           </View>
         </SafeAreaView>
       </ScrollView>
