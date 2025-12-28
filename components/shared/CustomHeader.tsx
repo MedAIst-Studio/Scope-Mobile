@@ -4,6 +4,7 @@ import { useUserDetails } from '@/features/users/hooks';
 import { cn } from '@/lib/utils';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { Portal } from '@rn-primitives/portal';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import {
@@ -26,6 +27,7 @@ import { Icon } from '../ui/icon';
 export function CustomHeader({ layout, options, route, navigation }: BottomTabHeaderProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { data: chats } = useChats();
   const { data: user } = useUserDetails();
 
@@ -65,9 +67,13 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
           {options.headerRight ? (
             options.headerRight({ canGoBack: navigation.canGoBack() })
           ) : (
-            <View className="h-10 w-10 items-center justify-center rounded-2xl bg-primary/10">
-              <Text className="text-xs font-bold text-primary">AI</Text>
-            </View>
+            <TouchableOpacity
+              onPress={() => router.push('/(app)/profile')}
+              className="h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 active:scale-95">
+              <Text className="text-sm font-bold text-primary">
+                {user?.username?.charAt(0).toUpperCase() || 'U'}
+              </Text>
+            </TouchableOpacity>
           )}
         </View>
       </View>
@@ -190,7 +196,12 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
               </ScrollView>
 
               <View className="px-6 py-8">
-                <View className="flex-row items-center gap-4 rounded-[2rem] bg-secondary/40 p-4">
+                <TouchableOpacity
+                  onPress={() => {
+                    router.push('/(app)/profile');
+                    closeMenu();
+                  }}
+                  className="flex-row items-center gap-4 rounded-[2rem] bg-secondary/40 p-4 active:scale-[0.98]">
                   <View className="h-12 w-12 items-center justify-center rounded-2xl bg-primary shadow-sm shadow-primary/30">
                     <Text className="text-sm font-bold text-primary-foreground">
                       {user?.username?.substring(0, 1).toUpperCase() || 'U'}
@@ -206,7 +217,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                       </Text>
                     </Badge>
                   </View>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
           </Animated.View>

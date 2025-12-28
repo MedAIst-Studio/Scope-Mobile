@@ -151,13 +151,13 @@ export function AuthLayout({
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1"
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 60}>
           <ScrollView
             className="flex-1"
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            <View className="flex-1 justify-center px-8 py-12">
+            <View className="flex-1 justify-center px-4 py-12">
               <Animated.View
                 style={{
                   opacity: fadeAnim,
@@ -225,7 +225,7 @@ export function AuthLayout({
                       </TouchableOpacity>
                     )}
 
-                    <View className="rounded-[2.5rem] border border-border/20 bg-card p-8 shadow-sm">
+                    <View className="rounded-[2.5rem] border border-border/20 bg-card p-6 shadow-sm">
                       {children}
                     </View>
                   </View>

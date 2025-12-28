@@ -132,7 +132,7 @@ export default function HomeScreen() {
                 </Text>
               </View>
               <View className="h-10 w-10 items-center justify-center rounded-full bg-secondary">
-                <ArrowRightIcon size={20} className="text-muted-foreground/40" />
+                <Icon as={ArrowRightIcon} size={20} className="text-muted-foreground/40" />
               </View>
             </TouchableOpacity>
           </View>

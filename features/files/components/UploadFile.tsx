@@ -40,7 +40,7 @@ export const UploadFile: React.FC = () => {
         {isUploading ? (
           <View className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         ) : (
-          <CloudArrowUpIcon size={40} className="text-primary" />
+          <Icon as={CloudArrowUpIcon} size={40} className="text-primary" />
         )}
       </View>
 

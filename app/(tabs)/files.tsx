@@ -38,9 +38,11 @@ export default function FilesScreen() {
       <ScrollView>
         <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
 
-        <View className="mb-4">
-          <UploadFile />
-        </View>
+        {!searchQuery.trim() && (
+          <View className="mb-4">
+            <UploadFile />
+          </View>
+        )}
 
         {isLoading ? (
           <View className="flex-1 items-center justify-center">

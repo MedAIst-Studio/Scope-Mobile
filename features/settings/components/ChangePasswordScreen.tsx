@@ -4,7 +4,15 @@ import { Text } from '@/components/ui/text';
 import { useUpdatePassword } from '@/features/users/hooks';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { ChevronLeftIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -45,55 +53,60 @@ export const ChangePasswordScreen: React.FC = () => {
         <Text className="text-2xl font-bold text-foreground">Şifre Değiştir</Text>
       </View>
 
-      <View className="flex-1 px-4">
-        <View className="gap-4">
-          <View>
-            <Text className="mb-1.5 ml-1 text-sm font-medium text-foreground">Mevcut Şifre</Text>
-            <TextInput
-              className="rounded-lg border border-border bg-card px-4 py-3 text-foreground"
-              value={oldPassword}
-              onChangeText={setOldPassword}
-              placeholder="********"
-              placeholderTextColor="#6B7280"
-              secureTextEntry
-            />
-          </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        className="flex-1"
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100}>
+        <View className="flex-1 px-4">
+          <View className="gap-4">
+            <View>
+              <Text className="mb-1.5 ml-1 text-sm font-medium text-foreground">Mevcut Şifre</Text>
+              <TextInput
+                className="rounded-lg border border-border bg-card px-4 py-3 text-foreground"
+                value={oldPassword}
+                onChangeText={setOldPassword}
+                placeholder="********"
+                placeholderTextColor="#6B7280"
+                secureTextEntry
+              />
+            </View>
 
-          <View>
-            <Text className="mb-1.5 ml-1 text-sm font-medium text-foreground">Yeni Şifre</Text>
-            <TextInput
-              className="rounded-lg border border-border bg-card px-4 py-3 text-foreground"
-              value={newPassword}
-              onChangeText={setNewPassword}
-              placeholder="********"
-              placeholderTextColor="#6B7280"
-              secureTextEntry
-            />
-          </View>
+            <View>
+              <Text className="mb-1.5 ml-1 text-sm font-medium text-foreground">Yeni Şifre</Text>
+              <TextInput
+                className="rounded-lg border border-border bg-card px-4 py-3 text-foreground"
+                value={newPassword}
+                onChangeText={setNewPassword}
+                placeholder="********"
+                placeholderTextColor="#6B7280"
+                secureTextEntry
+              />
+            </View>
 
-          <View>
-            <Text className="mb-1.5 ml-1 text-sm font-medium text-foreground">
-              Yeni Şifre (Tekrar)
-            </Text>
-            <TextInput
-              className="rounded-lg border border-border bg-card px-4 py-3 text-foreground"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder="********"
-              placeholderTextColor="#6B7280"
-              secureTextEntry
-            />
-          </View>
+            <View>
+              <Text className="mb-1.5 ml-1 text-sm font-medium text-foreground">
+                Yeni Şifre (Tekrar)
+              </Text>
+              <TextInput
+                className="rounded-lg border border-border bg-card px-4 py-3 text-foreground"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="********"
+                placeholderTextColor="#6B7280"
+                secureTextEntry
+              />
+            </View>
 
-          <Button onPress={handleUpdate} disabled={isPending} className="mt-4 bg-primary">
-            {isPending ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="font-semibold text-primary-foreground">Şifreyi Güncelle</Text>
-            )}
-          </Button>
+            <Button onPress={handleUpdate} disabled={isPending} className="mt-4 bg-primary">
+              {isPending ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text className="font-semibold text-primary-foreground">Şifreyi Güncelle</Text>
+              )}
+            </Button>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

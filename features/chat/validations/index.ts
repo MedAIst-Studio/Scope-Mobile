@@ -14,6 +14,15 @@ export const messagesResponseSchema = z.array(
     content: z.string(),
     is_user: z.boolean(),
     timestamp: z.string(),
+    attachments: z
+      .array(
+        z.object({
+          type: z.enum(['image', 'file']),
+          name: z.string(),
+          uri: z.string(),
+        })
+      )
+      .optional(),
   })
 );
 
