@@ -1,10 +1,11 @@
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { AttemptsResponseData } from '@/features/quiz/validation';
 import React from 'react';
 import { View } from 'react-native';
-import { CalendarIcon, CheckCircleIcon } from 'react-native-heroicons/outline';
+import { ChevronRightIcon } from 'react-native-heroicons/solid';
 
 interface QuizResultCardProps {
   attempt: AttemptsResponseData['attempts'][0];
@@ -12,37 +13,34 @@ interface QuizResultCardProps {
 }
 
 export const QuizResultCard: React.FC<QuizResultCardProps> = ({ attempt, onViewResult }) => {
+  const percentage = Math.round(attempt.percentage);
+
   return (
     <Card className="mb-4">
       <CardHeader>
-        <CardTitle>{attempt.quiz_title}</CardTitle>
-        <CardDescription>
-          <View className="flex-row items-center gap-4">
-            <View className="flex-row items-center gap-1">
-              <CalendarIcon size={14} color="#6B7280" />
-              <Text className="text-xs text-muted-foreground">Tamamlandı</Text>
-            </View>
-          </View>
-        </CardDescription>
+        <View className="mb-2 flex-row items-start justify-between">
+          <Badge variant={percentage >= 50 ? 'solid' : 'destructive'} className="px-2">
+            <Text className="text-[10px] font-bold">%{percentage} Başarı</Text>
+          </Badge>
+        </View>
+        <CardTitle className="mb-1 text-xl">{attempt.quiz_title}</CardTitle>
+        <CardDescription>Sınav sonuçlarınız ve detaylı analiz.</CardDescription>
       </CardHeader>
 
-      <View className="px-6 pb-4">
-        <View className="flex-row items-center justify-between rounded-lg bg-secondary/50 p-3">
-          <View className="items-center">
-            <Text className="text-lg font-bold text-primary">
-              {Math.round(attempt.percentage)}%
-            </Text>
-            <Text className="text-xs text-muted-foreground">Başarı</Text>
-          </View>
-          <View className="h-8 w-[1px] bg-border" />
-          <View className="items-center">
+      <View className="px-6 py-2">
+        <View className="flex-row items-center justify-between rounded-2xl bg-secondary/30 p-4">
+          <View className="flex-1 items-center">
             <Text className="text-lg font-bold text-foreground">{attempt.score}</Text>
-            <Text className="text-xs text-muted-foreground">Doğru</Text>
+            <Text className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              Doğru
+            </Text>
           </View>
-          <View className="h-8 w-[1px] bg-border" />
-          <View className="items-center">
+          <View className="bg-border/40mx-4 h-8 w-px" />
+          <View className="flex-1 items-center">
             <Text className="text-lg font-bold text-foreground">{attempt.total_questions}</Text>
-            <Text className="text-xs text-muted-foreground">Soru</Text>
+            <Text className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              Soru
+            </Text>
           </View>
         </View>
       </View>
@@ -51,11 +49,10 @@ export const QuizResultCard: React.FC<QuizResultCardProps> = ({ attempt, onViewR
         <Button
           variant="outline"
           onPress={() => onViewResult(attempt.id)}
-          className="w-full border-primary/20 bg-primary/5">
-          <View className="flex-row items-center gap-2">
-            <CheckCircleIcon size={16} className="text-primary" />
-            <Text className="font-medium text-primary">Sonuçları Gör</Text>
-          </View>
+          className="w-full flex-row items-center justify-center"
+          size="default">
+          <Text className="font-bold text-foreground">Detayları İncele</Text>
+          <ChevronRightIcon size={16} className="text-foreground" />
         </Button>
       </CardFooter>
     </Card>

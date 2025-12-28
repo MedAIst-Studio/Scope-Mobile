@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
+import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, TextInput, View } from 'react-native';
-import { ChartBarIcon, MagnifyingGlassIcon, PlusIcon } from 'react-native-heroicons/outline';
+import { ActivityIndicator, View } from 'react-native';
+import { ChartBarIcon, MagnifyingGlassIcon, PlusIcon } from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuizzes } from '../hooks/useQueries';
 import { QuizListItem } from '../types';
@@ -40,18 +41,18 @@ export const QuizListScreen: React.FC = () => {
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator size="large" className="text-primary" />
+        <ActivityIndicator size="large" color="#f97316" />
       </View>
     );
   }
 
   if (error) {
     return (
-      <View className="flex-1 items-center justify-center bg-background px-4">
-        <Text className="mb-4 text-center text-lg text-red-500">
+      <View className="flex-1 items-center justify-center bg-background px-6">
+        <Text className="mb-6 text-center text-lg font-semibold text-foreground">
           Quizler yüklenirken bir hata oluştu.
         </Text>
-        <Button onPress={() => refetch()} variant="outline">
+        <Button onPress={() => refetch()} variant="outline" className="w-full">
           <Text>Tekrar Dene</Text>
         </Button>
       </View>
@@ -60,31 +61,42 @@ export const QuizListScreen: React.FC = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top', 'left', 'right']}>
-      <View className="flex-1 px-4 pt-4">
+      <View className="flex-1 px-4 pt-6">
         {/* Header */}
-        <View className="mb-4 flex-row items-center justify-between">
-          <Text className="text-xl font-bold text-foreground">Quizler</Text>
+        <View className="mb-6 flex-row items-center justify-between">
+          <View>
+            <Text className="text-3xl font-bold tracking-tight text-foreground">Sınavlar</Text>
+            <Text className="text-sm text-muted-foreground">
+              Toplam {quizzes.length} kayıtlı sınav
+            </Text>
+          </View>
           <View className="flex-row gap-2">
-            <Button size="icon" variant="outline" onPress={handleGoToResults}>
-              <Icon as={ChartBarIcon} size={20} className="text-foreground" />
+            <Button
+              size="icon"
+              variant="outline"
+              onPress={handleGoToResults}
+              className="h-12 w-12 rounded-xl">
+              <Icon as={ChartBarIcon} size={22} className="text-foreground" />
             </Button>
-            <Button size="sm" onPress={handleCreateQuiz} className="flex-row items-center gap-2">
-              <Icon as={PlusIcon} size={20} color="white" />
-              <Text className="font-semibold text-primary-foreground">Yeni Quiz</Text>
+            <Button size="icon" onPress={handleCreateQuiz} className="h-12 w-12 rounded-xl">
+              <Icon as={PlusIcon} size={22} className="text-primary-foreground" />
             </Button>
           </View>
         </View>
 
         {/* Search */}
-        <View className="mb-4 flex-row items-center rounded-lg border border-border bg-card px-4 py-1">
-          <Icon as={MagnifyingGlassIcon} size={20} className="mr-2 text-muted-foreground" />
-          <TextInput
-            className="flex-1 text-base text-foreground"
-            placeholder="Ara..."
-            placeholderTextColor="#6B7280"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
+        <View className="mb-6">
+          <View className="relative">
+            <Input
+              placeholder="Sınav ara..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              className="pl-12"
+            />
+            <View className="absolute left-4 top-4">
+              <Icon as={MagnifyingGlassIcon} size={20} className="text-muted-foreground/50" />
+            </View>
+          </View>
         </View>
 
         {/* Content */}

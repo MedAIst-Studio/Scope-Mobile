@@ -23,7 +23,7 @@ function LoginFormContent({
 }) {
   return (
     <View className="flex flex-col gap-6">
-      <View className="flex flex-col gap-4">
+      <View className="flex flex-col gap-5">
         <FormAlert message={error} />
         <DynamicFormField
           control={form.control}
@@ -47,8 +47,8 @@ function LoginFormContent({
 
         <View className="items-end">
           <Link href="/(auth)/forgot-password" asChild>
-            <TouchableOpacity>
-              <Text className="text-sm font-medium text-primary">Şifremi Unuttum</Text>
+            <TouchableOpacity activeOpacity={0.7}>
+              <Text className="text-sm font-bold text-primary">Şifremi Unuttum</Text>
             </TouchableOpacity>
           </Link>
         </View>
@@ -57,17 +57,22 @@ function LoginFormContent({
       <Button
         onPress={form.handleSubmit(onSubmit)}
         disabled={isLoading}
-        className="w-full flex-row gap-2"
+        className="h-14 w-full flex-row items-center justify-center rounded-2xl bg-primary shadow-xl shadow-primary/30"
         size="lg">
-        {isLoading && <ActivityIndicator color="white" />}
-        <Text>{isLoading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}</Text>
+        {isLoading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text className="text-lg font-bold tracking-tight text-primary-foreground">
+            Giriş Yap
+          </Text>
+        )}
       </Button>
 
-      <View className="flex-row items-center justify-center gap-1">
-        <Text className="text-sm text-muted-foreground">Hesabınız yok mu?</Text>
+      <View className="flex-row items-center justify-center gap-2">
+        <Text className="text-sm font-medium text-muted-foreground/50">Henüz hesabın yok mu?</Text>
         <Link href="/(auth)/signup" asChild>
-          <TouchableOpacity>
-            <Text className="text-sm font-medium text-primary">Kayıt Ol</Text>
+          <TouchableOpacity activeOpacity={0.7}>
+            <Text className="text-sm font-bold text-primary">Kayıt Ol</Text>
           </TouchableOpacity>
         </Link>
       </View>

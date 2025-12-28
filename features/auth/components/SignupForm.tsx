@@ -25,17 +25,15 @@ function SignupFormContent({
     <View className="flex flex-col gap-6">
       <View className="flex flex-col gap-4">
         <FormAlert message={error} />
-        <View className="flex-1">
-          <DynamicFormField
-            control={form.control}
-            disabled={isLoading}
-            label="Kullanıcı Adı"
-            name="username"
-            placeholder="Kullanıcı adınız"
-            type={FormFieldType.INPUT}
-            required
-          />
-        </View>
+        <DynamicFormField
+          control={form.control}
+          disabled={isLoading}
+          label="Kullanıcı Adı"
+          name="username"
+          placeholder="Kullanıcı adınız"
+          type={FormFieldType.INPUT}
+          required
+        />
 
         <DynamicFormField
           control={form.control}
@@ -81,17 +79,22 @@ function SignupFormContent({
       <Button
         onPress={form.handleSubmit(onSubmit)}
         disabled={isLoading}
-        className="w-full flex-row gap-2"
+        className="h-14 w-full flex-row items-center justify-center rounded-2xl bg-primary shadow-xl shadow-primary/30"
         size="lg">
-        {isLoading && <ActivityIndicator color="white" />}
-        <Text>{isLoading ? 'Hesap Oluşturuluyor...' : 'Hesap Oluştur'}</Text>
+        {isLoading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text className="text-lg font-bold tracking-tight text-primary-foreground">
+            Hesap Oluştur
+          </Text>
+        )}
       </Button>
 
-      <View className="flex-row items-center justify-center gap-1">
-        <Text className="text-sm text-muted-foreground">Zaten hesabınız var mı?</Text>
+      <View className="flex-row items-center justify-center gap-2">
+        <Text className="text-sm font-medium text-muted-foreground/50">Zaten hesabın var mı?</Text>
         <Link href="/(auth)/login" asChild>
-          <TouchableOpacity>
-            <Text className="text-sm font-medium text-primary">Giriş Yap</Text>
+          <TouchableOpacity activeOpacity={0.7}>
+            <Text className="text-sm font-bold text-primary">Giriş Yap</Text>
           </TouchableOpacity>
         </Link>
       </View>

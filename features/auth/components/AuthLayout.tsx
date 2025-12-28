@@ -3,11 +3,26 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { StatusBar } from 'expo-status-bar';
-import React, { ReactNode, useState } from 'react';
-import { Animated, Image, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import { ArrowLeftIcon, EnvelopeIcon, GlobeAltIcon } from 'react-native-heroicons/outline';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  Animated,
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  AcademicCapIcon,
+  ArrowLeftIcon,
+  CubeIcon,
+  EnvelopeIcon,
+} from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+const { width } = Dimensions.get('window');
 const google = require('@/assets/images/google.png');
 
 interface SocialLoginButtonProps {
@@ -21,24 +36,24 @@ interface SocialLoginButtonProps {
 const providerConfig = {
   google: {
     label: 'Google ile devam et',
-    backgroundColor: 'bg-white',
-    textColor: 'text-gray-900',
-    borderColor: 'border-gray-300',
-    icon: <Image source={google} className="h-4 w-4" />,
+    backgroundColor: 'bg-card',
+    textColor: 'text-foreground',
+    borderColor: 'border-border/40',
+    icon: <Image source={google} className="h-5 w-5" />,
   },
   facebook: {
     label: 'Facebook ile devam et',
-    backgroundColor: 'bg-primary',
+    backgroundColor: 'bg-[#1877F2]',
     textColor: 'text-white',
-    borderColor: 'border-primary-darker',
-    icon: <Icon as={GlobeAltIcon} size={20} color="#FFFFFF" />,
+    borderColor: 'border-[#1877F2]',
+    icon: <Icon as={CubeIcon} size={20} color="#FFFFFF" />,
   },
   email: {
     label: 'E-posta ile devam et',
-    backgroundColor: 'bg-gray-100',
-    textColor: 'text-gray-900',
-    borderColor: 'border-gray-300',
-    icon: <Icon as={EnvelopeIcon} size={20} />,
+    backgroundColor: 'bg-secondary/50',
+    textColor: 'text-foreground',
+    borderColor: 'border-transparent',
+    icon: <Icon as={EnvelopeIcon} size={20} className="text-primary" />,
   },
 };
 
@@ -55,15 +70,16 @@ function SocialLoginButton({
     <Button
       onPress={onPress}
       disabled={disabled || isLoading}
+      variant="ghost"
       className={cn(
+        'h-14 flex-row items-center justify-center rounded-2xl border px-4 shadow-sm active:scale-[0.98]',
         config.backgroundColor,
         config.borderColor,
-        'active:opacity-80',
         disabled && 'opacity-50',
         className
       )}>
-      {config.icon}
-      <Text className={cn('font-medium', config.textColor)}>
+      <View className="mr-3">{config.icon}</View>
+      <Text className={cn('text-base font-bold tracking-tight', config.textColor)}>
         {isLoading ? 'Bağlanıyor...' : config.label}
       </Text>
     </Button>
@@ -72,10 +88,12 @@ function SocialLoginButton({
 
 function SocialLoginDivider() {
   return (
-    <View className="flex-row items-center gap-4 py-4">
-      <View className="h-px flex-1 bg-border" />
-      <Text className="text-sm text-muted-foreground">veya</Text>
-      <View className="h-px flex-1 bg-border" />
+    <View className="flex-row items-center gap-4 py-6">
+      <View className="h-px flex-1 bg-border/40" />
+      <Text className="text-xs font-bold uppercase tracking-widest text-muted-foreground/30">
+        ya da
+      </Text>
+      <View className="h-px flex-1 bg-border/40" />
     </View>
   );
 }
@@ -103,125 +121,127 @@ export function AuthLayout({
   enableSocialLogin = false,
 }: AuthLayoutProps) {
   const [showEmailForm, setShowEmailForm] = useState(!enableSocialLogin);
-  const [fadeAnim] = useState(new Animated.Value(enableSocialLogin ? 0 : 1));
-  const [slideAnim] = useState(new Animated.Value(enableSocialLogin ? -20 : 0));
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
 
-  const handleEmailLogin = () => {
-    setShowEmailForm(true);
+  useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 800,
         useNativeDriver: true,
       }),
-      Animated.timing(slideAnim, {
+      Animated.spring(slideAnim, {
         toValue: 0,
-        duration: 300,
+        tension: 50,
+        friction: 7,
         useNativeDriver: true,
       }),
     ]).start();
-  };
+  }, []);
 
-  const handleBackToSocial = () => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: -20,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      setShowEmailForm(false);
-    });
-  };
+  const handleEmailLogin = () => setShowEmailForm(true);
+  const handleBackToSocial = () => setShowEmailForm(false);
+
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-background">
+    <View className="flex-1 bg-background">
       <StatusBar style="auto" />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1"
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 100}>
-        <ScrollView
+
+      <SafeAreaView className="flex-1">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1"
-          contentContainerStyle={{
-            flexGrow: 1,
-            paddingBottom: Platform.OS === 'ios' ? 20 : 40,
-          }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
-          <View className="flex-1 justify-center px-6 py-12">
-            <View className="mb-8 items-center">
-              <Text className="mb-2 text-center text-3xl font-bold text-foreground">{title}</Text>
-
-              {subtitle && (
-                <Text className="max-w-sm text-center text-base text-muted-foreground">
-                  {subtitle}
-                </Text>
-              )}
-            </View>
-
-            <View className={cn('mx-auto w-full max-w-sm', className)}>
-              {enableSocialLogin && !showEmailForm ? (
-                <View className="flex flex-col gap-3">
-                  {onGoogleLogin && (
-                    <SocialLoginButton
-                      provider="google"
-                      onPress={onGoogleLogin}
-                      disabled={isLoading}
-                      isLoading={isLoading}
-                    />
-                  )}
-
-                  {onFacebookLogin && (
-                    <SocialLoginButton
-                      provider="facebook"
-                      onPress={onFacebookLogin}
-                      disabled={isLoading}
-                      isLoading={isLoading}
-                    />
-                  )}
-
-                  <SocialLoginDivider />
-
-                  <SocialLoginButton
-                    provider="email"
-                    onPress={handleEmailLogin}
-                    disabled={isLoading}
-                  />
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          <ScrollView
+            className="flex-1"
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            <View className="flex-1 justify-center px-8 py-12">
+              <Animated.View
+                style={{
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                }}
+                className="mb-12 items-center">
+                <View className="mb-8 h-20 w-20 items-center justify-center rounded-[2rem] bg-primary shadow-xl shadow-primary/30">
+                  <AcademicCapIcon size={40} color="white" />
                 </View>
-              ) : (
-                <Animated.View
-                  style={
-                    enableSocialLogin
-                      ? {
-                          opacity: fadeAnim,
-                          transform: [{ translateY: slideAnim }],
-                        }
-                      : {}
-                  }>
-                  {enableSocialLogin && (
-                    <View className="mb-4">
-                      <Button variant={'outline'} onPress={handleBackToSocial}>
-                        <Icon as={ArrowLeftIcon} />
-                        <Text>Geri Dön</Text>
-                      </Button>
+                <Text className="mb-3 text-center text-4xl font-bold tracking-tighter text-foreground">
+                  {title}
+                </Text>
+
+                {subtitle && (
+                  <Text className="max-w-[300px] text-center text-lg font-medium leading-6 text-muted-foreground/60">
+                    {subtitle}
+                  </Text>
+                )}
+              </Animated.View>
+
+              <Animated.View
+                style={{
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                }}
+                className={cn('mx-auto w-full max-w-sm', className)}>
+                {enableSocialLogin && !showEmailForm ? (
+                  <View className="flex flex-col gap-4">
+                    {onGoogleLogin && (
+                      <SocialLoginButton
+                        provider="google"
+                        onPress={onGoogleLogin}
+                        disabled={isLoading}
+                        isLoading={isLoading}
+                      />
+                    )}
+
+                    {onFacebookLogin && (
+                      <SocialLoginButton
+                        provider="facebook"
+                        onPress={onFacebookLogin}
+                        disabled={isLoading}
+                        isLoading={isLoading}
+                      />
+                    )}
+
+                    <SocialLoginDivider />
+
+                    <SocialLoginButton
+                      provider="email"
+                      onPress={handleEmailLogin}
+                      disabled={isLoading}
+                    />
+                  </View>
+                ) : (
+                  <View>
+                    {enableSocialLogin && (
+                      <TouchableOpacity
+                        onPress={handleBackToSocial}
+                        className="mb-8 flex-row items-center">
+                        <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-secondary/50">
+                          <Icon as={ArrowLeftIcon} size={18} className="text-muted-foreground" />
+                        </View>
+                        <Text className="font-bold text-muted-foreground/60">Sosyal Giriş</Text>
+                      </TouchableOpacity>
+                    )}
+
+                    <View className="rounded-[2.5rem] border border-border/20 bg-card p-8 shadow-sm">
+                      {children}
                     </View>
-                  )}
+                  </View>
+                )}
+              </Animated.View>
 
-                  {children}
-                </Animated.View>
-              )}
+              <View className="mt-8 items-center">
+                <Text className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/20">
+                  MedAIst Studio tarafından geliştirilmiştir
+                </Text>
+              </View>
             </View>
-
-            <View className="mt-8" />
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -244,7 +264,7 @@ export function LoginLayout({
   return (
     <AuthLayout
       title="Hoş Geldiniz"
-      subtitle="Hesabınıza giriş yapın"
+      subtitle="Tıbbi bilginin akıllı asistanına erişmek için oturum açın."
       className={className}
       enableSocialLogin={true}
       onGoogleLogin={onGoogleLogin}
@@ -268,8 +288,8 @@ export function SignupLayout({
 }) {
   return (
     <AuthLayout
-      title="Hesap Oluşturun"
-      subtitle="Yeni bir hesap oluşturun ve başlayın"
+      title="Bize Katılın"
+      subtitle="Kendi sağlık yolculuğunuzu başlatmak için hemen hesap oluşturun."
       className={className}
       enableSocialLogin={true}
       onGoogleLogin={onGoogleLogin}
@@ -283,9 +303,8 @@ export function SignupLayout({
 export function ForgotPasswordLayout({ children, className }: AuthPageLayoutProps) {
   return (
     <AuthLayout
-      title="Şifremi Unuttum"
-      subtitle="E-posta adresinizi girin, size şifre sıfırlama bağlantısı gönderelim"
-      showLogo={false}
+      title="Şifre Kurtarma"
+      subtitle="Hesap güvenliğiniz için e-posta adresinizi girmeniz yeterli."
       className={className}
       enableSocialLogin={false}>
       {children}
@@ -297,7 +316,7 @@ export function AuthCard({ children, className }: AuthPageLayoutProps) {
   return (
     <View
       className={cn(
-        'w-full rounded-lg border border-border bg-card p-6 shadow-sm',
+        'w-full rounded-[2.5rem] border border-border/20 bg-card p-8 shadow-sm',
         'web:mx-auto web:max-w-md',
         className
       )}>

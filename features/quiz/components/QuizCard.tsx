@@ -1,9 +1,11 @@
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import React from 'react';
 import { View } from 'react-native';
-import { CalendarIcon, PlayIcon } from 'react-native-heroicons/outline';
+import { CalendarIcon, PlayIcon } from 'react-native-heroicons/solid';
 import { QuizListItem } from '../types';
 
 interface QuizCardProps {
@@ -15,27 +17,25 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStartQuiz }) => {
   return (
     <Card className="mb-4">
       <CardHeader>
-        <CardTitle>{quiz.title}</CardTitle>
-        <CardDescription>
-          <View className="flex-row items-center gap-1">
-            <CalendarIcon size={14} color="#6B7280" />
-            <Text className="text-xs text-muted-foreground">
+        <View className="mb-2 flex-row items-start justify-between">
+          <Badge variant="default" className="bg-primary/10">
+            <Icon as={CalendarIcon} size={12} className="mr-1 text-primary" />
+            <Text className="text-[10px] font-bold text-primary">
               {new Date(quiz.createdAt).toLocaleDateString('tr-TR', {
                 day: 'numeric',
-                month: 'long',
-                year: 'numeric',
+                month: 'short',
               })}
             </Text>
-          </View>
-        </CardDescription>
+          </Badge>
+        </View>
+        <CardTitle className="mb-1 text-xl">{quiz.title}</CardTitle>
+        <CardDescription>Tıbbi gelişiminiz için hazırlanmış özel bir sınav.</CardDescription>
       </CardHeader>
 
       <CardFooter>
-        <Button onPress={() => onStartQuiz(quiz.quizId)} className="w-full">
-          <View className="flex-row items-center gap-2">
-            <PlayIcon size={16} color="white" />
-            <Text className="font-medium text-primary-foreground">Sınavı Başlat</Text>
-          </View>
+        <Button onPress={() => onStartQuiz(quiz.quizId)} className="w-full" size="default">
+          <Icon as={PlayIcon} size={18} className="text-primary-foreground" />
+          <Text className="font-bold text-primary-foreground">Sınavı Başlat</Text>
         </Button>
       </CardFooter>
     </Card>

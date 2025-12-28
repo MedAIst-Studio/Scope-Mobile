@@ -6,7 +6,7 @@ import { UploadFile } from '@/features/files/components/UploadFile';
 import { useDeleteFile, useFiles } from '@/features/files/hooks';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FilesScreen() {
@@ -35,37 +35,32 @@ export default function FilesScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background px-4" edges={['top', 'left', 'right']}>
-      <View className="mb-4 pt-2">
-        <Text className="mb-1 text-2xl font-bold text-foreground">Dosyalarım</Text>
-        <Text className="text-sm text-muted-foreground">
-          Dokümanlarınızı yönetin ve analiz edin
-        </Text>
-      </View>
+      <ScrollView>
+        <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
 
-      <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
-
-      <View className="mb-4">
-        <UploadFile />
-      </View>
-
-      {isLoading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" />
+        <View className="mb-4">
+          <UploadFile />
         </View>
-      ) : error ? (
-        <View className="flex-1 items-center justify-center">
-          <Text className="mb-4 text-center text-red-500">Dosyalar yüklenirken hata oluştu.</Text>
-          <Button onPress={() => refetch()} variant="outline">
-            <Text>Tekrar Dene</Text>
-          </Button>
-        </View>
-      ) : (
-        <FilesList
-          files={filteredFiles}
-          onChatStart={handleChatStart}
-          onDeleteFile={handleDeleteFile}
-        />
-      )}
+
+        {isLoading ? (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator size="large" />
+          </View>
+        ) : error ? (
+          <View className="flex-1 items-center justify-center">
+            <Text className="mb-4 text-center text-red-500">Dosyalar yüklenirken hata oluştu.</Text>
+            <Button onPress={() => refetch()} variant="outline">
+              <Text>Tekrar Dene</Text>
+            </Button>
+          </View>
+        ) : (
+          <FilesList
+            files={filteredFiles}
+            onChatStart={handleChatStart}
+            onDeleteFile={handleDeleteFile}
+          />
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }

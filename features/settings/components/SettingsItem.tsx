@@ -3,7 +3,7 @@ import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { ChevronRightIcon } from 'react-native-heroicons/outline';
+import { ChevronRightIcon } from 'react-native-heroicons/solid';
 import { SettingsItemProps } from '../types';
 
 export const SettingsItem: React.FC<SettingsItemProps> = ({
@@ -22,12 +22,16 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
       case 'select':
         return (
           <View className="flex-row items-center">
-            <Text className="mr-2 text-sm text-muted-foreground">{value}</Text>
-            {showArrow && <Icon as={ChevronRightIcon} size={20} color="#9CA3AF" />}
+            <Text className="mr-2 text-sm font-bold text-primary">{value}</Text>
+            {showArrow && (
+              <Icon as={ChevronRightIcon} size={18} className="text-muted-foreground/30" />
+            )}
           </View>
         );
       default:
-        return showArrow ? <Icon as={ChevronRightIcon} size={20} color="#9CA3AF" /> : null;
+        return showArrow ? (
+          <Icon as={ChevronRightIcon} size={18} className="text-muted-foreground/30" />
+        ) : null;
     }
   };
 
@@ -36,15 +40,17 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
   return (
     <Component
       onPress={type !== 'switch' ? onPress : undefined}
-      className="flex-row items-center px-1 py-4">
-      <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-blue-500/20">
-        <SettingIcon size={20} color="#3B82F6" />
+      className="flex-row items-center rounded-2xl px-2 py-3 transition-colors active:bg-secondary/40">
+      <View className="mr-4 h-11 w-11 items-center justify-center rounded-xl bg-secondary/50">
+        <Icon as={SettingIcon} size={22} className="text-muted-foreground/60" />
       </View>
       <View className="flex-1">
-        <Text className="text-lg font-medium text-foreground">{title}</Text>
-        {subtitle && <Text className="mt-0.5 text-sm text-muted-foreground">{subtitle}</Text>}
+        <Text className="text-[17px] font-bold tracking-tight text-foreground">{title}</Text>
+        {subtitle && (
+          <Text className="mt-0.5 text-xs font-medium text-muted-foreground/50">{subtitle}</Text>
+        )}
       </View>
-      {renderValue()}
+      <View className="ml-2">{renderValue()}</View>
     </Component>
   );
 };

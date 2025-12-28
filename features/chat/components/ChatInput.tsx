@@ -3,7 +3,7 @@ import { Icon } from '@/components/ui/icon';
 import { Textarea } from '@/components/ui/textarea';
 import React from 'react';
 import { View } from 'react-native';
-import { PaperAirplaneIcon } from 'react-native-heroicons/outline';
+import { PaperAirplaneIcon } from 'react-native-heroicons/solid';
 
 interface ChatInputProps {
   message: string;
@@ -22,28 +22,30 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   onSend,
   onContentSizeChange,
 }) => (
-  <View className="bg-background px-4 pb-6">
-    <View className="flex-row items-end gap-3 rounded-3xl border-2 border-b-4 border-border bg-secondary px-3 py-2">
-      <Textarea
-        value={message}
-        onChangeText={onChangeText}
-        placeholder="Sorunuzu yazın..."
-        className="min-h-[44px] flex-1 border-0 bg-transparent text-base leading-5 text-foreground dark:bg-transparent"
-        style={{
-          maxHeight: 120,
-        }}
-        onContentSizeChange={onContentSizeChange}
-      />
+  <View className="bg-background px-4 pb-8 pt-2">
+    <View className="flex-row items-end gap-2">
+      <View className="flex-1">
+        <Textarea
+          value={message}
+          onChangeText={onChangeText}
+          placeholder="Sorunuzu buraya yazın..."
+          className="min-h-[56px] border-border/40 bg-card shadow-md"
+          style={{
+            maxHeight: 140,
+          }}
+          onContentSizeChange={onContentSizeChange}
+        />
+      </View>
 
       <Button
-        variant={'ghost'}
         onPress={onSend}
-        className="h-10 w-10 items-center justify-center rounded-full p-0 active:bg-transparent"
-        disabled={!message.trim() || isSending}>
+        className={`h-14 w-14 rounded-2xl ${message.trim() ? 'bg-primary' : 'bg-muted opacity-50'}`}
+        disabled={!message.trim() || isSending}
+        size="icon">
         <Icon
           as={PaperAirplaneIcon}
-          size={22}
-          className={message.trim() ? 'text-primary' : 'text-muted-foreground'}
+          size={24}
+          className={message.trim() ? 'text-primary-foreground' : 'text-muted-foreground'}
         />
       </Button>
     </View>
