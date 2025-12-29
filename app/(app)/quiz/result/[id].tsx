@@ -2,7 +2,8 @@ import { QuizResult } from '@/features/quiz/components/QuizResult';
 import { useSubmissionDetails } from '@/features/quiz/hooks/useQueries';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function QuizResultScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -30,9 +31,9 @@ export default function QuizResultScreen() {
     <SafeAreaView className="flex-1 bg-background">
       <Stack.Screen
         options={{
-          headerTitle: 'Quiz Sonucu',
-          headerBackTitle: 'Quizler',
-          headerLeft: () => null, // Prevent going back to quiz solving screen
+          headerTitle: 'Sınav Sonucu',
+          headerBackTitle: 'Sınavlar',
+          headerLeft: () => null,
           gestureEnabled: false,
         }}
       />

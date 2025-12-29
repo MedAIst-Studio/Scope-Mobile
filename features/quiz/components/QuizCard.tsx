@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import React from 'react';
@@ -28,8 +28,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStartQuiz }) => {
             </Text>
           </Badge>
         </View>
-        <CardTitle className="mb-1 text-xl">{quiz.title}</CardTitle>
-        <CardDescription>Tıbbi gelişiminiz için hazırlanmış özel bir sınav.</CardDescription>
+        <CardTitle className="text-xl">{quiz.title}</CardTitle>
       </CardHeader>
 
       <CardFooter>
