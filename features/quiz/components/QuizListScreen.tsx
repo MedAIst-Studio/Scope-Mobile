@@ -13,8 +13,10 @@ import { QuizList } from './QuizList';
 
 export const QuizListScreen: React.FC = () => {
   const router = useRouter();
-  const { data: quizzes = [], isLoading, error, refetch } = useQuizzes();
+  const { data: quizzesData, isLoading, error, refetch } = useQuizzes();
   const [searchQuery, setSearchQuery] = useState('');
+
+  const quizzes = quizzesData || [];
 
   const filteredQuizzes = useMemo(() => {
     if (!searchQuery) return quizzes;

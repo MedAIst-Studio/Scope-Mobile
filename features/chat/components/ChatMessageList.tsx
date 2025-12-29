@@ -39,18 +39,16 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
 
     {isTyping && (
       <View className="mb-6 flex-row justify-start pl-1">
-        <View className="rounded-[1.5rem] rounded-tl-[4px] border border-border/40 bg-card px-5 py-3 shadow-sm">
-          <View className="flex-row items-center gap-2">
-            <View className="h-2 w-2 animate-bounce rounded-full bg-primary/40" />
-            <View
-              className="h-2 w-2 animate-bounce rounded-full bg-primary/40"
-              style={{ animationDelay: '0.2s' }}
-            />
-            <View
-              className="h-2 w-2 animate-bounce rounded-full bg-primary/40"
-              style={{ animationDelay: '0.4s' }}
-            />
-          </View>
+        <View className="flex-row items-center gap-2 py-3">
+          <View className="h-2 w-2 animate-bounce rounded-full bg-primary/40" />
+          <View
+            className="h-2 w-2 animate-bounce rounded-full bg-primary/40"
+            style={{ animationDelay: '0.2s' }}
+          />
+          <View
+            className="h-2 w-2 animate-bounce rounded-full bg-primary/40"
+            style={{ animationDelay: '0.4s' }}
+          />
         </View>
       </View>
     )}

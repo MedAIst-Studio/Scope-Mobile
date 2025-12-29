@@ -1,7 +1,8 @@
 import { Icon } from '@/components/ui/icon';
+import { cn } from '@/lib/utils';
 import { useNavigation } from 'expo-router';
 import React, { useLayoutEffect } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, TouchableOpacity, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native';
 import { EllipsisHorizontalIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useChat } from '../hooks/useChat';
@@ -67,12 +68,33 @@ export const ChatScreen: React.FC = () => {
         className="flex-1"
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 90}>
         {isLoading ? (
-          <View className="flex-1 items-center justify-center">
-            <Icon
-              as={EllipsisHorizontalIcon}
-              size={24}
-              className="animate-bounce text-muted-foreground"
-            />
+          <View className="flex-1 px-4 py-6">
+            <View className="flex-1 animate-pulse space-y-6">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <View
+                  key={i}
+                  className={cn(
+                    'max-w-[80%] rounded-2xl p-4',
+                    i % 2 === 0 ? 'self-end bg-primary/10' : 'self-start bg-muted/20'
+                  )}>
+                  <View
+                    className="mb-2 h-4 rounded-full bg-foreground/10"
+                    style={{ width: i % 2 === 0 ? 120 : 180 }}
+                  />
+                  <View
+                    className="h-3 rounded-full bg-foreground/5"
+                    style={{ width: i % 2 === 0 ? 80 : 140 }}
+                  />
+                </View>
+              ))}
+            </View>
+            <View className="absolute inset-0 items-center justify-center">
+              <View className="rounded-full border border-border/20 bg-background/80 px-4 py-2 shadow-sm">
+                <Text className="text-sm font-medium text-muted-foreground">
+                  Sohbet yükleniyor...
+                </Text>
+              </View>
+            </View>
           </View>
         ) : (
           <ChatMessageList

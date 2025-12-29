@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { MockPhotoService } from '@/services/MockPhotoService';
+import { useUploadFile } from '@/features/files/hooks';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
@@ -18,6 +18,7 @@ export default function CameraScreen() {
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
+  const { mutateAsync: uploadFile } = useUploadFile();
 
   if (!permission) {
     return <View />;
@@ -68,16 +69,31 @@ export default function CameraScreen() {
   const analyzeImage = async (uri: string) => {
     setIsAnalyzing(true);
     try {
-      const result = await MockPhotoService.analyzePhoto(uri);
-      router.push({
-        pathname: '/(tabs)',
-        params: {
-          initialMessage: `Fotoğraftaki soruyu analiz et: ${result.extractedText}`,
-          imageUri: uri,
+      const result = await uploadFile({
+        file_title: 'captured_question.jpg',
+        file_data: {
+          uri: uri,
+          name: 'captured_question.jpg',
+          type: 'image/jpeg',
         },
       });
+
+      const uploadedUrl = result.url;
+
+      if (!uploadedUrl) {
+        throw new Error('Upload failed - No URL returned');
+      }
+
+      router.push({
+        pathname: '/(tabs)/chat',
+        params: {
+          initialMessage: 'Bu soruyu açıklar mısın?',
+          imageUri: uploadedUrl,
+        },
+      });
+      setCapturedImage(null);
     } catch (error) {
-      console.error('Analysis failed', error);
+      console.error('Upload failed', error);
       setCapturedImage(null);
     } finally {
       setIsAnalyzing(false);

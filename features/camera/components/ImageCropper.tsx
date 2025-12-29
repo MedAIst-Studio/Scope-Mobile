@@ -1,5 +1,6 @@
 import { Text } from '@/components/ui/text';
-import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
+// @ts-ignore: manipulateAsync deprecated warning
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import React, { useState } from 'react';
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -64,38 +65,76 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
   const handleCrop = async () => {
     if (!imageSize) return;
 
-    // Calculate crop parameters based on transforms
-    // Note: This is a simplified calculation. For high-precision cropping,
-    // we need to inverse project the crop rectangle onto the original image coordinates.
-    // For this MVP, we will rely on the backend/AI to handle slight offsets or
-    // just send the view screenshot if we were using view-shot,
-    // but here we want to use ImageManipulator for performance.
-
-    // To implement "Move and Scale" correctly with ImageManipulator is complex math.
-    // Strategy:
-    // 1. Calculate the visible area relative to the image.
-    // 2. Perform crop.
-
-    // Simplification for MVP: Just pass the original image if we can't easily calculate.
-    // BUT user expects cropping.
-
-    // Robust Alternative:
-    // Since calculating exact crop coordinates from pan/zoom is math-heavy,
-    // let's try to center crop roughly or use a library.
-    // However, I promised "Move and Scale".
-
     try {
-      // Just for MVP demonstration of the flow, let's pretend we cropped
-      // effectively by resizing/manipulating.
-      // In a real production app, we would calculate:
-      // originX = (contentOffset.x / zoomScale) * (originalImageWidth / viewWidth)
+      // Calculate Display Dimensions
+      const displayWidth = SCREEN_WIDTH;
+      const displayHeight = (imageSize.height / imageSize.width) * displayWidth;
 
-      // Let's perform a dummy crop to center of image just to show the API works
-      const result = await ImageManipulator.manipulateAsync(
+      // Current Transforms
+      const s = scale.value;
+      const tx = translateX.value;
+      const ty = translateY.value;
+
+      // Initial Center in Display Space
+      const midX = displayWidth / 2;
+      const midY = displayHeight / 2;
+
+      // Map Crop Frame (Screen Standard) to Local Image Space (Inverse Transform)
+      // The fixed crop frame is centered on screen.
+      // Screen Center matches Image Center (midX, midY) BEFORE transform.
+      // With transform: ScreenPoint = (LocalPoint - midPoint) * s + midPoint + translation
+      // Inverse: LocalPoint = (ScreenPoint - midPoint - translation) / s + midPoint
+
+      // Top-Left of Crop Frame in Screen Coordinates (Relative to Image View if it were 0,0 aligned)
+      // Actually simpler: The crop frame top-left is at (ScreenW - CropCheck)/2.
+      // Since Image View width is ScreenW, this is (displayWidth - CROP_SIZE) / 2.
+      const cropScreenLeft = (displayWidth - CROP_SIZE) / 2;
+
+      // Vertical requires offset adjustment if image height != screen height
+      // The crop frame is vertically centered on SCREEN.
+      // The Image View is vertically centered in the container?
+      // Our Render:
+      // <View style={{justifyContent: 'center'...}}> <Animated.View .../> </View>
+      // So Image View is centered.
+      // Thus DisplayHeight/2 aligns with ScreenHeight/2.
+      // So crop frame vertical center aligns with DisplayHeight centricity.
+      // Top-Left relative to Display center is just -CROP/2.
+      // So relative to Image Top-Left (0,0):
+      const cropScreenTop = midY - CROP_SIZE / 2;
+
+      // Apply Inverse Transform
+      // localX = (screenX - midX - tx) / s + midX
+      const localX = (cropScreenLeft - midX - tx) / s + midX;
+      const localY = (cropScreenTop - midY - ty) / s + midY;
+
+      const localW = CROP_SIZE / s;
+      const localH = CROP_SIZE / s;
+
+      // Map to Original Image Pixels
+      const ratio = imageSize.width / displayWidth;
+
+      const originX = Math.max(0, localX * ratio);
+      const originY = Math.max(0, localY * ratio);
+      const cropWidth = Math.min(localW * ratio, imageSize.width - originX);
+      const cropHeight = Math.min(localH * ratio, imageSize.height - originY);
+
+      if (cropWidth <= 0 || cropHeight <= 0) {
+        throw new Error('Invalid crop area');
+      }
+
+      // @ts-ignore: manipulateAsync might be marked deprecated but is required for current sdk
+      const result = await manipulateAsync(
         imageUri,
         [
-          { resize: { width: 800 } }, // Resize for faster upload
-          // { crop: ... } // We would add crop here
+          {
+            crop: {
+              originX,
+              originY,
+              width: cropWidth,
+              height: cropHeight,
+            },
+          },
+          { resize: { width: 1080 } }, // Resize after crop for upload optimization
         ],
         { compress: 0.8, format: SaveFormat.JPEG }
       );
@@ -168,11 +207,19 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
         {/* Movable Image */}
         <GestureDetector gesture={composedGesture}>
           <Animated.View
-            style={[{ width: SCREEN_WIDTH, height: SCREEN_WIDTH * 1.3 }, animatedStyle]}>
+            style={[
+              {
+                width: SCREEN_WIDTH,
+                height: imageSize
+                  ? (imageSize.height / imageSize.width) * SCREEN_WIDTH
+                  : SCREEN_WIDTH,
+              },
+              animatedStyle,
+            ]}>
             <Image
               source={{ uri: imageUri }}
               style={{ flex: 1, width: undefined, height: undefined }}
-              resizeMode="contain"
+              resizeMode="cover"
             />
           </Animated.View>
         </GestureDetector>

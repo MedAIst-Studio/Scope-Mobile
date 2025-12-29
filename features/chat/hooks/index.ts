@@ -65,12 +65,14 @@ export const useSendMessage = () => {
       message,
       file_id,
       chatId,
+      image_url,
     }: {
       message: string;
-      file_id: string;
+      file_id?: string | null;
       chatId?: string;
+      image_url?: string;
     }) => {
-      const { data, error } = await chatAPI.sendMessage(message, file_id, chatId);
+      const { data, error } = await chatAPI.sendMessage(message, file_id, chatId, image_url);
 
       if (error) {
         throw new Error(error.message || 'Mesaj gönderilemedi');
@@ -85,12 +87,23 @@ export const useSendMessage = () => {
 
       const previousMessages = queryClient.getQueryData(queryKey);
 
+      const optimisticAttachments = variables.image_url
+        ? [
+            {
+              type: 'image' as const,
+              name: 'Image',
+              uri: variables.image_url,
+            },
+          ]
+        : undefined;
+
       queryClient.setQueryData(queryKey, (old: any) => [
         ...(old || []),
         {
           content: variables.message,
           is_user: true,
           timestamp: new Date().toISOString(),
+          attachments: optimisticAttachments,
         },
       ]);
 
@@ -107,6 +120,16 @@ export const useSendMessage = () => {
             (m: any) => m.is_user && m.content === variables.message
           );
 
+          const optimisticAttachments = variables.image_url
+            ? [
+                {
+                  type: 'image' as const,
+                  name: 'Image',
+                  uri: variables.image_url,
+                },
+              ]
+            : undefined;
+
           const updatedMessages = hasUserMessage
             ? messages
             : [
@@ -115,6 +138,7 @@ export const useSendMessage = () => {
                   content: variables.message,
                   is_user: true,
                   timestamp: new Date().toISOString(),
+                  attachments: optimisticAttachments,
                 },
               ];
 
@@ -129,11 +153,14 @@ export const useSendMessage = () => {
         });
       }
 
-      if (!variables.chatId) {
+      if (!variables.chatId && data?.chat_id) {
         queryClient.invalidateQueries({
           queryKey: chatKeys.lists(),
         });
-        router.push(`/chat/${data?.chat_id}?file_id=${variables.file_id}`);
+        router.push({
+          pathname: '/(tabs)/chat',
+          params: { id: data.chat_id, file_id: variables.file_id },
+        });
       }
     },
     onError: (error: Error, variables, context) => {
