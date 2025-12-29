@@ -1,11 +1,30 @@
+import { ActionMenu } from '@/components/shared/ActionMenu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-import React, { useLayoutEffect } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native';
-import { EllipsisHorizontalIcon } from 'react-native-heroicons/outline';
+import React, { useLayoutEffect, useState } from 'react';
+import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native';
+import {
+  DocumentPlusIcon,
+  DocumentTextIcon,
+  EllipsisHorizontalIcon,
+  PencilSquareIcon,
+  PhotoIcon,
+  TrashIcon,
+  XMarkIcon,
+} from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDeleteChat, useUpdateChat } from '../hooks';
+import { useChats, useDeleteChat, useUpdateChat } from '../hooks';
 import { useChat } from '../hooks/useChat';
 
 import { ChatInput } from './ChatInput';
@@ -19,7 +38,10 @@ export const ChatScreen: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const chatId = Array.isArray(id) ? id[0] : id;
 
-  const [renameModalVisible, setRenameModalVisible] = React.useState(false);
+  const [renameModalVisible, setRenameModalVisible] = useState(false);
+  const [isHeaderMenuVisible, setIsHeaderMenuVisible] = useState(false);
+  const [isAttachMenuVisible, setIsAttachMenuVisible] = useState(false);
+  const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
 
   const {
     message,
@@ -37,76 +59,68 @@ export const ChatScreen: React.FC = () => {
     handleContentSizeChange,
     pickImage,
     handleFileSelect,
+    activeFile,
+    setActiveFile,
   } = useChat();
+
+  const { data: chats } = useChats();
+  const currentChat = (chats as any[])?.find((c) => c.id === chatId);
 
   const { mutate: deleteChat } = useDeleteChat();
   const { mutate: updateChat } = useUpdateChat();
 
   const handleDelete = () => {
     if (!chatId) return;
-
-    Alert.alert(
-      'Sohbeti Sil',
-      'Bu sohbeti silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
-      [
-        { text: 'Vazgeç', style: 'cancel' },
-        {
-          text: 'Sil',
-          style: 'destructive',
-          onPress: () => {
-            deleteChat(chatId, {
-              onSuccess: () => router.replace('/(tabs)/chat'),
-            });
-          },
-        },
-      ]
-    );
+    deleteChat(chatId, {
+      onSuccess: () => router.replace('/(tabs)/chat'),
+    });
   };
 
   useLayoutEffect(() => {
+    const title = chatId
+      ? currentChat?.title || 'YKS Asistanı'
+      : activeFile?.title || 'Yeni Sohbet';
+
     navigation.setOptions({
-      headerTitle: 'YKS Asistanı',
+      headerTitle: title,
       headerRight: () => (
         <View className="flex-row gap-2 pr-2">
-          <TouchableOpacity
-            className="p-2"
-            onPress={() => {
-              Alert.alert('Sohbet Ayarları', 'Lütfen bir işlem seçin', [
-                {
-                  text: 'Yeniden Adlandır',
-                  onPress: () => setRenameModalVisible(true),
-                },
-                {
-                  text: 'Sohbeti Sil',
-                  style: 'destructive',
-                  onPress: handleDelete,
-                },
-                { text: 'Vazgeç', style: 'cancel' },
-              ]);
-            }}>
-            <Icon as={EllipsisHorizontalIcon} size={24} className="text-foreground" />
-          </TouchableOpacity>
+          {chatId && (
+            <TouchableOpacity className="p-2" onPress={() => setIsHeaderMenuVisible(true)}>
+              <Icon as={EllipsisHorizontalIcon} size={24} className="text-foreground" />
+            </TouchableOpacity>
+          )}
         </View>
       ),
     });
-  }, [navigation, chatId]);
+  }, [navigation, chatId, currentChat, activeFile]);
 
-  const handleAttachAction = () => {
-    Alert.alert('Eklenti Ekle', 'Lütfen eklemek istediğiniz dosya türünü seçin', [
-      {
-        text: 'Fotoğraf Kitaplığı',
-        onPress: pickImage,
-      },
-      {
-        text: 'Dosyalarım',
-        onPress: () => setIsFileSelectorVisible(true),
-      },
-      {
-        text: 'Vazgeç',
-        style: 'cancel',
-      },
-    ]);
-  };
+  const headerActions = [
+    {
+      label: 'Yeniden Adlandır',
+      icon: PencilSquareIcon,
+      onPress: () => setRenameModalVisible(true),
+    },
+    {
+      label: 'Sohbeti Sil',
+      icon: TrashIcon,
+      variant: 'destructive' as const,
+      onPress: () => setIsDeleteAlertVisible(true),
+    },
+  ];
+
+  const attachActions = [
+    {
+      label: 'Fotoğraf Kitaplığı',
+      icon: PhotoIcon,
+      onPress: pickImage,
+    },
+    {
+      label: 'Dosyalarım',
+      icon: DocumentPlusIcon,
+      onPress: () => setIsFileSelectorVisible(true),
+    },
+  ];
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['left', 'right', 'bottom']}>
@@ -114,6 +128,27 @@ export const ChatScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 90}>
+        {activeFile && (
+          <View className="mx-4 mt-2 flex-row items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
+            <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <Icon as={DocumentTextIcon} size={20} className="text-primary" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-sm font-bold text-foreground" numberOfLines={1}>
+                {activeFile.title}
+              </Text>
+              <Text className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">
+                Aktif Döküman
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setActiveFile(null)}
+              className="h-8 w-8 items-center justify-center rounded-lg bg-background/50">
+              <XMarkIcon size={18} color="#94a3b8" />
+            </TouchableOpacity>
+          </View>
+        )}
+
         {isLoading ? (
           <View className="flex-1 px-4 py-6">
             <View className="flex-1 animate-pulse space-y-6">
@@ -160,9 +195,42 @@ export const ChatScreen: React.FC = () => {
           onChangeText={setMessage}
           onSend={handleSendMessage}
           onContentSizeChange={handleContentSizeChange}
-          onAttachPress={handleAttachAction}
+          onAttachPress={() => setIsAttachMenuVisible(true)}
           onRemoveAttachment={removeAttachment}
         />
+
+        <ActionMenu
+          isVisible={isHeaderMenuVisible}
+          onClose={() => setIsHeaderMenuVisible(false)}
+          title="Sohbet Ayarları"
+          actions={headerActions}
+        />
+
+        <ActionMenu
+          isVisible={isAttachMenuVisible}
+          onClose={() => setIsAttachMenuVisible(false)}
+          title="Dosya Ekle"
+          actions={attachActions}
+        />
+
+        <AlertDialog open={isDeleteAlertVisible} onOpenChange={setIsDeleteAlertVisible}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Sohbeti Sil</AlertDialogTitle>
+              <AlertDialogDescription>
+                Bu sohbeti silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Vazgeç</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive hover:bg-destructive/90"
+                onPress={handleDelete}>
+                <Text className="text-destructive-foreground">Sil</Text>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <FileSelector
           isVisible={isFileSelectorVisible}

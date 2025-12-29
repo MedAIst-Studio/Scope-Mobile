@@ -16,21 +16,26 @@ export interface Attachment {
   type: 'image' | 'file';
   name: string;
   uri: string;
-  id?: string;
 }
 
 export const useChat = () => {
-  const { id, file_id, initialMessage, imageUri } = useLocalSearchParams<{
+  const { id, file_id, initialMessage, imageUri, fileName } = useLocalSearchParams<{
     id: string;
     file_id: string;
     initialMessage: string;
     imageUri: string;
+    fileName: string;
   }>();
 
   const chatId = Array.isArray(id) ? id[0] : id;
-  const fileId = Array.isArray(file_id) ? file_id[0] : file_id;
+  const initialFileId = Array.isArray(file_id) ? file_id[0] : file_id;
+  const initialFileName = Array.isArray(fileName) ? fileName[0] : fileName;
   const initialMsg = Array.isArray(initialMessage) ? initialMessage[0] : initialMessage;
   const initialImg = Array.isArray(imageUri) ? imageUri[0] : imageUri;
+
+  const [activeFile, setActiveFile] = useState<{ id: string; title: string } | null>(
+    initialFileId ? { id: initialFileId, title: initialFileName || 'Dosya' } : null
+  );
 
   const [message, setMessage] = useState(initialMsg || '');
   const resolveUri = (uri: string) => {
@@ -55,8 +60,14 @@ export const useChat = () => {
       : []
   );
 
+  const prevParams = useRef({ initialImg, initialMsg, initialFileId });
+
   useEffect(() => {
-    if (initialImg) {
+    // Only synchronize from URL parameters if they have actually changed
+    // or if we are initializing. This prevents manual state changes (like picking a different file)
+    // from being overwritten by the static URL parameters.
+
+    if (initialImg && initialImg !== prevParams.current.initialImg) {
       setAttachments([
         {
           type: 'image',
@@ -64,11 +75,19 @@ export const useChat = () => {
           uri: resolveUri(initialImg),
         },
       ]);
+      prevParams.current.initialImg = initialImg;
     }
-    if (initialMsg) {
+
+    if (initialMsg && initialMsg !== prevParams.current.initialMsg) {
       setMessage(initialMsg);
+      prevParams.current.initialMsg = initialMsg;
     }
-  }, [initialImg, initialMsg]);
+
+    if (initialFileId && (initialFileId !== prevParams.current.initialFileId || !activeFile)) {
+      setActiveFile({ id: initialFileId, title: initialFileName || 'Dosya' });
+      prevParams.current.initialFileId = initialFileId;
+    }
+  }, [initialImg, initialMsg, initialFileId, initialFileName]);
   const [isFileSelectorVisible, setIsFileSelectorVisible] = useState(false);
   const [inputHeight, setInputHeight] = useState(40);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -116,7 +135,7 @@ export const useChat = () => {
     sendMessage(
       {
         message: message.trim(),
-        file_id: fileId,
+        file_id: activeFile?.id,
         chatId: chatId,
         image_url: imageUrl,
       },
@@ -151,21 +170,13 @@ export const useChat = () => {
         name: result.assets[0].fileName || `img_${Date.now()}.jpg`,
         uri: result.assets[0].uri,
       };
-      // For now, only allow one attachment if it's an image, or handle multiple
-      // The requirement suggests "sending 'the' image url", implying singular.
-      // We'll append for UI but logic uses 'find'.
       setAttachments((prev) => [...prev, newAttachment]);
     }
   };
 
   const handleFileSelect = (file: any) => {
-    const newAttachment: Attachment = {
-      type: 'file',
-      name: file.title,
-      uri: file.url || '', // Placeholder if URL isn't there
-      id: file.id,
-    };
-    setAttachments((prev) => [...prev, newAttachment]);
+    console.log('[useChat] handleFileSelect called with:', file);
+    setActiveFile({ id: file.id, title: file.title });
     setIsFileSelectorVisible(false);
   };
 
@@ -191,6 +202,8 @@ export const useChat = () => {
     isSending: isSending || isUploading,
     inputHeight,
     scrollViewRef,
+    activeFile,
+    setActiveFile,
     handleSendMessage,
     handleContentSizeChange,
     pickImage,

@@ -18,11 +18,14 @@ export default function FilesScreen() {
   const filteredFiles =
     files?.filter((f) => f.title.toLowerCase().includes(searchQuery.toLowerCase())) || [];
 
-  const handleChatStart = (fileId: string) => {
+  const handleChatStart = (file: { id: string; title: string }) => {
     // Navigate to chat with context of this file
     router.push({
       pathname: '/(tabs)/chat',
-      params: { fileId },
+      params: {
+        file_id: file.id,
+        fileName: file.title,
+      },
     });
   };
 
@@ -58,7 +61,10 @@ export default function FilesScreen() {
         ) : (
           <FilesList
             files={filteredFiles}
-            onChatStart={handleChatStart}
+            onChatStart={(id) => {
+              const file = files?.find((f) => f.id === id);
+              if (file) handleChatStart(file);
+            }}
             onDeleteFile={handleDeleteFile}
           />
         )}

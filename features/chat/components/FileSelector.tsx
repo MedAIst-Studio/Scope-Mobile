@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useFiles } from '@/features/files/hooks';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, Modal, TouchableOpacity, View } from 'react-native';
 import { DocumentIcon, XMarkIcon } from 'react-native-heroicons/solid';
 
@@ -14,6 +14,14 @@ interface FileSelectorProps {
 
 export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, onSelect }) => {
   const { data: files = [], isLoading } = useFiles();
+
+  useEffect(() => {
+    console.log('Number of files:', files.length);
+  }, [files]);
+
+  const handleSelect = (item: any) => {
+    onSelect(item);
+  };
 
   return (
     <Modal visible={isVisible} animationType="slide" transparent={true}>
@@ -43,8 +51,11 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, 
               keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => onSelect(item)} className="mb-3">
-                  <Card className="flex-row items-center border-border/40 p-4 active:scale-[0.98]">
+                <TouchableOpacity
+                  onPress={() => handleSelect(item)}
+                  className="mb-3"
+                  activeOpacity={0.7}>
+                  <Card className="flex-row items-center border-border/40 p-4">
                     <View className="mr-4 h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
                       <Icon as={DocumentIcon} size={24} className="text-primary" />
                     </View>
