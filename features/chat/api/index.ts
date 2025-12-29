@@ -14,6 +14,12 @@ export const chatAPI = {
     return { data, error };
   },
 
+  updateChat: async (chatId: string, title: string) => {
+    const { data, error } = await apiClient.patch(`/chats/${chatId}`, { title });
+
+    return { data, error };
+  },
+
   getChatMessages: async (chatId: string) => {
     const { data, error } = await apiClient.get(`/chats/${chatId}`, {}, messagesResponseSchema);
 

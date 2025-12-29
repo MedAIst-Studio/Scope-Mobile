@@ -234,7 +234,7 @@ export function AuthLayout({
 
               <View className="mt-8 items-center">
                 <Text className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/20">
-                  MedAIst Studio tarafından geliştirilmiştir
+                  YksAl Studio tarafından geliştirilmiştir
                 </Text>
               </View>
             </View>
@@ -264,7 +264,7 @@ export function LoginLayout({
   return (
     <AuthLayout
       title="Hoş Geldiniz"
-      subtitle="Tıbbi bilginin akıllı asistanına erişmek için oturum açın."
+      subtitle="YKS hazırlık asistanına erişmek için oturum açın."
       className={className}
       enableSocialLogin={true}
       onGoogleLogin={onGoogleLogin}
@@ -289,7 +289,7 @@ export function SignupLayout({
   return (
     <AuthLayout
       title="Bize Katılın"
-      subtitle="Kendi sağlık yolculuğunuzu başlatmak için hemen hesap oluşturun."
+      subtitle="Kendi başarı yolculuğunuzu başlatmak için hemen hesap oluşturun."
       className={className}
       enableSocialLogin={true}
       onGoogleLogin={onGoogleLogin}

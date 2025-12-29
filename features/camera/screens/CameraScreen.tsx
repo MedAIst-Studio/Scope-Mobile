@@ -121,7 +121,7 @@ export default function CameraScreen() {
           />
           <View className="absolute inset-0 items-center justify-center bg-black/50">
             <ActivityIndicator size="large" color="white" />
-            <Text className="mt-4 text-lg font-bold text-white">Soru Analiz Ediliyor...</Text>
+            <Text className="mt-4 text-lg font-bold text-white">Soru Çözülüyor...</Text>
           </View>
         </View>
       ) : (

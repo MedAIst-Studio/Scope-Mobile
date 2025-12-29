@@ -24,26 +24,26 @@ export default function Screen() {
               <AcademicCapIcon size={48} color="white" />
             </View>
             <Text className="text-center text-4xl font-bold tracking-tighter text-foreground">
-              MedAIst
+              YksAl
             </Text>
             <Text className="mt-2 text-center font-medium text-muted-foreground">
-              Tıbbi Bilginin Akıllı Asistanı
+              YKS Hazırlık Asistanın
             </Text>
           </View>
 
           {/* Info Area */}
           <View className="mb-12 gap-6">
             <View className="rounded-[2rem] border border-border/20 bg-card/50 p-6">
-              <Text className="mb-1 text-lg font-bold text-foreground">Hızlı Teşhis & Bilgi</Text>
+              <Text className="mb-1 text-lg font-bold text-foreground">Anında Soru Çözümü</Text>
               <Text className="text-sm leading-5 text-muted-foreground">
-                Yapay zeka destekli analizler ile tıbbi dökümanlarınızı saniyeler içinde anlayın.
+                YKS sorularını ve dökümanlarını yapay zeka ile saniyeler içinde çözün ve anlayın.
               </Text>
             </View>
 
             <View className="rounded-[2rem] border border-border/20 bg-card/50 p-6">
               <Text className="mb-1 text-lg font-bold text-foreground">Eğitim & Testler</Text>
               <Text className="text-sm leading-5 text-muted-foreground">
-                Öğrendiklerinizi pekiştirmek için kişiselleştirilmiş quizler ile kendinizi test
+                Öğrendiklerinizi pekiştirmek için kişiselleştirilmiş denemeler ile kendinizi test
                 edin.
               </Text>
             </View>
@@ -71,7 +71,7 @@ export default function Screen() {
           <View className="absolute bottom-12 left-0 right-0 items-center">
             <ThemeToggle />
             <Text className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30">
-              © 2025 MedAIst Studio
+              © 2025 YksAl Studio
             </Text>
           </View>
         </View>

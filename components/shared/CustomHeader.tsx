@@ -99,9 +99,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                   <View className="h-10 w-10 items-center justify-center rounded-2xl bg-primary">
                     <AcademicCapIcon size={24} color="white" />
                   </View>
-                  <Text className="text-2xl font-bold tracking-tighter text-foreground">
-                    MedAIst
-                  </Text>
+                  <Text className="text-2xl font-bold tracking-tighter text-foreground">YksAI</Text>
                 </View>
                 <TouchableOpacity
                   onPress={closeMenu}
@@ -121,9 +119,9 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                   {[
                     { name: 'index', label: 'Anasayfa', icon: HomeIcon },
                     { name: 'chat', label: 'Asistan', icon: ChatBubbleOvalLeftIcon },
-                    { name: 'scan', label: 'Analiz', icon: CameraIcon },
-                    { name: 'files', label: 'Kütüphane', icon: DocumentTextIcon },
-                    { name: 'quiz', label: 'Testler', icon: AcademicCapIcon },
+                    { name: 'scan', label: 'Soru Çöz', icon: CameraIcon },
+                    { name: 'files', label: 'Dosyalarım', icon: DocumentTextIcon },
+                    { name: 'quiz', label: 'Denemeler', icon: AcademicCapIcon },
                     { name: '(settings)/settings', label: 'Ayarlar', icon: Cog6ToothIcon },
                   ].map((item) => {
                     const isFocused =
@@ -183,7 +181,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                         </View>
                         <View className="flex-1">
                           <Text className="text-sm font-bold text-foreground" numberOfLines={1}>
-                            {chat.title || 'Yeni Sohbet'}
+                            {chat.title || 'Yeni Soru Çözümü'}
                           </Text>
                           <Text className="text-[10px] font-medium text-muted-foreground/50">
                             {new Date(chat.created_at).toLocaleDateString('tr-TR')}

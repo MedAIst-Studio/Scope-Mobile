@@ -1,18 +1,26 @@
 import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
-import { useNavigation } from 'expo-router';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useLayoutEffect } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native';
 import { EllipsisHorizontalIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDeleteChat, useUpdateChat } from '../hooks';
 import { useChat } from '../hooks/useChat';
 
 import { ChatInput } from './ChatInput';
 import { ChatMessageList } from './ChatMessageList';
 import { FileSelector } from './FileSelector';
+import { RenameModal } from './RenameModal';
 
 export const ChatScreen: React.FC = () => {
   const navigation = useNavigation();
+  const router = useRouter();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const chatId = Array.isArray(id) ? id[0] : id;
+
+  const [renameModalVisible, setRenameModalVisible] = React.useState(false);
+
   const {
     message,
     setMessage,
@@ -31,18 +39,57 @@ export const ChatScreen: React.FC = () => {
     handleFileSelect,
   } = useChat();
 
+  const { mutate: deleteChat } = useDeleteChat();
+  const { mutate: updateChat } = useUpdateChat();
+
+  const handleDelete = () => {
+    if (!chatId) return;
+
+    Alert.alert(
+      'Sohbeti Sil',
+      'Bu sohbeti silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
+      [
+        { text: 'Vazgeç', style: 'cancel' },
+        {
+          text: 'Sil',
+          style: 'destructive',
+          onPress: () => {
+            deleteChat(chatId, {
+              onSuccess: () => router.replace('/(tabs)/chat'),
+            });
+          },
+        },
+      ]
+    );
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Sohbet',
+      headerTitle: 'YKS Asistanı',
       headerRight: () => (
         <View className="flex-row gap-2 pr-2">
-          <TouchableOpacity className="p-2">
+          <TouchableOpacity
+            className="p-2"
+            onPress={() => {
+              Alert.alert('Sohbet Ayarları', 'Lütfen bir işlem seçin', [
+                {
+                  text: 'Yeniden Adlandır',
+                  onPress: () => setRenameModalVisible(true),
+                },
+                {
+                  text: 'Sohbeti Sil',
+                  style: 'destructive',
+                  onPress: handleDelete,
+                },
+                { text: 'Vazgeç', style: 'cancel' },
+              ]);
+            }}>
             <Icon as={EllipsisHorizontalIcon} size={24} className="text-foreground" />
           </TouchableOpacity>
         </View>
       ),
     });
-  }, [navigation]);
+  }, [navigation, chatId]);
 
   const handleAttachAction = () => {
     Alert.alert('Eklenti Ekle', 'Lütfen eklemek istediğiniz dosya türünü seçin', [
@@ -91,7 +138,7 @@ export const ChatScreen: React.FC = () => {
             <View className="absolute inset-0 items-center justify-center">
               <View className="rounded-full border border-border/20 bg-background/80 px-4 py-2 shadow-sm">
                 <Text className="text-sm font-medium text-muted-foreground">
-                  Sohbet yükleniyor...
+                  Asistan hazırlanıyor...
                 </Text>
               </View>
             </View>
@@ -121,6 +168,17 @@ export const ChatScreen: React.FC = () => {
           isVisible={isFileSelectorVisible}
           onClose={() => setIsFileSelectorVisible(false)}
           onSelect={handleFileSelect}
+        />
+
+        <RenameModal
+          isVisible={renameModalVisible}
+          onClose={() => setRenameModalVisible(false)}
+          initialTitle="Soru Çözümü"
+          onRename={(newTitle) => {
+            if (chatId) {
+              updateChat({ chatId, title: newTitle });
+            }
+          }}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

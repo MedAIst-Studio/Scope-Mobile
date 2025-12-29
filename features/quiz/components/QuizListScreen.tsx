@@ -52,7 +52,7 @@ export const QuizListScreen: React.FC = () => {
     return (
       <View className="flex-1 items-center justify-center bg-background px-6">
         <Text className="mb-6 text-center text-lg font-semibold text-foreground">
-          Quizler yüklenirken bir hata oluştu.
+          Denemeler yüklenirken bir hata oluştu.
         </Text>
         <Button onPress={() => refetch()} variant="outline" className="w-full">
           <Text>Tekrar Dene</Text>
@@ -67,9 +67,9 @@ export const QuizListScreen: React.FC = () => {
         {/* Header */}
         <View className="mb-6 flex-row items-center justify-between">
           <View>
-            <Text className="text-3xl font-bold tracking-tight text-foreground">Sınavlar</Text>
+            <Text className="text-3xl font-bold tracking-tight text-foreground">Denemeler</Text>
             <Text className="text-sm text-muted-foreground">
-              Toplam {quizzes.length} kayıtlı sınav
+              Toplam {quizzes.length} kayıtlı deneme
             </Text>
           </View>
           <View className="flex-row gap-2">
@@ -90,7 +90,7 @@ export const QuizListScreen: React.FC = () => {
         <View className="mb-6">
           <View className="relative">
             <Input
-              placeholder="Sınav ara..."
+              placeholder="Deneme ara..."
               value={searchQuery}
               onChangeText={setSearchQuery}
               className="pl-12"

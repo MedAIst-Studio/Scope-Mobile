@@ -173,6 +173,29 @@ export const useSendMessage = () => {
   });
 };
 
+export const useUpdateChat = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ chatId, title }: { chatId: string; title: string }) => {
+      const { data, error } = await chatAPI.updateChat(chatId, title);
+
+      if (error) throw new Error(error.message || 'Sohbet güncellenemedi');
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: chatKeys.lists(),
+      });
+      Alert.alert('Başarılı', 'Sohbet adı güncellendi');
+    },
+    onError: (error: Error) => {
+      Alert.alert('Hata', error.message);
+    },
+  });
+};
+
 export const useDeleteChat = () => {
   const queryClient = useQueryClient();
 
