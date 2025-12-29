@@ -1,11 +1,13 @@
+import { ActionMenu } from '@/components/shared/ActionMenu';
 import { Badge } from '@/components/ui/badge';
-import { useChats } from '@/features/chat/hooks';
+import { RenameModal } from '@/features/chat/components/RenameModal';
+import { useChats, useDeleteChat, useUpdateChat } from '@/features/chat/hooks';
 import { useUserDetails } from '@/features/users/hooks';
 import { cn } from '@/lib/utils';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { Portal } from '@rn-primitives/portal';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import {
   AcademicCapIcon,
@@ -17,6 +19,8 @@ import {
   Cog6ToothIcon,
   DocumentTextIcon,
   HomeIcon,
+  PencilSquareIcon,
+  TrashIcon,
   XMarkIcon,
 } from 'react-native-heroicons/solid';
 
@@ -31,6 +35,13 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
   const { data: chats } = useChats();
   const { data: user } = useUserDetails();
 
+  const { mutate: deleteChat } = useDeleteChat();
+  const { mutate: updateChat } = useUpdateChat();
+
+  const [selectedChat, setSelectedChat] = useState<{ id: string; title: string } | null>(null);
+  const [isActionMenuVisible, setIsActionMenuVisible] = useState(false);
+  const [isRenameModalVisible, setIsRenameModalVisible] = useState(false);
+
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
@@ -38,6 +49,36 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
   const closeMenu = () => {
     setIsOpen(false);
   };
+
+  const handleLongPress = (chat: any) => {
+    setSelectedChat({ id: chat.id, title: chat.title });
+    setIsActionMenuVisible(true);
+  };
+
+  const handleDelete = () => {
+    if (selectedChat) {
+      deleteChat(selectedChat.id);
+      setSelectedChat(null);
+    }
+  };
+
+  const menuActions = [
+    {
+      label: 'Yeniden Adlandır',
+      icon: PencilSquareIcon,
+      onPress: () => {
+        setIsRenameModalVisible(true);
+      },
+    },
+    {
+      label: 'Sohbeti Sil',
+      icon: TrashIcon,
+      variant: 'destructive' as const,
+      onPress: () => {
+        handleDelete();
+      },
+    },
+  ];
 
   const title =
     options.headerTitle !== undefined
@@ -175,6 +216,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                           navigation.navigate('chat', { id: chat.id, file_id: chat.file_id });
                           closeMenu();
                         }}
+                        onLongPress={() => handleLongPress(chat)}
                         className="flex-row items-center gap-3 rounded-2xl bg-secondary/30 px-4 py-3 active:bg-secondary/50">
                         <View className="h-8 w-8 items-center justify-center rounded-xl bg-background/50">
                           <ClockIcon size={16} color="#94a3b8" />
@@ -193,7 +235,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                 )}
               </ScrollView>
 
-              <View className="px-6 py-8">
+              <View className="px-6 py-2">
                 <TouchableOpacity
                   onPress={() => {
                     router.push('/(app)/profile');
@@ -221,6 +263,25 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
           </Animated.View>
         </Portal>
       )}
+
+      <ActionMenu
+        isVisible={isActionMenuVisible}
+        onClose={() => setIsActionMenuVisible(false)}
+        title={selectedChat ? selectedChat.title : 'Sohbet Seçenekleri'}
+        actions={menuActions}
+      />
+
+      <RenameModal
+        isVisible={isRenameModalVisible}
+        onClose={() => setIsRenameModalVisible(false)}
+        initialTitle={selectedChat?.title || ''}
+        onRename={(newTitle) => {
+          if (selectedChat) {
+            updateChat({ chatId: selectedChat.id, title: newTitle });
+            setSelectedChat(null);
+          }
+        }}
+      />
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { AttemptDetailData } from '@/features/quiz/validation';
 import React from 'react';
@@ -57,9 +58,9 @@ export const QuizResult: React.FC<QuizResultProps> = ({ result, onBack }) => {
                     {index + 1}. {answer.question_text}
                   </Text>
                   {answer.is_correct ? (
-                    <CheckCircleIcon className="text-green-500" size={24} />
+                    <Icon as={CheckCircleIcon} className="text-green-500" size={24} />
                   ) : (
-                    <XCircleIcon className="text-red-500" size={24} />
+                    <Icon as={XCircleIcon} className="text-red-500" size={24} />
                   )}
                 </View>
 

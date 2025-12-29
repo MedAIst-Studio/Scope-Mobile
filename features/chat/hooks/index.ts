@@ -215,8 +215,6 @@ export const useDeleteChat = () => {
       queryClient.removeQueries({
         queryKey: chatKeys.messages(chatId),
       });
-
-      Alert.alert('Başarılı', 'Sohbet silindi');
     },
     onError: (error: Error) => {
       Alert.alert('Hata', 'Sohbet silinemedi: ' + error.message);

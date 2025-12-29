@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { QuizProgressBar } from '@/features/quiz/components/QuizProgressBar';
 import { QuizQuestion } from '@/features/quiz/components/QuizQuestion';
@@ -147,14 +148,14 @@ export default function QuizDetailScreen() {
               className="flex-1 flex-row gap-2"
               onPress={handlePrevious}
               disabled={isFirstQuestion || isSubmitting}>
-              <ChevronLeftIcon size={20} className="text-foreground" />
+              <Icon as={ChevronLeftIcon} size={20} className="text-foreground" />
               <Text className="text-foreground">Önceki</Text>
             </Button>
 
             <Button className="flex-1 flex-row gap-2" onPress={handleNext} disabled={isSubmitting}>
               <Text>{isSubmitting ? 'Gönderiliyor...' : isLastQuestion ? 'Bitir' : 'Sonraki'}</Text>
               {!isLastQuestion && !isSubmitting && (
-                <ChevronRightIcon size={20} className="text-primary-foreground" />
+                <Icon as={ChevronRightIcon} size={20} className="text-primary-foreground" />
               )}
             </Button>
           </View>
