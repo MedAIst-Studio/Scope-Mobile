@@ -10,6 +10,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Icon } from '@/components/ui/icon';
+import { ImageCropper } from '@/features/camera/components/ImageCropper';
 import { cn } from '@/lib/utils';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useLayoutEffect, useState } from 'react';
@@ -61,7 +62,55 @@ export const ChatScreen: React.FC = () => {
     handleFileSelect,
     activeFile,
     setActiveFile,
+    addAttachment,
+    uploadFile,
   } = useChat();
+
+  const [croppingImage, setCroppingImage] = useState<string | null>(null);
+
+  const handlePickImage = async () => {
+    const uri = await pickImage();
+    if (uri) {
+      setCroppingImage(uri);
+    }
+  };
+
+  const handleCropConfirm = async (croppedUri: string) => {
+    setCroppingImage(null);
+
+    try {
+      const result = await uploadFile({
+        file_title: 'chat_image.jpg',
+        file_data: {
+          uri: croppedUri,
+          name: 'chat_image.jpg',
+          type: 'image/jpeg',
+        },
+      });
+
+      console.log('Chat upload result:', JSON.stringify(result, null, 2));
+
+      let uploadedUrl = result?.url || result?.uri || result?.file_url;
+      if (!uploadedUrl && Array.isArray(result) && result[0]) {
+        uploadedUrl = result[0].url || result[0].uri || result[0].file_url;
+      }
+
+      console.log('Extracted uploadedUrl:', uploadedUrl);
+
+      if (uploadedUrl) {
+        console.log('Adding attachment with URI:', uploadedUrl);
+        addAttachment({
+          type: 'image',
+          name: 'chat_image.jpg',
+          uri: uploadedUrl,
+        });
+      } else {
+        console.error('FAILED to extract uploadedUrl from result');
+      }
+    } catch (error) {
+      console.error('Failed to upload chat image:', error);
+    }
+  };
 
   const { data: chats } = useChats();
   const currentChat = (chats as any[])?.find((c) => c.id === chatId);
@@ -113,7 +162,7 @@ export const ChatScreen: React.FC = () => {
     {
       label: 'Fotoğraf Kitaplığı',
       icon: PhotoIcon,
-      onPress: pickImage,
+      onPress: handlePickImage,
     },
     {
       label: 'Dosyalarım',
@@ -128,6 +177,25 @@ export const ChatScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 90}>
+        {croppingImage ? (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 50,
+              backgroundColor: 'black',
+            }}>
+            <ImageCropper
+              imageUri={croppingImage}
+              onCrop={handleCropConfirm}
+              onCancel={() => setCroppingImage(null)}
+            />
+          </View>
+        ) : null}
+
         {activeFile && (
           <View className="mx-4 mt-2 flex-row items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
             <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary/10">

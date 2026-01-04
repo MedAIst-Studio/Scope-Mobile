@@ -18,33 +18,32 @@ export const FILE_COUNT_LIMITS = {
 
 // Accepted file types
 export const ACCEPTED_FILE_TYPES = {
-  PDF: ".pdf",
-  DOC: ".doc",
-  DOCX: ".docx",
-  TXT: ".txt",
+  PDF: '.pdf',
+  DOC: '.doc',
+  DOCX: '.docx',
+  TXT: '.txt',
 } as const;
 
 export const ACCEPTED_FILE_TYPES_ARRAY = Object.values(ACCEPTED_FILE_TYPES);
 
-export const ACCEPTED_FILE_TYPES_STRING = ACCEPTED_FILE_TYPES_ARRAY.join(",");
+export const ACCEPTED_FILE_TYPES_STRING = ACCEPTED_FILE_TYPES_ARRAY.join(',');
 
 // MIME types mapping
 export const MIME_TYPES = {
-  PDF: "application/pdf",
-  DOC: "application/msword",
-  DOCX: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  TXT: "text/plain",
+  PDF: 'application/pdf',
+  DOC: 'application/msword',
+  DOCX: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  TXT: 'text/plain',
 } as const;
 
 // Upload status messages
 export const UPLOAD_MESSAGES = {
-  SUCCESS: "Dosya başarıyla yüklendi",
-  ERROR: "Dosya yüklenirken bir hata oluştu",
-  SIZE_EXCEEDED: "Dosya boyutu limiti aşıldı",
-  TYPE_NOT_ACCEPTED: "Desteklenmeyen dosya türü",
-  COUNT_EXCEEDED: "Maksimum dosya sayısı aşıldı",
-  PROCESSING: "Dosya işleniyor...",
-  UPLOADING: "Dosya yükleniyor...",
+  ERROR: 'Dosya yüklenirken bir hata oluştu',
+  SIZE_EXCEEDED: 'Dosya boyutu limiti aşıldı',
+  TYPE_NOT_ACCEPTED: 'Desteklenmeyen dosya türü',
+  COUNT_EXCEEDED: 'Maksimum dosya sayısı aşıldı',
+  PROCESSING: 'Dosya işleniyor...',
+  UPLOADING: 'Dosya yükleniyor...',
 } as const;
 
 // Processing time estimates (in seconds per MB)

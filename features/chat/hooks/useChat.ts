@@ -149,29 +149,29 @@ export const useChat = () => {
     );
   };
 
-  const pickImage = async () => {
+  const addAttachment = (attachment: Attachment) => {
+    setAttachments((prev) => [...prev, attachment]);
+  };
+
+  const pickImage = async (): Promise<string | null> => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== 'granted') {
       Alert.alert('İzin Gerekli', 'Fotoğraf seçmek için galeri erişimine izin vermeniz gerekiyor.');
-      return;
+      return null;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 0.8,
-      allowsEditing: true,
+      allowsEditing: false, // We use custom cropper
       aspect: [4, 3],
     });
 
-    if (!result.canceled) {
-      const newAttachment: Attachment = {
-        type: 'image',
-        name: result.assets[0].fileName || `img_${Date.now()}.jpg`,
-        uri: result.assets[0].uri,
-      };
-      setAttachments((prev) => [...prev, newAttachment]);
+    if (!result.canceled && result.assets[0].uri) {
+      return result.assets[0].uri;
     }
+    return null;
   };
 
   const handleFileSelect = (file: any) => {
@@ -195,6 +195,7 @@ export const useChat = () => {
     setMessage,
     attachments,
     setAttachments,
+    addAttachment,
     isFileSelectorVisible,
     setIsFileSelectorVisible,
     messages: messages as Message[],
@@ -209,5 +210,6 @@ export const useChat = () => {
     pickImage,
     handleFileSelect,
     removeAttachment,
+    uploadFile, // Exposed for manual upload flow
   };
 };

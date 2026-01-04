@@ -41,7 +41,6 @@ export const useUploadFile = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [FILES_QUERY_KEY] });
-      Alert.alert('Başarılı', 'Dosya başarıyla yüklendi.');
     },
     onError: (error: Error) => {
       Alert.alert('Hata', error.message || 'Dosya yüklenirken bir hata oluştu.');
@@ -83,8 +82,6 @@ export const useDeleteFile = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [FILES_QUERY_KEY] });
-      // queryClient.invalidateQueries({queryKey: chatKeys.lists()});
-      Alert.alert('Başarılı', 'Dosya başarıyla silindi.');
     },
     onError: (error: Error) => {
       Alert.alert('Hata', error.message || 'Dosya silinirken bir hata oluştu.');
