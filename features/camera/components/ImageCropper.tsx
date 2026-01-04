@@ -18,8 +18,8 @@ interface ImageCropperProps {
 
 export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) => {
   const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null);
+  const [normalizedUri, setNormalizedUri] = useState<string | null>(null);
 
-  // Shared values for transformations
   const scale = useSharedValue(1);
   const savedScale = useSharedValue(1);
   const translateX = useSharedValue(0);
@@ -27,11 +27,25 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
   const savedTranslateX = useSharedValue(0);
   const savedTranslateY = useSharedValue(0);
 
-  // Load image size to calculate initial fitting
   React.useEffect(() => {
-    Image.getSize(imageUri, (w, h) => {
-      setImageSize({ width: w, height: h });
-    });
+    const normalizeImage = async () => {
+      try {
+        const result = await manipulateAsync(imageUri, [{ rotate: 0 }], {
+          format: SaveFormat.JPEG,
+        });
+
+        setNormalizedUri(result.uri);
+        setImageSize({ width: result.width, height: result.height });
+      } catch (error) {
+        console.error('Failed to normalize image:', error);
+        setNormalizedUri(imageUri);
+        Image.getSize(imageUri, (w, h) => {
+          setImageSize({ width: w, height: h });
+        });
+      }
+    };
+
+    normalizeImage();
   }, [imageUri]);
 
   const pinchGesture = Gesture.Pinch()
@@ -56,61 +70,35 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
+      { scale: scale.value },
       { translateX: translateX.value },
       { translateY: translateY.value },
-      { scale: scale.value },
     ],
   }));
 
   const handleCrop = async () => {
-    if (!imageSize) return;
+    if (!imageSize || !normalizedUri) return;
 
     try {
-      // Calculate Display Dimensions
       const displayWidth = SCREEN_WIDTH;
       const displayHeight = (imageSize.height / imageSize.width) * displayWidth;
 
-      // Current Transforms
       const s = scale.value;
       const tx = translateX.value;
       const ty = translateY.value;
 
-      // Initial Center in Display Space
       const midX = displayWidth / 2;
       const midY = displayHeight / 2;
 
-      // Map Crop Frame (Screen Standard) to Local Image Space (Inverse Transform)
-      // The fixed crop frame is centered on screen.
-      // Screen Center matches Image Center (midX, midY) BEFORE transform.
-      // With transform: ScreenPoint = (LocalPoint - midPoint) * s + midPoint + translation
-      // Inverse: LocalPoint = (ScreenPoint - midPoint - translation) / s + midPoint
-
-      // Top-Left of Crop Frame in Screen Coordinates (Relative to Image View if it were 0,0 aligned)
-      // Actually simpler: The crop frame top-left is at (ScreenW - CropCheck)/2.
-      // Since Image View width is ScreenW, this is (displayWidth - CROP_SIZE) / 2.
       const cropScreenLeft = (displayWidth - CROP_SIZE) / 2;
-
-      // Vertical requires offset adjustment if image height != screen height
-      // The crop frame is vertically centered on SCREEN.
-      // The Image View is vertically centered in the container?
-      // Our Render:
-      // <View style={{justifyContent: 'center'...}}> <Animated.View .../> </View>
-      // So Image View is centered.
-      // Thus DisplayHeight/2 aligns with ScreenHeight/2.
-      // So crop frame vertical center aligns with DisplayHeight centricity.
-      // Top-Left relative to Display center is just -CROP/2.
-      // So relative to Image Top-Left (0,0):
       const cropScreenTop = midY - CROP_SIZE / 2;
 
-      // Apply Inverse Transform
-      // localX = (screenX - midX - tx) / s + midX
       const localX = (cropScreenLeft - midX - tx) / s + midX;
       const localY = (cropScreenTop - midY - ty) / s + midY;
 
       const localW = CROP_SIZE / s;
       const localH = CROP_SIZE / s;
 
-      // Map to Original Image Pixels
       const ratio = imageSize.width / displayWidth;
 
       const originX = Math.max(0, localX * ratio);
@@ -124,7 +112,7 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
 
       // @ts-ignore: manipulateAsync might be marked deprecated but is required for current sdk
       const result = await manipulateAsync(
-        imageUri,
+        normalizedUri,
         [
           {
             crop: {
@@ -134,10 +122,11 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
               height: cropHeight,
             },
           },
-          { resize: { width: 1080 } }, // Resize after crop for upload optimization
+          { resize: { width: 1080 } },
         ],
         { compress: 0.8, format: SaveFormat.JPEG }
       );
+
       onCrop(result.uri);
     } catch (error) {
       console.error('Crop failed', error);
@@ -145,66 +134,19 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
     }
   };
 
+  if (!normalizedUri || !imageSize) {
+    return (
+      <View className="flex-1 items-center justify-center bg-black">
+        <Text className="text-white">Resim hazırlanıyor...</Text>
+      </View>
+    );
+  }
+
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'black' }}>
       <Animated.View
         entering={FadeIn}
         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {/* Crop Frame Overlay (Z-Index High) */}
-        <View
-          pointerEvents="none"
-          style={[styles.cropFrame, { width: CROP_SIZE, height: CROP_SIZE, zIndex: 10 }]}>
-          {/* Grid Lines */}
-          <View className="w-full flex-1 justify-evenly border-b border-t border-white/20 opacity-50">
-            <View className="mx-auto h-full w-1/3 border-l border-r border-white/20" />
-          </View>
-
-          {/* Corner Markers */}
-          <View className="absolute left-0 top-0 h-6 w-6 rounded-tl-xl border-l-4 border-t-4 border-white" />
-          <View className="absolute right-0 top-0 h-6 w-6 rounded-tr-xl border-r-4 border-t-4 border-white" />
-          <View className="absolute bottom-0 left-0 h-6 w-6 rounded-bl-xl border-b-4 border-l-4 border-white" />
-          <View className="absolute bottom-0 right-0 h-6 w-6 rounded-br-xl border-b-4 border-r-4 border-white" />
-        </View>
-
-        {/* Mask Overlay */}
-        <View
-          pointerEvents="none"
-          style={[
-            styles.mask,
-            {
-              width: SCREEN_WIDTH,
-              height: (Dimensions.get('window').height - CROP_SIZE) / 2,
-              top: 0,
-            },
-          ]}
-        />
-        <View
-          pointerEvents="none"
-          style={[
-            styles.mask,
-            {
-              width: SCREEN_WIDTH,
-              height: (Dimensions.get('window').height - CROP_SIZE) / 2,
-              bottom: 0,
-            },
-          ]}
-        />
-        <View
-          pointerEvents="none"
-          style={[
-            styles.mask,
-            { width: (SCREEN_WIDTH - CROP_SIZE) / 2, height: CROP_SIZE, left: 0 },
-          ]}
-        />
-        <View
-          pointerEvents="none"
-          style={[
-            styles.mask,
-            { width: (SCREEN_WIDTH - CROP_SIZE) / 2, height: CROP_SIZE, right: 0 },
-          ]}
-        />
-
-        {/* Movable Image */}
         <GestureDetector gesture={composedGesture}>
           <Animated.View
             style={[
@@ -217,12 +159,49 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
               animatedStyle,
             ]}>
             <Image
-              source={{ uri: imageUri }}
+              source={{ uri: normalizedUri }}
               style={{ flex: 1, width: undefined, height: undefined }}
               resizeMode="cover"
             />
           </Animated.View>
         </GestureDetector>
+
+        <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+          <View style={styles.mask} className="w-full flex-1" />
+
+          {/* Middle Row */}
+          <View style={{ height: CROP_SIZE, flexDirection: 'row' }}>
+            {/* Left Mask */}
+            <View style={styles.mask} className="flex-1" />
+
+            {/* Crop Window (Transparent) */}
+            <View style={{ width: CROP_SIZE, height: CROP_SIZE, overflow: 'hidden' }}>
+              {/* Grid Lines */}
+              <View className="h-full w-full flex-row justify-evenly opacity-50">
+                <View className="h-full w-[1px] bg-white/30" />
+                <View className="h-full w-[1px] bg-white/30" />
+              </View>
+              <View className="absolute inset-0 h-full w-full flex-col justify-evenly opacity-50">
+                <View className="h-[1px] w-full bg-white/30" />
+                <View className="h-[1px] w-full bg-white/30" />
+              </View>
+
+              {/* Corners */}
+              <View className="absolute left-0 top-0 h-6 w-6 rounded-tl-lg border-l-4 border-t-4 border-white" />
+              <View className="absolute right-0 top-0 h-6 w-6 rounded-tr-lg border-r-4 border-t-4 border-white" />
+              <View className="absolute bottom-0 left-0 h-6 w-6 rounded-bl-lg border-b-4 border-l-4 border-white" />
+              <View className="absolute bottom-0 right-0 h-6 w-6 rounded-br-lg border-b-4 border-r-4 border-white" />
+            </View>
+
+            {/* Right Mask */}
+            <View style={styles.mask} className="flex-1" />
+          </View>
+
+          {/* Bottom Mask */}
+          <View style={styles.mask} className="w-full flex-1" />
+        </View>
+
+        {/* LIVE DEBUG OVERLAY */}
 
         {/* Controls */}
         <View className="absolute bottom-12 left-0 right-0 z-20 flex-row items-center justify-between px-8">
@@ -245,20 +224,16 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
           </TouchableOpacity>
         </View>
       </Animated.View>
+
+      {/* DEBUG: Show Result Modal */}
     </GestureHandlerRootView>
   );
 };
 
 const styles = StyleSheet.create({
-  cropFrame: {
-    // borderWidth: 2,
-    // borderColor: 'white', // Removed simple border for custom corners
-    position: 'absolute',
-  },
+  // cropFrame: { ... }, // Removed
   mask: {
-    position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.8)', // Darker mask for better focus
-    zIndex: 5,
-    backdropFilter: 'blur(10px)', // Web only support, good to keep
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    // backdropFilter: 'blur(10px)', // removed web only
   },
 });

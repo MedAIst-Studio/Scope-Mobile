@@ -1,11 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { useUploadFile } from '@/features/files/hooks';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
-import { useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ArrowPathIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageCropper } from '../components/ImageCropper';
@@ -13,12 +11,13 @@ import { ImageCropper } from '../components/ImageCropper';
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState<CameraType>('back');
-  const [isanalyzing, setIsAnalyzing] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
+  const [resultImage, setResultImage] = useState<string | null>(null); // New state for local result
   const cameraRef = useRef<CameraView>(null);
-  const router = useRouter();
-  const { mutateAsync: uploadFile } = useUploadFile();
+  // const router = useRouter(); // Disabled for isolation
+
+  // const { mutateAsync: uploadFile } = useUploadFile(); // Disabled API hook
 
   if (!permission) {
     return <View />;
@@ -59,13 +58,15 @@ export default function CameraScreen() {
   const handleCropConfirm = (croppedUri: string) => {
     setCroppingImage(null);
     setCapturedImage(croppedUri);
-    analyzeImage(croppedUri);
+    // analyzeImage(croppedUri); // Disabled API call
+    setResultImage(croppedUri); // Show local result
   };
 
   const handleCropCancel = () => {
     setCroppingImage(null);
   };
 
+  /*
   const analyzeImage = async (uri: string) => {
     setIsAnalyzing(true);
     try {
@@ -99,31 +100,39 @@ export default function CameraScreen() {
       setIsAnalyzing(false);
     }
   };
+  */
 
   const closeCamera = () => {
-    router.back();
+    // router.back(); // Disabled for isolation
+    console.log('Navigation disabled');
+  };
+
+  const resetCamera = () => {
+    setResultImage(null);
+    setCapturedImage(null);
   };
 
   return (
     <View style={styles.container}>
-      {croppingImage ? (
+      {resultImage ? (
+        <SafeAreaView className="flex-1 items-center justify-center bg-black">
+          <Image
+            source={{ uri: resultImage }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="contain"
+          />
+          <View className="absolute inset-x-0 bottom-10 items-center">
+            <Button onPress={resetCamera} className="bg-white px-8">
+              <Text className="font-bold text-black">Yeni Fotoğraf</Text>
+            </Button>
+          </View>
+        </SafeAreaView>
+      ) : croppingImage ? (
         <ImageCropper
           imageUri={croppingImage}
           onCrop={handleCropConfirm}
           onCancel={handleCropCancel}
         />
-      ) : capturedImage ? (
-        <View className="flex-1 items-center justify-center bg-black">
-          <Image
-            source={{ uri: capturedImage }}
-            style={StyleSheet.absoluteFill}
-            resizeMode="contain"
-          />
-          <View className="absolute inset-0 items-center justify-center bg-black/50">
-            <ActivityIndicator size="large" color="white" />
-            <Text className="mt-4 text-lg font-bold text-white">Soru Çözülüyor...</Text>
-          </View>
-        </View>
       ) : (
         <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
           <SafeAreaView className="flex-1 justify-between">

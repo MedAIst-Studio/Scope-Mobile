@@ -14,7 +14,7 @@ import { ImageCropper } from '@/features/camera/components/ImageCropper';
 import { cn } from '@/lib/utils';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useLayoutEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Text, TouchableOpacity, View } from 'react-native';
 import {
   DocumentPlusIcon,
   DocumentTextIcon,
@@ -78,37 +78,40 @@ export const ChatScreen: React.FC = () => {
   const handleCropConfirm = async (croppedUri: string) => {
     setCroppingImage(null);
 
+    // Bypassing upload for debugging
+    console.log('Adding local attachment with URI:', croppedUri);
+    addAttachment({
+      type: 'image',
+      name: 'chat_image.jpg',
+      uri: croppedUri,
+    });
+
     try {
-      const result = await uploadFile({
-        file_title: 'chat_image.jpg',
-        file_data: {
-          uri: croppedUri,
-          name: 'chat_image.jpg',
-          type: 'image/jpeg',
-        },
-      });
-
-      console.log('Chat upload result:', JSON.stringify(result, null, 2));
-
-      let uploadedUrl = result?.url || result?.uri || result?.file_url;
-      if (!uploadedUrl && Array.isArray(result) && result[0]) {
-        uploadedUrl = result[0].url || result[0].uri || result[0].file_url;
-      }
-
-      console.log('Extracted uploadedUrl:', uploadedUrl);
-
-      if (uploadedUrl) {
-        console.log('Adding attachment with URI:', uploadedUrl);
-        addAttachment({
-          type: 'image',
-          name: 'chat_image.jpg',
-          uri: uploadedUrl,
+      uploadFile
+        .mutateAsync({
+          file_title: 'chat_image.jpg',
+          file_data: {
+            uri: croppedUri,
+            name: 'chat_image.jpg',
+            type: 'image/jpeg',
+          },
+        })
+        .then((result) => {
+          console.log('Chat upload started/finished in background', result);
+        })
+        .catch((err) => {
+          console.error('Background upload failed', err);
         });
-      } else {
-        console.error('FAILED to extract uploadedUrl from result');
-      }
+
+      /*
+      // URL update disabled per user request to avoid flickering
+      const result = await uploadFile(...)
+      ...
+        addAttachment({ uri: uploadedUrl })
+      ...
+      */
     } catch (error) {
-      console.error('Failed to upload chat image:', error);
+      console.error('Failed to initiate chat image upload:', error);
     }
   };
 
@@ -177,24 +180,19 @@ export const ChatScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 90}>
-        {croppingImage ? (
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 50,
-              backgroundColor: 'black',
-            }}>
+        <Modal
+          visible={!!croppingImage}
+          animationType="fade"
+          transparent={false}
+          onRequestClose={() => setCroppingImage(null)}>
+          {croppingImage && (
             <ImageCropper
               imageUri={croppingImage}
               onCrop={handleCropConfirm}
               onCancel={() => setCroppingImage(null)}
             />
-          </View>
-        ) : null}
+          )}
+        </Modal>
 
         {activeFile && (
           <View className="mx-4 mt-2 flex-row items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
