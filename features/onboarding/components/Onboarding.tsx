@@ -80,10 +80,11 @@ const WelcomeDemo = () => {
     <View className="items-center justify-center">
       <Animated.View style={style} className="h-40 w-40 items-center justify-center">
         <LinearGradient
-          colors={['rgba(249, 115, 22, 0.3)', 'transparent']}
-          className="absolute h-full w-full rounded-full"
+          colors={['rgba(249, 115, 22, 0.4)', 'transparent']}
+          style={{ borderRadius: 9999 }}
+          className="absolute h-full w-full"
         />
-        <Icon as={SparklesIcon} size={80} className="text-primary" />
+        <Icon as={SparklesIcon} size={88} className="text-primary" />
       </Animated.View>
     </View>
   );
@@ -91,10 +92,16 @@ const WelcomeDemo = () => {
 
 const ScanDemo = () => {
   const scanPos = useSharedValue(-80);
+  const iconPulse = useSharedValue(1);
 
   useEffect(() => {
     scanPos.value = withRepeat(
-      withSequence(withTiming(80, { duration: 2000 }), withTiming(-80, { duration: 2000 })),
+      withSequence(withTiming(80, { duration: 1500 }), withTiming(-80, { duration: 1500 })),
+      -1,
+      true
+    );
+    iconPulse.value = withRepeat(
+      withSequence(withTiming(1.1, { duration: 1000 }), withTiming(1, { duration: 1000 })),
       -1,
       true
     );
@@ -104,21 +111,28 @@ const ScanDemo = () => {
     transform: [{ translateY: scanPos.value }],
   }));
 
+  const iconStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: iconPulse.value }],
+    opacity: 0.2 + (iconPulse.value - 1) * 2,
+  }));
+
   return (
-    <View className="h-48 w-48 items-center justify-center rounded-[2.5rem] border-2 border-white/20 bg-white/5">
-      <Icon as={CameraIcon} size={64} className="text-white/20" />
+    <View className="h-48 w-48 items-center justify-center overflow-hidden rounded-[2.5rem] border-2 border-white/20 bg-white/5">
+      <Animated.View style={iconStyle}>
+        <Icon as={CameraIcon} size={80} className="text-white" />
+      </Animated.View>
       <Animated.View
         style={[
           lineStyle,
           {
-            height: 2,
-            width: '80%',
+            height: 3,
+            width: '100%',
             backgroundColor: '#F97316',
             position: 'absolute',
             shadowColor: '#F97316',
             shadowOpacity: 1,
-            shadowRadius: 10,
-            elevation: 10,
+            shadowRadius: 15,
+            elevation: 15,
           },
         ]}
       />
@@ -209,22 +223,29 @@ export const Onboarding: React.FC = () => {
         {/* Content Area */}
         <View className="flex-1 items-center justify-center px-8">
           <View className="mb-12 h-64 w-full items-center justify-center">
-            {currentIndex === 0 && <WelcomeDemo />}
-            {currentIndex === 1 && <ScanDemo />}
-            {currentIndex === 2 && <ChatDemo />}
-            {currentIndex === 3 && <QuizDemo />}
+            <Animated.View
+              key={`demo-${currentIndex}`}
+              entering={FadeInDown.duration(1000).springify()}
+              className="w-full items-center justify-center">
+              {currentIndex === 0 && <WelcomeDemo />}
+              {currentIndex === 1 && <ScanDemo />}
+              {currentIndex === 2 && <ChatDemo />}
+              {currentIndex === 3 && <QuizDemo />}
+            </Animated.View>
           </View>
 
           <Animated.View
             key={`title-${currentIndex}`}
-            entering={FadeInDown}
-            className="items-center">
-            <Text className="mb-4 text-center text-4xl font-bold leading-tight tracking-tight text-white">
+            entering={FadeInDown.duration(800).springify()}
+            className="items-center px-4">
+            <Text className="mb-4 px-2 text-center text-3xl font-bold leading-tight tracking-tight text-white">
               {currentStep.title}
             </Text>
-            <Text className="text-center text-lg leading-7 text-muted-foreground/80">
-              {currentStep.description}
-            </Text>
+            <Animated.View entering={FadeInDown.delay(200).duration(800).springify()}>
+              <Text className="text-center text-base leading-relaxed text-muted-foreground/80">
+                {currentStep.description}
+              </Text>
+            </Animated.View>
           </Animated.View>
         </View>
 

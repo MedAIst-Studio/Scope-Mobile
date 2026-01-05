@@ -77,6 +77,7 @@ const SkeletonItem = ({ index }: { index: number }) => {
           colors={['transparent', 'rgba(255,255,255,0.1)', 'transparent']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
+          style={{ borderRadius: 16 }}
           className="h-full w-24"
         />
       </Animated.View>
@@ -116,15 +117,17 @@ const StatusIndicator = () => {
       <Animated.View style={glowStyle} className="absolute h-32 w-32 items-center justify-center">
         <LinearGradient
           colors={['rgba(249, 115, 22, 0.4)', 'transparent']}
-          className="h-full w-full rounded-full"
+          style={{ borderRadius: 9999 }}
+          className="h-full w-full"
         />
       </Animated.View>
       <LinearGradient
         colors={['rgba(249, 115, 22, 0.2)', 'rgba(249, 115, 22, 0.05)']}
-        className="flex-row items-center gap-3 rounded-full border border-primary/30 px-8 py-4 shadow-2xl shadow-primary/20">
+        style={{ borderRadius: 9999 }}
+        className="flex-row items-center gap-3 border border-primary/30 px-8 py-4 shadow-2xl shadow-primary/20">
         <View className="h-3 w-3 rounded-full bg-primary" />
         <Text className="text-base font-bold tracking-tight text-primary">
-          MedAIst hazırlanıyor...
+          YKS Asistanın hazırlanıyor...
         </Text>
       </LinearGradient>
     </View>

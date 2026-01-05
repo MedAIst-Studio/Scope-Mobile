@@ -2,9 +2,10 @@ import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useFiles } from '@/features/files/hooks';
-import React, { useEffect } from 'react';
+import { cn } from '@/lib/utils';
+import React from 'react';
 import { FlatList, Modal, TouchableOpacity, View } from 'react-native';
-import { DocumentIcon, XMarkIcon } from 'react-native-heroicons/solid';
+import { DocumentIcon, DocumentTextIcon, PhotoIcon, XMarkIcon } from 'react-native-heroicons/solid';
 
 interface FileSelectorProps {
   isVisible: boolean;
@@ -12,13 +13,44 @@ interface FileSelectorProps {
   onSelect: (file: any) => void;
 }
 
+const getFileInfo = (fileName: string) => {
+  const ext = fileName.toLowerCase().split('.').pop() || '';
+
+  if (['pdf'].includes(ext)) {
+    return {
+      icon: DocumentTextIcon,
+      bgColor: 'bg-red-500/10',
+      iconColor: 'text-red-500',
+      type: 'PDF',
+    };
+  }
+
+  if (['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(ext)) {
+    return {
+      icon: PhotoIcon,
+      bgColor: 'bg-blue-500/10',
+      iconColor: 'text-blue-500',
+      type: 'GÖRSEL',
+    };
+  }
+
+  return {
+    icon: DocumentIcon,
+    bgColor: 'bg-zinc-500/10',
+    iconColor: 'text-zinc-500',
+    type: 'DOSYA',
+  };
+};
+
 export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, onSelect }) => {
   const { data: files = [], isLoading } = useFiles();
-  const pdfFiles = files.filter((f) => f.title.toLowerCase().endsWith('.pdf'));
 
-  useEffect(() => {
-    console.log('Number of PDF files:', pdfFiles.length);
-  }, [pdfFiles]);
+  const isSupported = (fileName: string) => {
+    const ext = fileName.toLowerCase().split('.').pop() || '';
+    return ['pdf', 'jpg', 'jpeg', 'png', 'webp', 'heic'].includes(ext);
+  };
+
+  const selectableFiles = files.filter((f) => isSupported(f.title));
 
   const handleSelect = (item: any) => {
     onSelect(item);
@@ -32,7 +64,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, 
             <View>
               <Text className="text-xl font-bold text-foreground">Dosyalarım</Text>
               <Text className="text-sm text-muted-foreground">
-                Sohbet etmek için bir PDF belgesi seçin
+                Sohbet etmek için bir döküman veya görsel seçin
               </Text>
             </View>
             <TouchableOpacity
@@ -48,33 +80,42 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, 
             </View>
           ) : (
             <FlatList
-              data={pdfFiles}
+              data={selectableFiles}
               keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => handleSelect(item)}
-                  className="mb-3"
-                  activeOpacity={0.7}>
-                  <Card className="flex-row items-center border-border/40 p-4">
-                    <View className="mr-4 h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
-                      <Icon as={DocumentIcon} size={24} className="text-primary" />
-                    </View>
-                    <View className="flex-1">
-                      <Text className="text-base font-bold text-foreground" numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      <View className="mt-1 flex-row items-center gap-2">
-                        <Text className="text-xs text-muted-foreground">PDF</Text>
-                        <View className="h-1 w-1 rounded-full bg-muted-foreground/30" />
-                        <Text className="text-xs text-muted-foreground">
-                          {new Date(item.created_at).toLocaleDateString()}
-                        </Text>
+              renderItem={({ item }) => {
+                const { icon, bgColor, iconColor, type } = getFileInfo(item.title);
+                return (
+                  <TouchableOpacity
+                    onPress={() => handleSelect(item)}
+                    className="mb-3"
+                    activeOpacity={0.7}>
+                    <Card className="flex-row items-center border-border/40 p-4">
+                      <View
+                        className={cn(
+                          'mr-4 h-12 w-12 items-center justify-center rounded-2xl',
+                          bgColor
+                        )}>
+                        <Icon as={icon} size={24} className={iconColor} />
                       </View>
-                    </View>
-                  </Card>
-                </TouchableOpacity>
-              )}
+                      <View className="flex-1">
+                        <Text className="text-base font-bold text-foreground" numberOfLines={1}>
+                          {item.title}
+                        </Text>
+                        <View className="mt-1 flex-row items-center gap-2">
+                          <Text className="text-[10px] font-bold text-muted-foreground/60">
+                            {type}
+                          </Text>
+                          <View className="h-1 w-1 rounded-full bg-muted-foreground/30" />
+                          <Text className="text-xs text-muted-foreground">
+                            {new Date(item.created_at).toLocaleDateString()}
+                          </Text>
+                        </View>
+                      </View>
+                    </Card>
+                  </TouchableOpacity>
+                );
+              }}
               ListEmptyComponent={
                 <View className="mt-10 items-center justify-center">
                   <Text className="text-muted-foreground">Herhangi bir dosya bulunamadı.</Text>

@@ -1,39 +1,24 @@
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { useUserDetails } from '@/features/users/hooks';
-import { Link, useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { BellIcon, QuestionMarkCircleIcon, SwatchIcon } from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSettings } from '../hooks/useSettings';
-import { AccountSection } from './AccountSection';
 import { SettingsItem } from './SettingsItem';
 import { ThemeSelector } from './ThemeSelector';
 
 export const SettingsScreen: React.FC = () => {
-  const router = useRouter();
   const { settings, updateTheme, toggleNotifications } = useSettings();
-  const { data: user } = useUserDetails();
 
   const handleHelpPress = () => {
     console.log('Help pressed');
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top', 'left', 'right']}>
+    <SafeAreaView className="flex-1 bg-background" edges={['top', 'left', 'right', 'bottom']}>
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Account Section */}
-        <View className="mb-10">
-          <Text className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-muted-foreground/40">
-            Kullanıcı Hesabı
-          </Text>
-          <Link href="/(app)/profile" asChild>
-            <AccountSection user={user} />
-          </Link>
-        </View>
-
         {/* Appearance Group */}
         <View className="mb-8">
           <Text className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-muted-foreground/40">

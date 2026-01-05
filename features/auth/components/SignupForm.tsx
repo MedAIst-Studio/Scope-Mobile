@@ -2,9 +2,12 @@ import { DynamicFormField, FormFieldType } from '@/components/shared/DynamicForm
 import { FormAlert } from '@/components/shared/FormAlert';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { Link } from 'expo-router';
+import { useLegalStore } from '@/features/legal/stores/useLegalStore';
+import { cn } from '@/lib/utils';
+import { Link, useRouter } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { Controller } from 'react-hook-form';
+import { ActivityIndicator, Alert, TouchableOpacity, View } from 'react-native';
 import { useSignupForm, useSocialAuth } from '../hooks/useAuthForms';
 import { SignupLayout } from './AuthLayout';
 
@@ -21,6 +24,7 @@ function SignupFormContent({
   error: string | null;
   onSubmit: (data: SignupFormData) => void;
 }) {
+  const router = useRouter();
   return (
     <View className="flex flex-col gap-6">
       <View className="flex flex-col gap-4">
@@ -66,13 +70,66 @@ function SignupFormContent({
           required
         />
 
-        <DynamicFormField
+        <Controller
           control={form.control}
-          disabled={isLoading}
-          label="Kullanım koşulları ve gizlilik politikasını kabul ediyorum"
           name="agreeToTerms"
-          type={FormFieldType.CHECKBOX}
-          required
+          render={({ field, fieldState: { error } }) => {
+            const { isTermsRead, isPrivacyRead } = useLegalStore();
+            const hasError = !!error;
+
+            const handleCheck = () => {
+              if (!isTermsRead || !isPrivacyRead) {
+                Alert.alert(
+                  'Hukuki Onay Gerekli',
+                  'Lütfen devam etmeden önce Kullanım Koşulları ve Gizlilik Politikasını okuyup onaylayınız.',
+                  [{ text: 'Tamam', style: 'default' }]
+                );
+                return;
+              }
+              field.onChange(!field.value);
+            };
+
+            return (
+              <View className="flex flex-col gap-2">
+                <TouchableOpacity
+                  onPress={handleCheck}
+                  disabled={isLoading}
+                  className="flex-row items-start gap-2">
+                  <View className="pt-0.5">
+                    <View
+                      className={cn(
+                        'h-5 w-5 items-center justify-center rounded border-2',
+                        field.value ? 'border-primary bg-primary' : 'border-border bg-background',
+                        hasError && 'border-destructive',
+                        isLoading && 'opacity-50'
+                      )}>
+                      {field.value && <Text className="text-xs text-primary-foreground">✓</Text>}
+                    </View>
+                  </View>
+                  <Text
+                    className={cn(
+                      'flex-1 text-sm text-foreground',
+                      hasError && 'text-destructive',
+                      isLoading && 'opacity-50'
+                    )}>
+                    <Text
+                      onPress={() => router.push('/legal/terms')}
+                      className="font-bold text-primary underline">
+                      Kullanım Koşulları
+                    </Text>
+                    'nı ve{' '}
+                    <Text
+                      onPress={() => router.push('/legal/privacy')}
+                      className="font-bold text-primary underline">
+                      Gizlilik Politikası
+                    </Text>
+                    'nı okudum, anladım ve kabul ediyorum
+                  </Text>
+                </TouchableOpacity>
+                {error && <Text className="text-sm text-destructive">{error.message}</Text>}
+              </View>
+            );
+          }}
         />
       </View>
 

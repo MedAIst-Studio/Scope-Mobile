@@ -13,7 +13,7 @@ export const UploadFile: React.FC = () => {
   const handleFileUpload = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf',
+        type: ['application/pdf', 'image/*'],
         copyToCacheDirectory: true,
       });
 
@@ -26,7 +26,9 @@ export const UploadFile: React.FC = () => {
         file_data: {
           uri: file.uri,
           name: file.name,
-          type: file.mimeType || 'application/pdf',
+          type:
+            file.mimeType ||
+            (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg'),
         },
       });
     } catch (error) {
@@ -45,9 +47,9 @@ export const UploadFile: React.FC = () => {
       </View>
 
       <View className="mb-6 items-center">
-        <Text className="mb-1 text-xl font-bold text-foreground">Yeni PDF Yükle</Text>
-        <Text className="text-sm text-muted-foreground/60">
-          Tıbbi analiz için dosyanızı ekleyin
+        <Text className="mb-1 text-xl font-bold text-foreground">Yeni Dosya Yükle</Text>
+        <Text className="px-4 text-center text-sm text-muted-foreground/60">
+          YKS hazırlık sürecinde analiz için döküman veya görsel ekleyin
         </Text>
       </View>
 
@@ -63,7 +65,7 @@ export const UploadFile: React.FC = () => {
       </Button>
 
       <Text className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
-        PDF • MAKSİMUM 10MB
+        PDF, GÖRÜNTÜ • MAKSİMUM 10MB
       </Text>
     </View>
   );

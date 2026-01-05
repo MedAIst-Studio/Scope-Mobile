@@ -83,7 +83,8 @@ const TypingIndicator = () => {
         colors={['rgba(249, 115, 22, 0.15)', 'rgba(249, 115, 22, 0.05)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        className="flex-row items-center gap-2 rounded-2xl rounded-tl-none border border-primary/20 px-5 py-3.5 shadow-sm shadow-primary/10">
+        style={{ borderTopLeftRadius: 0, borderRadius: 16 }}
+        className="flex-row items-center gap-2 border border-primary/20 px-5 py-3.5 shadow-sm shadow-primary/10">
         <Animated.View style={animatedStyle1} className="h-2 w-2 rounded-full bg-primary" />
         <Animated.View style={animatedStyle2} className="h-2 w-2 rounded-full bg-primary" />
         <Animated.View style={animatedStyle3} className="h-2 w-2 rounded-full bg-primary" />
@@ -143,7 +144,8 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
               className="active:scale-[0.98]">
               <LinearGradient
                 colors={['transparent', 'rgba(249, 115, 22, 0.02)']}
-                className="flex-row items-center justify-between rounded-2xl border border-border/40 bg-card/30 p-4">
+                style={{ borderRadius: 16 }}
+                className="flex-row items-center justify-between border border-border/40 bg-card/30 p-4">
                 <Text className="flex-1 text-[14px] font-semibold text-foreground/80">{q}</Text>
                 <Icon as={ChevronRightIcon} size={16} className="text-muted-foreground/30" />
               </LinearGradient>

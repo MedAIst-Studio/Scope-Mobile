@@ -3,9 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
+import { cn } from '@/lib/utils';
 import React from 'react';
 import { View } from 'react-native';
-import { ChatBubbleLeftIcon, DocumentTextIcon, TrashIcon } from 'react-native-heroicons/solid';
+import {
+  ChatBubbleLeftIcon,
+  DocumentIcon,
+  DocumentTextIcon,
+  PhotoIcon,
+  TrashIcon,
+} from 'react-native-heroicons/solid';
 import { File } from '../types';
 
 interface FileCardProps {
@@ -13,6 +20,32 @@ interface FileCardProps {
   onChatStart: (fileId: string) => void;
   onDelete?: (fileId: string) => void;
 }
+
+const getFileInfo = (fileName: string) => {
+  const ext = fileName.toLowerCase().split('.').pop() || '';
+
+  if (['pdf'].includes(ext)) {
+    return {
+      icon: DocumentTextIcon,
+      bgColor: 'bg-red-500/10',
+      iconColor: 'text-red-500',
+    };
+  }
+
+  if (['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(ext)) {
+    return {
+      icon: PhotoIcon,
+      bgColor: 'bg-blue-500/10',
+      iconColor: 'text-blue-500',
+    };
+  }
+
+  return {
+    icon: DocumentIcon,
+    bgColor: 'bg-zinc-500/10',
+    iconColor: 'text-zinc-500',
+  };
+};
 
 export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete }) => {
   const formattedSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
@@ -22,11 +55,13 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
     year: 'numeric',
   });
 
+  const { icon, bgColor, iconColor } = getFileInfo(file.title);
+
   return (
     <Card className="mb-4">
       <CardHeader className="flex-row items-center gap-4">
-        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-secondary/50">
-          <Icon as={DocumentTextIcon} size={28} className="text-primary" />
+        <View className={cn('h-14 w-14 items-center justify-center rounded-2xl', bgColor)}>
+          <Icon as={icon} size={28} className={iconColor} />
         </View>
 
         <View className="flex-1">

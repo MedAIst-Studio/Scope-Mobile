@@ -24,7 +24,7 @@ interface DynamicFormFieldProps<
 > {
   control: Control<TFieldValues>;
   name: TName;
-  label?: string;
+  label?: string | React.ReactNode;
   placeholder?: string;
   type: FormFieldType;
   disabled?: boolean;

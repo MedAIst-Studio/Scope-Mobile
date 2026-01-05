@@ -14,12 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  AcademicCapIcon,
-  ArrowLeftIcon,
-  CubeIcon,
-  EnvelopeIcon,
-} from 'react-native-heroicons/solid';
+import { ArrowLeftIcon, CubeIcon, EnvelopeIcon } from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
@@ -157,27 +152,7 @@ export function AuthLayout({
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            <View className="flex-1 justify-center px-4 py-12">
-              <Animated.View
-                style={{
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                }}
-                className="mb-12 items-center">
-                <View className="mb-8 h-20 w-20 items-center justify-center rounded-[2rem] bg-primary shadow-xl shadow-primary/30">
-                  <AcademicCapIcon size={40} color="white" />
-                </View>
-                <Text className="mb-3 text-center text-4xl font-bold tracking-tighter text-foreground">
-                  {title}
-                </Text>
-
-                {subtitle && (
-                  <Text className="max-w-[300px] text-center text-lg font-medium leading-6 text-muted-foreground/60">
-                    {subtitle}
-                  </Text>
-                )}
-              </Animated.View>
-
+            <View className="flex-1 justify-center px-4 py-6">
               <Animated.View
                 style={{
                   opacity: fadeAnim,
