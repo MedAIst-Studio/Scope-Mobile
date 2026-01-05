@@ -138,6 +138,7 @@ export const useChat = () => {
         file_id: activeFile?.id,
         chatId: chatId,
         image_url: imageUrl,
+        localImageUri: imageAttachment?.uri, // Pass local URI for optimistic update
       },
       {
         onSuccess: () => {

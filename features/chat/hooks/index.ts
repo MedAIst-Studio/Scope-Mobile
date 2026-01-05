@@ -71,6 +71,7 @@ export const useSendMessage = () => {
       file_id?: string | null;
       chatId?: string;
       image_url?: string;
+      localImageUri?: string;
     }) => {
       const { data, error } = await chatAPI.sendMessage(message, file_id, chatId, image_url);
 
@@ -87,12 +88,15 @@ export const useSendMessage = () => {
 
       const previousMessages = queryClient.getQueryData(queryKey);
 
-      const optimisticAttachments = variables.image_url
+      // Use local URI if available for instant preview, otherwise fallback to remote URL
+      const attachmentUri = variables.localImageUri || variables.image_url;
+
+      const optimisticAttachments = attachmentUri
         ? [
             {
               type: 'image' as const,
               name: 'Image',
-              uri: variables.image_url,
+              uri: attachmentUri,
             },
           ]
         : undefined;

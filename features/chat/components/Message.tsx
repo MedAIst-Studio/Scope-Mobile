@@ -24,8 +24,8 @@ export const Message: React.FC<MessageProps> = ({ message }) => {
   const markdownStyles = StyleSheet.create({
     body: {
       color: textColor,
-      fontSize: 15,
-      lineHeight: 22,
+      fontSize: 16,
+      lineHeight: 24,
     },
     paragraph: {
       marginVertical: 2,

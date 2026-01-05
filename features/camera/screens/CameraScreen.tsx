@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
+import { useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ArrowPathIcon, XMarkIcon } from 'react-native-heroicons/outline';
@@ -13,11 +14,9 @@ export default function CameraScreen() {
   const [facing, setFacing] = useState<CameraType>('back');
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
-  const [resultImage, setResultImage] = useState<string | null>(null); // New state for local result
+  const [resultImage, setResultImage] = useState<string | null>(null);
   const cameraRef = useRef<CameraView>(null);
-  // const router = useRouter(); // Disabled for isolation
-
-  // const { mutateAsync: uploadFile } = useUploadFile(); // Disabled API hook
+  const router = useRouter();
 
   if (!permission) {
     return <View />;
@@ -58,53 +57,27 @@ export default function CameraScreen() {
   const handleCropConfirm = (croppedUri: string) => {
     setCroppingImage(null);
     setCapturedImage(croppedUri);
-    // analyzeImage(croppedUri); // Disabled API call
-    setResultImage(croppedUri); // Show local result
+
+    router.push({
+      pathname: '/(tabs)/chat',
+      params: {
+        initialMessage: 'Bu soruyu açıklar mısın?',
+        imageUri: croppedUri,
+      },
+    });
+
+    setTimeout(() => {
+      setCapturedImage(null);
+      setResultImage(null);
+    }, 500);
   };
 
   const handleCropCancel = () => {
     setCroppingImage(null);
   };
 
-  /*
-  const analyzeImage = async (uri: string) => {
-    setIsAnalyzing(true);
-    try {
-      const result = await uploadFile({
-        file_title: 'captured_question.jpg',
-        file_data: {
-          uri: uri,
-          name: 'captured_question.jpg',
-          type: 'image/jpeg',
-        },
-      });
-
-      const uploadedUrl = result.url;
-
-      if (!uploadedUrl) {
-        throw new Error('Upload failed - No URL returned');
-      }
-
-      router.push({
-        pathname: '/(tabs)/chat',
-        params: {
-          initialMessage: 'Bu soruyu açıklar mısın?',
-          imageUri: uploadedUrl,
-        },
-      });
-      setCapturedImage(null);
-    } catch (error) {
-      console.error('Upload failed', error);
-      setCapturedImage(null);
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-  */
-
   const closeCamera = () => {
-    // router.back(); // Disabled for isolation
-    console.log('Navigation disabled');
+    router.back();
   };
 
   const resetCamera = () => {

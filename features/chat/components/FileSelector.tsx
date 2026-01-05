@@ -14,10 +14,11 @@ interface FileSelectorProps {
 
 export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, onSelect }) => {
   const { data: files = [], isLoading } = useFiles();
+  const pdfFiles = files.filter((f) => f.title.toLowerCase().endsWith('.pdf'));
 
   useEffect(() => {
-    console.log('Number of files:', files.length);
-  }, [files]);
+    console.log('Number of PDF files:', pdfFiles.length);
+  }, [pdfFiles]);
 
   const handleSelect = (item: any) => {
     onSelect(item);
@@ -31,7 +32,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, 
             <View>
               <Text className="text-xl font-bold text-foreground">Dosyalarım</Text>
               <Text className="text-sm text-muted-foreground">
-                Sohbet etmek istediğiniz dosyayı seçin
+                Sohbet etmek için bir PDF belgesi seçin
               </Text>
             </View>
             <TouchableOpacity
@@ -47,7 +48,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, 
             </View>
           ) : (
             <FlatList
-              data={files}
+              data={pdfFiles}
               keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => (

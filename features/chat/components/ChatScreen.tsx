@@ -12,9 +12,18 @@ import {
 import { Icon } from '@/components/ui/icon';
 import { ImageCropper } from '@/features/camera/components/ImageCropper';
 import { cn } from '@/lib/utils';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-import React, { useLayoutEffect, useState } from 'react';
-import { KeyboardAvoidingView, Modal, Platform, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   DocumentPlusIcon,
   DocumentTextIcon,
@@ -24,6 +33,13 @@ import {
   TrashIcon,
   XMarkIcon,
 } from 'react-native-heroicons/solid';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useChats, useDeleteChat, useUpdateChat } from '../hooks';
 import { useChat } from '../hooks/useChat';
@@ -32,6 +48,88 @@ import { ChatInput } from './ChatInput';
 import { ChatMessageList } from './ChatMessageList';
 import { FileSelector } from './FileSelector';
 import { RenameModal } from './RenameModal';
+
+const SkeletonItem = ({ index }: { index: number }) => {
+  const shimmerPosition = useSharedValue(-100);
+  const isRight = index % 2 === 0;
+
+  useEffect(() => {
+    shimmerPosition.value = withRepeat(withTiming(400, { duration: 1500 }), -1, false);
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: 0.8,
+  }));
+
+  const shimmerStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: shimmerPosition.value }],
+  }));
+
+  return (
+    <Animated.View
+      style={animatedStyle}
+      className={cn(
+        'max-w-[80%] overflow-hidden rounded-2xl p-4',
+        isRight ? 'self-end bg-primary/10' : 'self-start bg-muted/20'
+      )}>
+      <Animated.View style={[StyleSheet.absoluteFill, shimmerStyle]}>
+        <LinearGradient
+          colors={['transparent', 'rgba(255,255,255,0.1)', 'transparent']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          className="h-full w-24"
+        />
+      </Animated.View>
+      <View
+        className="mb-2 h-4 rounded-full bg-foreground/10"
+        style={{ width: isRight ? 120 : 180 }}
+      />
+      <View className="h-3 rounded-full bg-foreground/5" style={{ width: isRight ? 80 : 140 }} />
+    </Animated.View>
+  );
+};
+
+const StatusIndicator = () => {
+  const glowScale = useSharedValue(1);
+  const glowOpacity = useSharedValue(1);
+
+  useEffect(() => {
+    glowScale.value = withRepeat(
+      withSequence(withTiming(1.4, { duration: 1200 }), withTiming(1, { duration: 1200 })),
+      -1,
+      true
+    );
+    glowOpacity.value = withRepeat(
+      withSequence(withTiming(0.4, { duration: 1200 }), withTiming(0.8, { duration: 1200 })),
+      -1,
+      true
+    );
+  }, []);
+
+  const glowStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: glowScale.value }],
+    opacity: glowOpacity.value,
+  }));
+
+  return (
+    <View className="items-center justify-center">
+      <Animated.View style={glowStyle} className="absolute h-32 w-32 items-center justify-center">
+        <LinearGradient
+          colors={['rgba(249, 115, 22, 0.4)', 'transparent']}
+          className="h-full w-full rounded-full"
+        />
+      </Animated.View>
+      <LinearGradient
+        colors={['rgba(249, 115, 22, 0.2)', 'rgba(249, 115, 22, 0.05)']}
+        className="flex-row items-center gap-3 rounded-full border border-primary/30 px-8 py-4 shadow-2xl shadow-primary/20">
+        <View className="h-3 w-3 rounded-full bg-primary" />
+        <Text className="text-base font-bold tracking-tight text-primary">
+          MedAIst hazırlanıyor...
+        </Text>
+      </LinearGradient>
+    </View>
+  );
+};
 
 export const ChatScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -48,6 +146,7 @@ export const ChatScreen: React.FC = () => {
     message,
     setMessage,
     attachments,
+    setAttachments,
     removeAttachment,
     isFileSelectorVisible,
     setIsFileSelectorVisible,
@@ -78,8 +177,6 @@ export const ChatScreen: React.FC = () => {
   const handleCropConfirm = async (croppedUri: string) => {
     setCroppingImage(null);
 
-    // Bypassing upload for debugging
-    console.log('Adding local attachment with URI:', croppedUri);
     addAttachment({
       type: 'image',
       name: 'chat_image.jpg',
@@ -87,29 +184,14 @@ export const ChatScreen: React.FC = () => {
     });
 
     try {
-      uploadFile
-        .mutateAsync({
-          file_title: 'chat_image.jpg',
-          file_data: {
-            uri: croppedUri,
-            name: 'chat_image.jpg',
-            type: 'image/jpeg',
-          },
-        })
-        .then((result) => {
-          console.log('Chat upload started/finished in background', result);
-        })
-        .catch((err) => {
-          console.error('Background upload failed', err);
-        });
-
-      /*
-      // URL update disabled per user request to avoid flickering
-      const result = await uploadFile(...)
-      ...
-        addAttachment({ uri: uploadedUrl })
-      ...
-      */
+      uploadFile({
+        file_title: 'chat_image.jpg',
+        file_data: {
+          uri: croppedUri,
+          name: 'chat_image.jpg',
+          type: 'image/jpeg',
+        },
+      });
     } catch (error) {
       console.error('Failed to initiate chat image upload:', error);
     }
@@ -124,7 +206,12 @@ export const ChatScreen: React.FC = () => {
   const handleDelete = () => {
     if (!chatId) return;
     deleteChat(chatId, {
-      onSuccess: () => router.replace('/(tabs)/chat'),
+      onSuccess: () => {
+        router.replace('/(tabs)/chat');
+        setActiveFile(null);
+        setMessage('');
+        setAttachments([]);
+      },
     });
   };
 
@@ -217,31 +304,13 @@ export const ChatScreen: React.FC = () => {
 
         {isLoading ? (
           <View className="flex-1 px-4 py-6">
-            <View className="flex-1 animate-pulse space-y-6">
+            <View className="flex-1 space-y-6">
               {[1, 2, 3, 4, 5].map((i) => (
-                <View
-                  key={i}
-                  className={cn(
-                    'max-w-[80%] rounded-2xl p-4',
-                    i % 2 === 0 ? 'self-end bg-primary/10' : 'self-start bg-muted/20'
-                  )}>
-                  <View
-                    className="mb-2 h-4 rounded-full bg-foreground/10"
-                    style={{ width: i % 2 === 0 ? 120 : 180 }}
-                  />
-                  <View
-                    className="h-3 rounded-full bg-foreground/5"
-                    style={{ width: i % 2 === 0 ? 80 : 140 }}
-                  />
-                </View>
+                <SkeletonItem key={i} index={i} />
               ))}
             </View>
             <View className="absolute inset-0 items-center justify-center">
-              <View className="rounded-full border border-border/20 bg-background/80 px-4 py-2 shadow-sm">
-                <Text className="text-sm font-medium text-muted-foreground">
-                  Asistan hazırlanıyor...
-                </Text>
-              </View>
+              <StatusIndicator />
             </View>
           </View>
         ) : (
@@ -288,7 +357,9 @@ export const ChatScreen: React.FC = () => {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Vazgeç</AlertDialogCancel>
+              <AlertDialogCancel>
+                <Text className="text-muted-foreground">Vazgeç</Text>
+              </AlertDialogCancel>
               <AlertDialogAction
                 className="bg-destructive hover:bg-destructive/90"
                 onPress={handleDelete}>
