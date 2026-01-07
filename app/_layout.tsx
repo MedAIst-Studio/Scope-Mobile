@@ -1,3 +1,4 @@
+import { GlobalErrorProvider } from '@/components/providers/GlobalErrorProvider';
 import '@/global.css';
 
 import { NAV_THEME } from '@/lib/theme';
@@ -31,14 +32,16 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-          <AuthGuard>
-            <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
-            <PortalHost />
-            <PortalHost name="navigation-portal" />
-          </AuthGuard>
-        </ThemeProvider>
+        <GlobalErrorProvider>
+          <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+            <AuthGuard>
+              <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
+              <PortalHost />
+              <PortalHost name="navigation-portal" />
+            </AuthGuard>
+          </ThemeProvider>
+        </GlobalErrorProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

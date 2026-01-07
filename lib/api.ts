@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 import { AuthAPI } from '@/features/auth/api';
 
+import { ApiErrorHandler } from './error-handling/ApiErrorHandler';
 import { logger } from './logger';
 import { ApiConfig, ApiError, ApiRequestConfig } from './types';
 import { createApiError } from './utils';
@@ -66,7 +67,6 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Token refresh state
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
@@ -170,6 +170,7 @@ axiosInstance.interceptors.response.use(
     const apiError = createApiError(error, 'API_RESPONSE_ERROR');
 
     logger.error('API Error', apiError);
+    ApiErrorHandler.handle(error as any);
 
     return Promise.reject(apiError);
   }
