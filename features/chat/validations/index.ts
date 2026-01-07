@@ -14,6 +14,21 @@ export const messagesResponseSchema = z.array(
     content: z.string(),
     is_user: z.boolean(),
     timestamp: z.string(),
+    context_snapshot: z
+      .object({
+        type: z.string(),
+        document_id: z.string(),
+        cached_title: z.string().optional(),
+      })
+      .optional(),
+    attachments: z
+      .array(
+        z.object({
+          type: z.string(),
+          url: z.string(),
+        })
+      )
+      .optional(),
   })
 );
 
@@ -33,8 +48,6 @@ export const messageResponseSchema = z.object({
 });
 
 export type Chat = z.infer<typeof chat>;
-export type Message = z.infer<typeof messagesResponseSchema.element> & {
-  attachments?: { type: 'image' | 'file'; name: string; uri: string }[];
-};
+export type Message = z.infer<typeof messagesResponseSchema.element>;
 export type UserMessage = z.infer<typeof messageRequestSchema>;
 export type AIMessage = z.infer<typeof messageResponseSchema>;

@@ -96,7 +96,7 @@ export const useSendMessage = () => {
             {
               type: 'image' as const,
               name: 'Image',
-              uri: attachmentUri,
+              url: attachmentUri,
             },
           ]
         : undefined;
@@ -129,7 +129,7 @@ export const useSendMessage = () => {
                 {
                   type: 'image' as const,
                   name: 'Image',
-                  uri: variables.image_url,
+                  url: variables.image_url,
                 },
               ]
             : undefined;
