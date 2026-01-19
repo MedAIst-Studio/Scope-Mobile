@@ -5,10 +5,10 @@ import {
   LoginFormData,
   loginResponseSchema,
   loginSchema,
-  refreshTokenResponseSchema,
   SignupFormData,
   verifyOauthResponseSchema,
 } from '../utils/validation';
+import { refreshAuthToken } from './refresh';
 
 const AUTH_PATH = '/auth';
 const USERS_PATH = '/users';
@@ -61,15 +61,7 @@ export const AuthAPI = {
   },
 
   async refreshToken(refreshToken: string) {
-    const { data, error, success } = await apiClient.post(
-      `${AUTH_PATH}/refresh`,
-      { refresh_token: refreshToken },
-      {
-        response: refreshTokenResponseSchema,
-      }
-    );
-
-    return { data, error, success };
+    return await refreshAuthToken(refreshToken);
   },
 
   async verifyOauthSession(session: string) {

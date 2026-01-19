@@ -6,7 +6,6 @@ import { StatusBar } from 'expo-status-bar';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import {
   Animated,
-  Dimensions,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -17,7 +16,6 @@ import {
 import { ArrowLeftIcon, CubeIcon, EnvelopeIcon } from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const { width } = Dimensions.get('window');
 const google = require('@/assets/images/google.png');
 
 interface SocialLoginButtonProps {
@@ -107,8 +105,6 @@ interface AuthLayoutProps {
 
 export function AuthLayout({
   children,
-  title,
-  subtitle,
   className,
   onGoogleLogin,
   onFacebookLogin,

@@ -2,9 +2,11 @@ import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
-import { Image, Platform, StyleSheet, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { DocumentIcon } from 'react-native-heroicons/solid';
 import Markdown from 'react-native-markdown-display';
+import { getMarkdownStyles } from '../utils/markdownConfig';
+import { getMarkdownRules } from '../utils/markdownRules';
 import { Message as MessageType } from '../validations';
 
 interface MessageProps {
@@ -64,65 +66,18 @@ const MessageContent: React.FC<{
   isUser: boolean;
   isDark: boolean;
 }> = ({ content, isUser, isDark }) => {
-  const aiTextColor = isDark ? '#F1F5F9' : '#1E293B';
+  const aiTextColor = isDark ? '#E2E8F0' : '#1E293B';
   const userTextColor = '#FFFFFF';
   const textColor = isUser ? userTextColor : aiTextColor;
 
-  const styles = StyleSheet.create({
-    body: { color: textColor, fontSize: 16, lineHeight: 24 },
-    paragraph: { marginVertical: 2 },
-    strong: { fontWeight: 'bold', color: textColor },
-    em: { fontStyle: 'italic', color: textColor },
-    heading1: { fontSize: 22, fontWeight: 'bold', marginVertical: 8, color: textColor },
-    heading2: { fontSize: 18, fontWeight: 'bold', marginVertical: 6, color: textColor },
-    heading3: { fontSize: 16, fontWeight: 'bold', marginVertical: 4, color: textColor },
-    list_item: { flexDirection: 'row', alignItems: 'flex-start', marginVertical: 2 },
-    bullet_list: { marginVertical: 4 },
-    ordered_list: { marginVertical: 4 },
-    bullet_list_icon: { color: textColor, marginRight: 8 },
-    ordered_list_icon: { color: textColor, marginRight: 8 },
-    link: {
-      color: isUser ? '#E2E8F0' : '#F97316',
-      textDecorationLine: 'underline',
-    },
-    code_inline: {
-      backgroundColor: isUser
-        ? 'rgba(255,255,255,0.1)'
-        : isDark
-          ? 'rgba(255,255,255,0.05)'
-          : 'rgba(0,0,0,0.05)',
-      borderRadius: 4,
-      paddingHorizontal: 4,
-      fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-      color: textColor,
-    },
-    code_block: {
-      backgroundColor: isUser
-        ? 'rgba(255,255,255,0.1)'
-        : isDark
-          ? 'rgba(255,255,255,0.05)'
-          : 'rgba(0,0,0,0.05)',
-      borderRadius: 8,
-      padding: 12,
-      marginVertical: 8,
-      fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-      color: textColor,
-    },
-    fence: {
-      backgroundColor: isUser
-        ? 'rgba(255,255,255,0.1)'
-        : isDark
-          ? 'rgba(255,255,255,0.05)'
-          : 'rgba(0,0,0,0.05)',
-      borderRadius: 8,
-      padding: 12,
-      marginVertical: 8,
-      fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-      color: textColor,
-    },
-  });
+  const styles = getMarkdownStyles(textColor, isUser, isDark);
+  const rules = getMarkdownRules(textColor);
 
-  return <Markdown style={styles as any}>{content}</Markdown>;
+  return (
+    <Markdown style={styles as any} rules={rules}>
+      {content}
+    </Markdown>
+  );
 };
 
 export const Message: React.FC<MessageProps> = ({ message }) => {

@@ -1,7 +1,6 @@
 import { ActionMenu } from '@/components/shared/ActionMenu';
 import { Badge } from '@/components/ui/badge';
 import { RenameModal } from '@/features/chat/components/RenameModal';
-import { useChats, useDeleteChat, useUpdateChat } from '@/features/chat/hooks';
 import { useUserDetails } from '@/features/users/hooks';
 import { cn } from '@/lib/utils';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
@@ -24,6 +23,7 @@ import {
   XMarkIcon,
 } from 'react-native-heroicons/solid';
 
+import { useChats, useDeleteChat, useUpdateChat } from '@/features/chat/hooks/queries';
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '../ui/icon';
@@ -213,7 +213,10 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                       <TouchableOpacity
                         key={chat.id}
                         onPress={() => {
-                          navigation.navigate('chat', { id: chat.id, file_id: chat.file_id });
+                          router.push({
+                            pathname: '/(tabs)/chat',
+                            params: { id: chat.id, file_id: chat.file_id },
+                          });
                           closeMenu();
                         }}
                         onLongPress={() => handleLongPress(chat)}

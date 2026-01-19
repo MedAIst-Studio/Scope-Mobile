@@ -10,7 +10,7 @@ import {
   TextInputContentSizeChangeEventData,
 } from 'react-native';
 import { Message } from '../validations';
-import { useChatMessages, useSendMessage } from './index';
+import { useChatMessages, useSendMessage } from './queries';
 
 export interface Attachment {
   type: 'image' | 'file';
@@ -142,8 +142,10 @@ export const useChat = () => {
       },
       {
         onSuccess: () => {
+          // Explicitly clear all input state
           setMessage('');
           setAttachments([]);
+          setActiveFile(null);
           setInputHeight(40);
         },
       }

@@ -88,7 +88,6 @@ export const useSendMessage = () => {
 
       const previousMessages = queryClient.getQueryData(queryKey);
 
-      // Use local URI if available for instant preview, otherwise fallback to remote URL
       const attachmentUri = variables.localImageUri || variables.image_url;
 
       const optimisticAttachments = attachmentUri
@@ -113,6 +112,7 @@ export const useSendMessage = () => {
 
       return { previousMessages, queryKey };
     },
+
     onSuccess: (data, variables) => {
       const chatIdToUse = data?.chat_id || variables.chatId;
 
@@ -158,6 +158,8 @@ export const useSendMessage = () => {
       }
 
       if (!variables.chatId && data?.chat_id) {
+        queryClient.removeQueries({ queryKey: chatKeys.messages('') });
+
         queryClient.invalidateQueries({
           queryKey: chatKeys.lists(),
         });
@@ -202,6 +204,7 @@ export const useUpdateChat = () => {
 
 export const useDeleteChat = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (chatId: string) => {
@@ -219,10 +222,14 @@ export const useDeleteChat = () => {
       queryClient.removeQueries({
         queryKey: chatKeys.messages(chatId),
       });
+
+      if (router.canGoBack()) {
+        router.dismissAll();
+      }
+      router.replace('/(tabs)/chat');
     },
     onError: (error: Error) => {
       Alert.alert('Hata', 'Sohbet silinemedi: ' + error.message);
     },
   });
 };
-export * from './useChat';

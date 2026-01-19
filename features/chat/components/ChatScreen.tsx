@@ -41,9 +41,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useChats, useDeleteChat, useUpdateChat } from '../hooks';
 import { useChat } from '../hooks/useChat';
 
+import { useChats, useDeleteChat, useUpdateChat } from '../hooks/queries';
 import { ChatInput } from './ChatInput';
 import { ChatMessageList } from './ChatMessageList';
 import { FileSelector } from './FileSelector';

@@ -5,7 +5,7 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import React from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import {
   ChatBubbleLeftIcon,
   DocumentIcon,
@@ -60,8 +60,18 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
   return (
     <Card className="mb-4">
       <CardHeader className="flex-row items-center gap-4">
-        <View className={cn('h-14 w-14 items-center justify-center rounded-2xl', bgColor)}>
-          <Icon as={icon} size={28} className={iconColor} />
+        <View
+          className={cn(
+            'h-14 w-14 items-center justify-center overflow-hidden rounded-2xl',
+            bgColor
+          )}>
+          {['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(
+            file.title.toLowerCase().split('.').pop() || ''
+          ) && file.url ? (
+            <Image source={{ uri: file.url }} className="h-full w-full" resizeMode="cover" />
+          ) : (
+            <Icon as={icon} size={28} className={iconColor} />
+          )}
         </View>
 
         <View className="flex-1">

@@ -1,4 +1,4 @@
-import z from "zod";
+import z from 'zod';
 
 export const filesResponseSchema = z
   .array(
@@ -7,6 +7,7 @@ export const filesResponseSchema = z
       title: z.string(),
       created_at: z.string(),
       size: z.number(),
-    }),
+      url: z.string().optional(),
+    })
   )
   .nullable();

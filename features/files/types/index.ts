@@ -3,4 +3,5 @@ export type File = {
   title: string;
   created_at: string;
   size: number;
+  url?: string;
 };
