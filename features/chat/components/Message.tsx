@@ -4,10 +4,8 @@ import { FileText } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { Image, Text, View } from 'react-native';
-import Markdown from 'react-native-markdown-display';
-import { getMarkdownStyles } from '../utils/markdownConfig';
-import { getMarkdownRules } from '../utils/markdownRules';
 import { Message as MessageType } from '../validations';
+import { MathMarkdownRenderer } from './MathMarkdownRenderer';
 
 interface MessageProps {
   message: MessageType;
@@ -66,18 +64,7 @@ const MessageContent: React.FC<{
   isUser: boolean;
   isDark: boolean;
 }> = ({ content, isUser, isDark }) => {
-  const aiTextColor = isDark ? '#E2E8F0' : '#1E293B';
-  const userTextColor = '#FFFFFF';
-  const textColor = isUser ? userTextColor : aiTextColor;
-
-  const styles = getMarkdownStyles(textColor, isUser, isDark);
-  const rules = getMarkdownRules(textColor);
-
-  return (
-    <Markdown style={styles as any} rules={rules}>
-      {content}
-    </Markdown>
-  );
+  return <MathMarkdownRenderer content={content} isUser={isUser} isDark={isDark} />;
 };
 
 export const Message: React.FC<MessageProps> = ({ message }) => {
