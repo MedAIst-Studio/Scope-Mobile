@@ -5,14 +5,11 @@ export type ContentPart = {
 };
 
 export const parseContent = (content: string): ContentPart[] => {
-  // Regex to match ONLY Block math: $$ ... $$ OR \[ ... \]
-  // We keep inline math ($...$ and \(...\)) inside the text parts so they can flow inline within a single renderer.
   const mathRegex = /(\$\$.*?\$\$|\\\[[\s\S]*?\\\])/g;
 
   const parts = content.split(mathRegex);
 
   return parts.map((part, index) => {
-    // Check if the part matches our block math regex
     if (part.match(mathRegex)) {
       return { type: 'math', content: part, key: `math-${index}` };
     } else {

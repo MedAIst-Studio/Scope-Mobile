@@ -253,7 +253,7 @@ export const ChatScreen: React.FC = () => {
 
   const attachActions = [
     {
-      label: 'Fotoğraf Kitaplığı',
+      label: 'Fotoğraflar',
       icon: ImageIcon,
       onPress: handlePickImage,
     },

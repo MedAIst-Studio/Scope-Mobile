@@ -1,6 +1,6 @@
 import { useUploadFile } from '@/features/files/hooks';
 import * as ImagePicker from 'expo-image-picker';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -19,19 +19,22 @@ export interface Attachment {
 }
 
 export const useChat = () => {
-  const { id, file_id, initialMessage, imageUri, fileName } = useLocalSearchParams<{
+  const { id, file_id, initialMessage, imageUri, fileName, autoSend } = useLocalSearchParams<{
     id: string;
     file_id: string;
     initialMessage: string;
     imageUri: string;
     fileName: string;
+    autoSend: string;
   }>();
+  const router = useRouter();
 
   const chatId = Array.isArray(id) ? id[0] : id;
   const initialFileId = Array.isArray(file_id) ? file_id[0] : file_id;
   const initialFileName = Array.isArray(fileName) ? fileName[0] : fileName;
   const initialMsg = Array.isArray(initialMessage) ? initialMessage[0] : initialMessage;
   const initialImg = Array.isArray(imageUri) ? imageUri[0] : imageUri;
+  const shouldAutoSend = Array.isArray(autoSend) ? autoSend[0] === 'true' : autoSend === 'true';
 
   const [activeFile, setActiveFile] = useState<{ id: string; title: string } | null>(
     initialFileId ? { id: initialFileId, title: initialFileName || 'Dosya' } : null
@@ -41,7 +44,6 @@ export const useChat = () => {
   const resolveUri = (uri: string) => {
     if (!uri) return '';
     if (uri.startsWith('http') || uri.startsWith('file://')) return uri;
-    // Remove double slash if present
     const cleanUri = uri.startsWith('/') ? uri.substring(1) : uri;
     const apiUrl = process.env.EXPO_PUBLIC_API_URL || '';
     const cleanBase = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
@@ -63,10 +65,6 @@ export const useChat = () => {
   const prevParams = useRef({ initialImg, initialMsg, initialFileId });
 
   useEffect(() => {
-    // Only synchronize from URL parameters if they have actually changed
-    // or if we are initializing. This prevents manual state changes (like picking a different file)
-    // from being overwritten by the static URL parameters.
-
     if (initialImg && initialImg !== prevParams.current.initialImg) {
       setAttachments([
         {
@@ -76,11 +74,13 @@ export const useChat = () => {
         },
       ]);
       prevParams.current.initialImg = initialImg;
+      hasAutoSent.current = false;
     }
 
     if (initialMsg && initialMsg !== prevParams.current.initialMsg) {
       setMessage(initialMsg);
       prevParams.current.initialMsg = initialMsg;
+      hasAutoSent.current = false;
     }
 
     if (initialFileId && (initialFileId !== prevParams.current.initialFileId || !activeFile)) {
@@ -97,6 +97,17 @@ export const useChat = () => {
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
   const { mutateAsync: uploadFile, isPending: isUploading } = useUploadFile();
 
+  const hasAutoSent = useRef(false);
+
+  useEffect(() => {
+    if (shouldAutoSend && !hasAutoSent.current && (initialMsg || initialImg)) {
+      hasAutoSent.current = true;
+      setTimeout(() => {
+        handleSendMessage();
+      }, 100);
+    }
+  }, [shouldAutoSend, initialMsg, initialImg]);
+
   const handleSendMessage = async () => {
     if (!message.trim() && attachments.length === 0) return;
 
@@ -107,7 +118,6 @@ export const useChat = () => {
     const imageAttachment = attachments.find((a) => a.type === 'image');
 
     if (imageAttachment) {
-      // If it's not a local file (file://), assume it's a remote URL and use it directly
       if (!imageAttachment.uri.startsWith('file://')) {
         imageUrl = imageAttachment.uri;
       } else {
@@ -127,6 +137,9 @@ export const useChat = () => {
             imageUrl = response[0].url || response[0].uri;
           }
         } catch (error) {
+          console.error('Upload failed:', error);
+          Alert.alert('Hata', 'Fotoğraf yüklenemedi. Lütfen tekrar deneyin.');
+          hasAutoSent.current = false;
           return;
         }
       }
@@ -138,15 +151,28 @@ export const useChat = () => {
         file_id: activeFile?.id,
         chatId: chatId,
         image_url: imageUrl,
-        localImageUri: imageAttachment?.uri, // Pass local URI for optimistic update
+        localImageUri: imageAttachment?.uri,
       },
       {
         onSuccess: () => {
-          // Explicitly clear all input state
-          setMessage('');
-          setAttachments([]);
-          setActiveFile(null);
-          setInputHeight(40);
+          try {
+            setTimeout(() => {
+              setMessage('');
+              setAttachments([]);
+              setActiveFile(null);
+              setInputHeight(40);
+            }, 100);
+
+            router.setParams({
+              initialMessage: '',
+              imageUri: '',
+              autoSend: '',
+              fileName: '',
+              file_id: '',
+            });
+          } catch (e) {
+            console.error('Error clearing chat state:', e);
+          }
         },
       }
     );
@@ -167,7 +193,7 @@ export const useChat = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 0.8,
-      allowsEditing: false, // We use custom cropper
+      allowsEditing: false,
       aspect: [4, 3],
     });
 
@@ -213,6 +239,6 @@ export const useChat = () => {
     pickImage,
     handleFileSelect,
     removeAttachment,
-    uploadFile, // Exposed for manual upload flow
+    uploadFile,
   };
 };

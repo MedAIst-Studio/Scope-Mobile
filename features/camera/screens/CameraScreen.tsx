@@ -1,13 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
+import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 import { RefreshCw, X } from 'lucide-react-native';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageCropper } from '../components/ImageCropper';
+
+const AUTO_SEND_PREF_KEY = 'camera.auto_send_enabled';
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -15,8 +19,20 @@ export default function CameraScreen() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [autoSend, setAutoSend] = useState(true);
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    SecureStore.getItemAsync(AUTO_SEND_PREF_KEY).then((value) => {
+      setAutoSend(value === 'true');
+    });
+  }, []);
+
+  const toggleAutoSend = async (value: boolean) => {
+    setAutoSend(value);
+    await SecureStore.setItemAsync(AUTO_SEND_PREF_KEY, String(value));
+  };
 
   if (!permission) {
     return <View />;
@@ -63,6 +79,7 @@ export default function CameraScreen() {
       params: {
         initialMessage: 'Bu soruyu açıklar mısın?',
         imageUri: croppedUri,
+        autoSend: String(autoSend),
       },
     });
 
@@ -109,10 +126,15 @@ export default function CameraScreen() {
       ) : (
         <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
           <SafeAreaView className="flex-1 justify-between">
-            <View className="flex-row justify-between p-4">
+            <View className="flex-row items-center justify-between p-4">
               <TouchableOpacity onPress={closeCamera} className="rounded-full bg-black/40 p-2">
                 <Icon as={X} color="white" size={24} />
               </TouchableOpacity>
+
+              <View className="flex-row items-center gap-2 rounded-full bg-black/40 py-1 pl-3 pr-1">
+                <Text className="text-xs font-medium text-white">Otomatik Gönder</Text>
+                <Switch checked={autoSend} onCheckedChange={toggleAutoSend} className="scale-75" />
+              </View>
             </View>
 
             <View className="flex-row items-center justify-between bg-black/20 p-8">

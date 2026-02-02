@@ -52,7 +52,7 @@ export const useChatMessages = (chatId: string | null) => {
       return data;
     },
     enabled: !!chatId,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 };
 
@@ -163,9 +163,15 @@ export const useSendMessage = () => {
         queryClient.invalidateQueries({
           queryKey: chatKeys.lists(),
         });
-        router.push({
+        router.replace({
           pathname: '/(tabs)/chat',
-          params: { id: data.chat_id, file_id: variables.file_id },
+          params: {
+            id: data.chat_id,
+            file_id: variables.file_id,
+            initialMessage: '',
+            imageUri: '',
+            autoSend: '',
+          },
         });
       }
     },
