@@ -1,8 +1,8 @@
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
+import { FileText, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Modal, ScrollView, TouchableOpacity, View } from 'react-native';
-import { DocumentTextIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { useFiles } from '../../files/hooks';
 
 interface FileSelectorProps {
@@ -28,7 +28,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ selectedFileId, onSe
         }`}>
         {selectedFile ? (
           <View className="flex-row items-center gap-2">
-            <Icon as={DocumentTextIcon} size={20} className="text-primary" />
+            <Icon as={FileText} size={20} className="text-primary" />
             <Text className="text-foreground">{selectedFile.title}</Text>
           </View>
         ) : (
@@ -48,7 +48,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ selectedFileId, onSe
             <View className="flex-row items-center justify-between border-b border-border p-4">
               <Text className="text-lg font-bold text-foreground">Dosya Seçin</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Icon as={XMarkIcon} size={24} className="text-muted-foreground" />
+                <Icon as={X} size={24} className="text-muted-foreground" />
               </TouchableOpacity>
             </View>
 
@@ -71,7 +71,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ selectedFileId, onSe
                         : 'border-border bg-card'
                     }`}>
                     <Icon
-                      as={DocumentTextIcon}
+                      as={FileText}
                       size={24}
                       className={
                         file.id === selectedFileId ? 'text-primary' : 'text-muted-foreground'

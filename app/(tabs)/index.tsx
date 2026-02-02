@@ -2,16 +2,16 @@ import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useRouter } from 'expo-router';
+import {
+  ArrowRight,
+  Camera,
+  FileText,
+  GraduationCap,
+  MessageSquare,
+  Sparkles,
+} from 'lucide-react-native';
 import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import {
-  AcademicCapIcon,
-  ArrowRightIcon,
-  CameraIcon,
-  ChatBubbleOvalLeftIcon,
-  DocumentTextIcon,
-  SparklesIcon,
-} from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
@@ -55,10 +55,10 @@ export default function HomeScreen() {
             className="mb-8 overflow-hidden rounded-[2.5rem] bg-primary p-8 shadow-xl shadow-primary/30">
             <View className="mb-8 flex-row items-center justify-between">
               <View className="h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
-                <Icon as={CameraIcon} size={32} color="white" />
+                <Icon as={Camera} size={32} color="white" />
               </View>
               <Badge variant="default" className="h-8 border-0 bg-white/20 px-4">
-                <SparklesIcon size={14} color="white" className="" />
+                <Sparkles size={14} color="white" className="" />
                 <Text className="text-[10px] font-bold uppercase tracking-wider text-white">
                   YENİ ÖZELLİK
                 </Text>
@@ -69,7 +69,7 @@ export default function HomeScreen() {
               <Text className="text-lg font-medium text-white/80">Yapay zeka ile anında çözüm</Text>
             </View>
             <View className="absolute bottom-8 right-8 h-12 w-12 items-center justify-center rounded-full bg-white/10">
-              <ArrowRightIcon size={24} color="white" />
+              <ArrowRight size={24} color="white" />
             </View>
           </TouchableOpacity>
 
@@ -87,7 +87,7 @@ export default function HomeScreen() {
                 className="h-44 flex-1 rounded-[2rem] border border-border/40 bg-card p-6 shadow-md shadow-black/5">
                 <View className="flex-1 justify-between">
                   <View className="self-start rounded-2xl bg-primary/10 p-3">
-                    <Icon as={ChatBubbleOvalLeftIcon} size={28} className="text-primary" />
+                    <Icon as={MessageSquare} size={28} className="text-primary" />
                   </View>
                   <View>
                     <Text className="text-xl font-bold text-foreground">Asistan</Text>
@@ -105,7 +105,7 @@ export default function HomeScreen() {
                 className="h-44 flex-1 rounded-[2rem] border border-border/40 bg-card p-6 shadow-md shadow-black/5">
                 <View className="flex-1 justify-between">
                   <View className="self-start rounded-2xl bg-secondary/80 p-3">
-                    <Icon as={DocumentTextIcon} size={28} className="text-foreground/60" />
+                    <Icon as={FileText} size={28} className="text-foreground/60" />
                   </View>
                   <View>
                     <Text className="text-xl font-bold text-foreground">Dosyalar</Text>
@@ -123,7 +123,7 @@ export default function HomeScreen() {
               onPress={() => router.push('/(tabs)/quiz')}
               className="h-28 w-full flex-row items-center gap-5 rounded-[2rem] border border-border/40 bg-card px-7 shadow-md shadow-black/5">
               <View className="h-14 w-14 items-center justify-center rounded-2xl bg-secondary/50">
-                <Icon as={AcademicCapIcon} size={28} className="text-foreground/40" />
+                <Icon as={GraduationCap} size={28} className="text-foreground/40" />
               </View>
               <View className="flex-1">
                 <Text className="text-xl font-bold text-foreground">Sınavlarım</Text>
@@ -132,7 +132,7 @@ export default function HomeScreen() {
                 </Text>
               </View>
               <View className="h-10 w-10 items-center justify-center rounded-full bg-secondary">
-                <Icon as={ArrowRightIcon} size={20} className="text-muted-foreground/40" />
+                <Icon as={ArrowRight} size={20} className="text-muted-foreground/40" />
               </View>
             </TouchableOpacity>
           </View>

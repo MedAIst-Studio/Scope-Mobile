@@ -3,6 +3,7 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useUpdatePassword } from '@/features/users/hooks';
 import { useRouter } from 'expo-router';
+import { ChevronLeft } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
@@ -13,7 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ChevronLeftIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const ChangePasswordScreen: React.FC = () => {
@@ -48,7 +48,7 @@ export const ChangePasswordScreen: React.FC = () => {
       {/* Header */}
       <View className="flex-row items-center gap-4 px-4 pb-6 pt-2">
         <TouchableOpacity onPress={() => router.back()} className="-ml-2 p-2">
-          <Icon as={ChevronLeftIcon} size={24} className="text-foreground" />
+          <Icon as={ChevronLeft} size={24} className="text-foreground" />
         </TouchableOpacity>
         <Text className="text-2xl font-bold text-foreground">Şifre Değiştir</Text>
       </View>

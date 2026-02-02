@@ -6,6 +6,7 @@ import { Text } from '@/components/ui/text';
 import { useAuth } from '@/features/auth/context/AuthContext';
 import { useDeleteAccount, useUpdateUserDetails, useUserDetails } from '@/features/users/hooks';
 import { useRouter } from 'expo-router';
+import { ChevronLeft, ChevronRight, Key, LogOut, Trash2, User } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -16,14 +17,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  ArrowRightStartOnRectangleIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  KeyIcon,
-  TrashIcon,
-  UserIcon,
-} from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const ProfileScreen: React.FC = () => {
@@ -84,7 +77,7 @@ export const ProfileScreen: React.FC = () => {
           {/* Header */}
           <View className="flex-row items-center gap-4 px-4 pb-8 pt-4">
             <Button variant="ghost" size="icon" onPress={() => router.back()} className="-ml-2">
-              <Icon as={ChevronLeftIcon} size={28} className="text-foreground" />
+              <Icon as={ChevronLeft} size={28} className="text-foreground" />
             </Button>
             <Text className="text-3xl font-bold tracking-tight text-foreground">Profil</Text>
           </View>
@@ -94,7 +87,7 @@ export const ProfileScreen: React.FC = () => {
             <View className="mb-10 items-center">
               <View className="relative">
                 <View className="h-28 w-28 items-center justify-center rounded-[2.5rem] border-4 border-background bg-secondary shadow-md">
-                  <Icon as={UserIcon} size={56} className="text-muted-foreground/40" />
+                  <Icon as={User} size={56} className="text-muted-foreground/40" />
                 </View>
                 <View className="absolute bottom-0 right-0 h-8 w-8 items-center justify-center rounded-full border-4 border-background bg-primary">
                   <View className="h-2 w-2 animate-pulse rounded-full bg-white" />
@@ -140,11 +133,11 @@ export const ProfileScreen: React.FC = () => {
                     className="flex-row items-center justify-between rounded-2xl bg-card p-4 active:bg-secondary/50">
                     <View className="flex-row items-center gap-3">
                       <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                        <Icon as={KeyIcon} size={20} className="text-primary" />
+                        <Icon as={Key} size={20} className="text-primary" />
                       </View>
                       <Text className="font-bold text-foreground">Şifreyi Değiştir</Text>
                     </View>
-                    <Icon as={ChevronRightIcon} size={20} className="text-muted-foreground/40" />
+                    <Icon as={ChevronRight} size={20} className="text-muted-foreground/40" />
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -152,15 +145,11 @@ export const ProfileScreen: React.FC = () => {
                     className="flex-row items-center justify-between rounded-2xl bg-card p-4 active:bg-secondary/50">
                     <View className="flex-row items-center gap-3">
                       <View className="h-10 w-10 items-center justify-center rounded-xl bg-muted">
-                        <Icon
-                          as={ArrowRightStartOnRectangleIcon}
-                          size={20}
-                          className="text-muted-foreground"
-                        />
+                        <Icon as={LogOut} size={20} className="text-muted-foreground" />
                       </View>
                       <Text className="font-bold text-foreground">Çıkış Yap</Text>
                     </View>
-                    <Icon as={ChevronRightIcon} size={20} className="text-muted-foreground/40" />
+                    <Icon as={ChevronRight} size={20} className="text-muted-foreground/40" />
                   </TouchableOpacity>
                 </Card>
               </View>
@@ -174,7 +163,7 @@ export const ProfileScreen: React.FC = () => {
                   <ActivityIndicator color="#EF4444" />
                 ) : (
                   <>
-                    <Icon as={TrashIcon} size={20} className="mr-2 text-destructive/40" />
+                    <Icon as={Trash2} size={20} className="mr-2 text-destructive/40" />
                     <Text className="font-bold text-destructive/40">Hesabı Sil</Text>
                   </>
                 )}

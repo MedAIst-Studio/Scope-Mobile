@@ -5,9 +5,9 @@ import { QuizProgressBar } from '@/features/quiz/components/QuizProgressBar';
 import { QuizQuestion } from '@/features/quiz/components/QuizQuestion';
 import { useQuiz as useQuizQuery, useSubmitQuiz } from '@/features/quiz/hooks/useQueries';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, View } from 'react-native';
-import { ChevronLeftIcon, ChevronRightIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function QuizDetailScreen() {
@@ -148,14 +148,14 @@ export default function QuizDetailScreen() {
               className="flex-1 flex-row gap-2"
               onPress={handlePrevious}
               disabled={isFirstQuestion || isSubmitting}>
-              <Icon as={ChevronLeftIcon} size={20} className="text-foreground" />
+              <Icon as={ChevronLeft} size={20} className="text-foreground" />
               <Text className="text-foreground">Önceki</Text>
             </Button>
 
             <Button className="flex-1 flex-row gap-2" onPress={handleNext} disabled={isSubmitting}>
               <Text>{isSubmitting ? 'Gönderiliyor...' : isLastQuestion ? 'Bitir' : 'Sonraki'}</Text>
               {!isLastQuestion && !isSubmitting && (
-                <Icon as={ChevronRightIcon} size={20} className="text-primary-foreground" />
+                <Icon as={ChevronRight} size={20} className="text-primary-foreground" />
               )}
             </Button>
           </View>

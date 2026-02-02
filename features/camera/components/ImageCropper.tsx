@@ -1,10 +1,10 @@
 import { Text } from '@/components/ui/text';
 // @ts-ignore: manipulateAsync deprecated warning
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { Check, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { CheckIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import Animated, { FadeIn, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -208,7 +208,7 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
           <TouchableOpacity
             onPress={onCancel}
             className="h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md">
-            <XMarkIcon size={24} color="white" />
+            <X size={24} color="white" />
           </TouchableOpacity>
 
           <View className="flex-1 px-6">
@@ -220,7 +220,7 @@ export const ImageCropper = ({ imageUri, onCrop, onCancel }: ImageCropperProps) 
           <TouchableOpacity
             onPress={handleCrop}
             className="h-16 w-16 items-center justify-center rounded-full border-4 border-white/10 bg-primary shadow-lg shadow-primary/40">
-            <CheckIcon size={32} color="white" />
+            <Check size={32} color="white" />
           </TouchableOpacity>
         </View>
       </Animated.View>

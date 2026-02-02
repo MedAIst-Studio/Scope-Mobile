@@ -2,15 +2,9 @@ import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { Camera, ChevronRight, GraduationCap, MessageSquare, Sparkles } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import {
-  AcademicCapIcon,
-  CameraIcon,
-  ChatBubbleOvalLeftIcon,
-  ChevronRightIcon,
-  SparklesIcon,
-} from 'react-native-heroicons/solid';
 import Animated, {
   FadeInDown,
   FadeInRight,
@@ -29,7 +23,7 @@ const ONBOARDING_DATA = [
     title: 'Hedeflerine Odaklan,\nBaşarıyı Yakala',
     description:
       'YKS hazırlık sürecinde yapay zeka desteğiyle rakiplerinin önüne geç. Her an yanında!',
-    icon: SparklesIcon,
+    icon: Sparkles,
     colors: ['#F97316', '#FB923C', '#FDBA74'],
     demo: 'welcome',
   },
@@ -37,7 +31,7 @@ const ONBOARDING_DATA = [
     title: 'Saniyeler İçinde\nDetaylı Çözüm',
     description:
       'Çözemediğin sorunun fotoğrafını çek, yapay zeka saniyeler içinde adım adım anlatsın.',
-    icon: CameraIcon,
+    icon: Camera,
     colors: ['#8B5CF6', '#A78BFA', '#C4B5FD'],
     demo: 'scan',
   },
@@ -45,7 +39,7 @@ const ONBOARDING_DATA = [
     title: 'Anlamadığın\nKonu Kalmasın',
     description:
       '7/24 yanındaki özel hocanla sohbet et, takıldığın yerleri en ince ayrıntısına kadar öğren.',
-    icon: ChatBubbleOvalLeftIcon,
+    icon: MessageSquare,
     colors: ['#06B6D4', '#22D3EE', '#67E8F9'],
     demo: 'chat',
   },
@@ -53,7 +47,7 @@ const ONBOARDING_DATA = [
     title: 'Gelişimini Kararlılıkla\nKanıtla',
     description:
       'Kişiselleştirilmiş testlerle eksiklerini kapat, ilerlemeni istatistiklerle takip et.',
-    icon: AcademicCapIcon,
+    icon: GraduationCap,
     colors: ['#10B981', '#34D399', '#6EE7B7'],
     demo: 'quiz',
   },
@@ -84,7 +78,7 @@ const WelcomeDemo = () => {
           style={{ borderRadius: 9999 }}
           className="absolute h-full w-full"
         />
-        <Icon as={SparklesIcon} size={88} className="text-primary" />
+        <Icon as={Sparkles} size={88} className="text-primary" />
       </Animated.View>
     </View>
   );
@@ -119,7 +113,7 @@ const ScanDemo = () => {
   return (
     <View className="h-48 w-48 items-center justify-center overflow-hidden rounded-[2.5rem] border-2 border-white/20 bg-white/5">
       <Animated.View style={iconStyle}>
-        <Icon as={CameraIcon} size={80} className="text-white" />
+        <Icon as={Camera} size={80} className="text-white" />
       </Animated.View>
       <Animated.View
         style={[
@@ -180,7 +174,7 @@ const QuizDemo = () => {
             key={i}
             entering={FadeInDown.delay(i * 300)}
             className="h-12 w-12 items-center justify-center rounded-2xl border border-emerald-500/40 bg-emerald-500/20">
-            <Icon as={AcademicCapIcon} size={24} className="text-emerald-500" />
+            <Icon as={GraduationCap} size={24} className="text-emerald-500" />
           </Animated.View>
         ))}
       </View>
@@ -272,7 +266,7 @@ export const Onboarding: React.FC = () => {
             <Text className="mr-2 text-xl font-bold text-white">
               {currentIndex === ONBOARDING_DATA.length - 1 ? 'Hemen Başla' : 'Devam Et'}
             </Text>
-            <Icon as={ChevronRightIcon} size={24} color="white" />
+            <Icon as={ChevronRight} size={24} className="text-white" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>

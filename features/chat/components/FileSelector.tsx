@@ -3,9 +3,9 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useFiles } from '@/features/files/hooks';
 import { cn } from '@/lib/utils';
+import { File, FileText, Image as ImageIcon, X } from 'lucide-react-native';
 import React from 'react';
 import { FlatList, Modal, TouchableOpacity, View } from 'react-native';
-import { DocumentIcon, DocumentTextIcon, PhotoIcon, XMarkIcon } from 'react-native-heroicons/solid';
 
 interface FileSelectorProps {
   isVisible: boolean;
@@ -18,7 +18,7 @@ const getFileInfo = (fileName: string) => {
 
   if (['pdf'].includes(ext)) {
     return {
-      icon: DocumentTextIcon,
+      icon: FileText,
       bgColor: 'bg-red-500/10',
       iconColor: 'text-red-500',
       type: 'PDF',
@@ -27,7 +27,7 @@ const getFileInfo = (fileName: string) => {
 
   if (['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(ext)) {
     return {
-      icon: PhotoIcon,
+      icon: ImageIcon,
       bgColor: 'bg-blue-500/10',
       iconColor: 'text-blue-500',
       type: 'GÖRSEL',
@@ -35,7 +35,7 @@ const getFileInfo = (fileName: string) => {
   }
 
   return {
-    icon: DocumentIcon,
+    icon: File,
     bgColor: 'bg-zinc-500/10',
     iconColor: 'text-zinc-500',
     type: 'DOSYA',
@@ -70,7 +70,7 @@ export const FileSelector: React.FC<FileSelectorProps> = ({ isVisible, onClose, 
             <TouchableOpacity
               onPress={onClose}
               className="h-10 w-10 items-center justify-center rounded-full bg-secondary">
-              <Icon as={XMarkIcon} size={20} className="text-foreground" />
+              <Icon as={X} size={20} className="text-foreground" />
             </TouchableOpacity>
           </View>
 

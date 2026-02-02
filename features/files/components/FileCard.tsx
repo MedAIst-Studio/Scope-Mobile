@@ -4,19 +4,19 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
+import {
+  File as FileIcon,
+  FileText,
+  Image as ImageIcon,
+  MessageCircle,
+  Trash2,
+} from 'lucide-react-native';
 import React from 'react';
 import { Image, View } from 'react-native';
-import {
-  ChatBubbleLeftIcon,
-  DocumentIcon,
-  DocumentTextIcon,
-  PhotoIcon,
-  TrashIcon,
-} from 'react-native-heroicons/solid';
-import { File } from '../types';
+import { File as FileType } from '../types';
 
 interface FileCardProps {
-  file: File;
+  file: FileType;
   onChatStart: (fileId: string) => void;
   onDelete?: (fileId: string) => void;
 }
@@ -26,7 +26,7 @@ const getFileInfo = (fileName: string) => {
 
   if (['pdf'].includes(ext)) {
     return {
-      icon: DocumentTextIcon,
+      icon: FileText,
       bgColor: 'bg-red-500/10',
       iconColor: 'text-red-500',
     };
@@ -34,14 +34,14 @@ const getFileInfo = (fileName: string) => {
 
   if (['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(ext)) {
     return {
-      icon: PhotoIcon,
+      icon: ImageIcon,
       bgColor: 'bg-blue-500/10',
       iconColor: 'text-blue-500',
     };
   }
 
   return {
-    icon: DocumentIcon,
+    icon: FileIcon,
     bgColor: 'bg-zinc-500/10',
     iconColor: 'text-zinc-500',
   };
@@ -91,7 +91,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
             variant="ghost"
             onPress={() => onDelete(file.id)}
             className="h-10 w-10">
-            <Icon as={TrashIcon} size={20} className="text-destructive/60" />
+            <Icon as={Trash2} size={20} className="text-destructive/60" />
           </Button>
         )}
       </CardHeader>
@@ -108,7 +108,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
           onPress={() => onChatStart(file.id)}
           className="w-full flex-row items-center justify-center"
           size="default">
-          <Icon as={ChatBubbleLeftIcon} size={20} className="text-primary-foreground" />
+          <Icon as={MessageCircle} size={20} className="text-primary-foreground" />
           <Text className="font-bold text-primary-foreground">Sohbeti Başlat</Text>
         </Button>
       </CardFooter>

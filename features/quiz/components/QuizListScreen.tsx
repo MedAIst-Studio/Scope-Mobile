@@ -3,9 +3,9 @@ import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { useRouter } from 'expo-router';
+import { BarChart2, Plus, Search } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { ChartBarIcon, MagnifyingGlassIcon, PlusIcon } from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuizzes } from '../hooks/useQueries';
 import { QuizListItem } from '../types';
@@ -78,10 +78,10 @@ export const QuizListScreen: React.FC = () => {
               variant="outline"
               onPress={handleGoToResults}
               className="h-12 w-12 rounded-xl">
-              <Icon as={ChartBarIcon} size={22} className="text-foreground" />
+              <Icon as={BarChart2} size={22} className="text-foreground" />
             </Button>
             <Button size="icon" onPress={handleCreateQuiz} className="h-12 w-12 rounded-xl">
-              <Icon as={PlusIcon} size={22} className="text-primary-foreground" />
+              <Icon as={Plus} size={22} className="text-primary-foreground" />
             </Button>
           </View>
         </View>
@@ -96,7 +96,7 @@ export const QuizListScreen: React.FC = () => {
               className="pl-12"
             />
             <View className="absolute left-4 top-4">
-              <Icon as={MagnifyingGlassIcon} size={20} className="text-muted-foreground/50" />
+              <Icon as={Search} size={20} className="text-muted-foreground/50" />
             </View>
           </View>
         </View>

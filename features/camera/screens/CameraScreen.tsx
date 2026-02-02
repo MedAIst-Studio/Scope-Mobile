@@ -3,9 +3,9 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
+import { RefreshCw, X } from 'lucide-react-native';
 import React, { useRef, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ArrowPathIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageCropper } from '../components/ImageCropper';
 
@@ -111,7 +111,7 @@ export default function CameraScreen() {
           <SafeAreaView className="flex-1 justify-between">
             <View className="flex-row justify-between p-4">
               <TouchableOpacity onPress={closeCamera} className="rounded-full bg-black/40 p-2">
-                <Icon as={XMarkIcon} color="white" size={24} />
+                <Icon as={X} color="white" size={24} />
               </TouchableOpacity>
             </View>
 
@@ -119,7 +119,7 @@ export default function CameraScreen() {
               <TouchableOpacity
                 onPress={toggleCameraFacing}
                 className="rounded-full bg-black/40 p-3">
-                <Icon as={ArrowPathIcon} color="white" size={24} />
+                <Icon as={RefreshCw} color="white" size={24} />
               </TouchableOpacity>
 
               <TouchableOpacity

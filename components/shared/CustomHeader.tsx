@@ -6,22 +6,22 @@ import { cn } from '@/lib/utils';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { Portal } from '@rn-primitives/portal';
 import { useRouter } from 'expo-router';
+import {
+  Camera,
+  Clock,
+  FileText,
+  GraduationCap,
+  Home,
+  Menu,
+  MessageCircle,
+  MessageSquare,
+  Pencil,
+  Settings,
+  Trash2,
+  X,
+} from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import {
-  AcademicCapIcon,
-  Bars3Icon,
-  CameraIcon,
-  ChatBubbleLeftRightIcon,
-  ChatBubbleOvalLeftIcon,
-  ClockIcon,
-  Cog6ToothIcon,
-  DocumentTextIcon,
-  HomeIcon,
-  PencilSquareIcon,
-  TrashIcon,
-  XMarkIcon,
-} from 'react-native-heroicons/solid';
 
 import { useChats, useDeleteChat, useUpdateChat } from '@/features/chat/hooks/queries';
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
@@ -65,14 +65,14 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
   const menuActions = [
     {
       label: 'Yeniden Adlandır',
-      icon: PencilSquareIcon,
+      icon: Pencil,
       onPress: () => {
         setIsRenameModalVisible(true);
       },
     },
     {
       label: 'Sohbeti Sil',
-      icon: TrashIcon,
+      icon: Trash2,
       variant: 'destructive' as const,
       onPress: () => {
         handleDelete();
@@ -95,7 +95,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
         <TouchableOpacity
           onPress={toggleMenu}
           className="h-12 w-12 items-center justify-center rounded-2xl bg-secondary/50 transition-transform active:scale-95">
-          <Icon as={Bars3Icon} size={24} className="text-foreground" />
+          <Icon as={Menu} size={24} className="text-foreground" />
         </TouchableOpacity>
 
         <View className="flex-1 items-center justify-center px-4">
@@ -138,14 +138,14 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
               <View className="flex-row items-center justify-between px-6 py-8">
                 <View className="flex-row items-center gap-3">
                   <View className="h-10 w-10 items-center justify-center rounded-2xl bg-primary">
-                    <AcademicCapIcon size={24} color="white" />
+                    <GraduationCap size={24} color="white" />
                   </View>
                   <Text className="text-2xl font-bold tracking-tighter text-foreground">YksAI</Text>
                 </View>
                 <TouchableOpacity
                   onPress={closeMenu}
                   className="h-10 w-10 items-center justify-center rounded-xl bg-secondary/50">
-                  <XMarkIcon size={22} color="#6B7280" />
+                  <X size={22} color="#6B7280" />
                 </TouchableOpacity>
               </View>
 
@@ -158,12 +158,12 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                   </Text>
 
                   {[
-                    { name: 'index', label: 'Anasayfa', icon: HomeIcon },
-                    { name: 'chat', label: 'Asistan', icon: ChatBubbleOvalLeftIcon },
-                    { name: 'scan', label: 'Soru Çöz', icon: CameraIcon },
-                    { name: 'files', label: 'Dosyalarım', icon: DocumentTextIcon },
-                    { name: 'quiz', label: 'Denemeler', icon: AcademicCapIcon },
-                    { name: '(settings)/settings', label: 'Ayarlar', icon: Cog6ToothIcon },
+                    { name: 'index', label: 'Anasayfa', icon: Home },
+                    { name: 'chat', label: 'Asistan', icon: MessageCircle },
+                    { name: 'scan', label: 'Soru Çöz', icon: Camera },
+                    { name: 'files', label: 'Dosyalarım', icon: FileText },
+                    { name: 'quiz', label: 'Denemeler', icon: GraduationCap },
+                    { name: '(settings)/settings', label: 'Ayarlar', icon: Settings },
                   ].map((item) => {
                     const isFocused =
                       route.name === item.name || (route.name === 'index' && item.name === 'index');
@@ -205,7 +205,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                         Sohbet Geçmişi
                       </Text>
                       <TouchableOpacity>
-                        <ChatBubbleLeftRightIcon size={16} color="#F97316" />
+                        <MessageSquare size={16} color="#F97316" />
                       </TouchableOpacity>
                     </View>
 
@@ -222,7 +222,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
                         onLongPress={() => handleLongPress(chat)}
                         className="flex-row items-center gap-3 rounded-2xl bg-secondary/30 px-4 py-3 active:bg-secondary/50">
                         <View className="h-8 w-8 items-center justify-center rounded-xl bg-background/50">
-                          <ClockIcon size={16} color="#94a3b8" />
+                          <Clock size={16} color="#94a3b8" />
                         </View>
                         <View className="flex-1">
                           <Text className="text-sm font-bold text-foreground" numberOfLines={1}>

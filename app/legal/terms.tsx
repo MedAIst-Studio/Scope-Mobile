@@ -5,8 +5,8 @@ import {
   LegalText,
 } from '@/features/legal/components/LegalLayout';
 import { useLegalStore } from '@/features/legal/stores/useLegalStore';
+import { FileText } from 'lucide-react-native';
 import { View } from 'react-native';
-import { DocumentTextIcon } from 'react-native-heroicons/solid';
 
 export default function TermsScreen() {
   const markTermsRead = useLegalStore((state) => state.markTermsRead);
@@ -15,7 +15,7 @@ export default function TermsScreen() {
     <LegalLayout
       title="Kullanım Koşulları"
       subtitle="Hizmet kullanım şartları"
-      icon={DocumentTextIcon}
+      icon={FileText}
       onReadComplete={markTermsRead}>
       <LegalText>
         YKS Asistanın ("Uygulama") hizmetlerine erişiminiz ve kullanımınız, işbu Kullanım Koşulları

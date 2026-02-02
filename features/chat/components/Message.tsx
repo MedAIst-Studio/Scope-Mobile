@@ -1,9 +1,9 @@
 import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
+import { FileText } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { Image, Text, View } from 'react-native';
-import { DocumentIcon } from 'react-native-heroicons/solid';
 import Markdown from 'react-native-markdown-display';
 import { getMarkdownStyles } from '../utils/markdownConfig';
 import { getMarkdownRules } from '../utils/markdownRules';
@@ -26,7 +26,7 @@ const MessageContext: React.FC<{
         isUser ? 'border-white/20 bg-white/10' : 'border-secondary/50 bg-secondary/30'
       )}>
       <Icon
-        as={DocumentIcon}
+        as={FileText}
         size={14}
         className={cn('mr-1.5', isUser ? 'text-white/70' : 'text-primary')}
       />

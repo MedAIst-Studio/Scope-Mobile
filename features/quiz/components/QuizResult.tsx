@@ -5,17 +5,17 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { AttemptDetailData } from '@/features/quiz/validation';
 import { cn } from '@/lib/utils';
+import {
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  HelpCircle,
+  Info,
+  Trophy,
+  XCircle,
+} from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
-import {
-  CheckCircleIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  InformationCircleIcon,
-  QuestionMarkCircleIcon,
-  TrophyIcon,
-  XCircleIcon,
-} from 'react-native-heroicons/solid';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface QuizResultProps {
@@ -82,7 +82,7 @@ const AccordionItem = ({
       {answer.explanation && (
         <View className="mt-2 rounded-2xl bg-secondary/30 p-4">
           <View className="flex-row items-center gap-2">
-            <Icon as={InformationCircleIcon} size={16} className="text-primary" />
+            <Icon as={Info} size={16} className="text-primary" />
             <Text className="text-[10px] font-bold uppercase tracking-widest text-primary">
               Çözüm Analizi
             </Text>
@@ -109,7 +109,7 @@ const AccordionItem = ({
             answer.is_correct ? 'bg-green-500/10' : 'bg-red-500/10'
           )}>
           <Icon
-            as={answer.is_correct ? CheckCircleIcon : XCircleIcon}
+            as={answer.is_correct ? CheckCircle2 : XCircle}
             size={24}
             className={answer.is_correct ? 'text-green-500' : 'text-red-500'}
           />
@@ -141,7 +141,7 @@ const AccordionItem = ({
         </View>
 
         <Icon
-          as={isExpanded ? ChevronUpIcon : ChevronDownIcon}
+          as={isExpanded ? ChevronUp : ChevronDown}
           size={20}
           className="mt-1 text-muted-foreground/40"
         />
@@ -172,7 +172,7 @@ export const QuizResult: React.FC<QuizResultProps> = ({ result, onBack }) => {
       <View className="bg-card px-6 pb-10 pt-10">
         <View className="mb-6 flex-row items-center gap-3">
           <View className="h-12 w-12 items-center justify-center rounded-2xl bg-primary">
-            <Icon as={TrophyIcon} size={24} className="text-primary-foreground" />
+            <Icon as={Trophy} size={24} className="text-primary-foreground" />
           </View>
           <View className="flex-1">
             <Text className="text-2xl font-bold tracking-tight text-foreground">Quiz Sonucu</Text>
@@ -209,7 +209,7 @@ export const QuizResult: React.FC<QuizResultProps> = ({ result, onBack }) => {
             </View>
 
             <View className="flex-row items-center gap-2 rounded-xl bg-secondary/40 px-4 py-2">
-              <Icon as={QuestionMarkCircleIcon} size={16} className="text-muted-foreground" />
+              <Icon as={HelpCircle} size={16} className="text-muted-foreground" />
               <Text className="text-[10px] font-bold text-muted-foreground">
                 Toplam {result.total_questions} Soru Çözüldü
               </Text>

@@ -1,9 +1,9 @@
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { LinearGradient } from 'expo-linear-gradient';
+import { ChevronRight, Sparkles } from 'lucide-react-native';
 import React, { useEffect } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
-import { ChevronRightIcon, SparklesIcon } from 'react-native-heroicons/solid';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -73,7 +73,7 @@ const TypingIndicator = () => {
     <View className="mb-6 flex-row items-center gap-3 pl-1">
       <View className="relative h-10 w-10 items-center justify-center">
         <Animated.View style={sparklesStyle}>
-          <Icon as={SparklesIcon} size={26} className="text-primary" />
+          <Icon as={Sparkles} size={26} className="text-primary" />
         </Animated.View>
         <View className="absolute inset-0 items-center justify-center">
           <View className="h-8 w-8 rounded-full bg-primary/10 blur-xl" />
@@ -147,7 +147,7 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
                 style={{ borderRadius: 16 }}
                 className="flex-row items-center justify-between border border-border/40 bg-card/30 p-4">
                 <Text className="flex-1 text-[14px] font-semibold text-foreground/80">{q}</Text>
-                <Icon as={ChevronRightIcon} size={16} className="text-muted-foreground/30" />
+                <Icon as={ChevronRight} size={16} className="text-muted-foreground/30" />
               </LinearGradient>
             </TouchableOpacity>
           ))}

@@ -14,6 +14,15 @@ import { ImageCropper } from '@/features/camera/components/ImageCropper';
 import { cn } from '@/lib/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import {
+  FileText,
+  FileUp,
+  Image as ImageIcon,
+  MoreHorizontal,
+  SquarePen,
+  Trash2,
+  X,
+} from 'lucide-react-native';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -24,15 +33,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  DocumentPlusIcon,
-  DocumentTextIcon,
-  EllipsisHorizontalIcon,
-  PencilSquareIcon,
-  PhotoIcon,
-  TrashIcon,
-  XMarkIcon,
-} from 'react-native-heroicons/solid';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -229,7 +229,7 @@ export const ChatScreen: React.FC = () => {
         <View className="flex-row gap-2 pr-2">
           {chatId && (
             <TouchableOpacity className="p-2" onPress={() => setIsHeaderMenuVisible(true)}>
-              <Icon as={EllipsisHorizontalIcon} size={24} className="text-foreground" />
+              <Icon as={MoreHorizontal} size={24} className="text-foreground" />
             </TouchableOpacity>
           )}
         </View>
@@ -240,12 +240,12 @@ export const ChatScreen: React.FC = () => {
   const headerActions = [
     {
       label: 'Yeniden Adlandır',
-      icon: PencilSquareIcon,
+      icon: SquarePen,
       onPress: () => setRenameModalVisible(true),
     },
     {
       label: 'Sohbeti Sil',
-      icon: TrashIcon,
+      icon: Trash2,
       variant: 'destructive' as const,
       onPress: () => setIsDeleteAlertVisible(true),
     },
@@ -254,12 +254,12 @@ export const ChatScreen: React.FC = () => {
   const attachActions = [
     {
       label: 'Fotoğraf Kitaplığı',
-      icon: PhotoIcon,
+      icon: ImageIcon,
       onPress: handlePickImage,
     },
     {
       label: 'Dosyalarım',
-      icon: DocumentPlusIcon,
+      icon: FileUp,
       onPress: () => setIsFileSelectorVisible(true),
     },
   ];
@@ -287,7 +287,7 @@ export const ChatScreen: React.FC = () => {
         {activeFile && (
           <View className="mx-4 mt-2 flex-row items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
             <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <Icon as={DocumentTextIcon} size={20} className="text-primary" />
+              <Icon as={FileText} size={20} className="text-primary" />
             </View>
             <View className="flex-1">
               <Text className="text-sm font-bold text-foreground" numberOfLines={1}>
@@ -300,7 +300,7 @@ export const ChatScreen: React.FC = () => {
             <TouchableOpacity
               onPress={() => setActiveFile(null)}
               className="h-8 w-8 items-center justify-center rounded-lg bg-background/50">
-              <XMarkIcon size={18} color="#94a3b8" />
+              <Icon as={X} size={18} className="text-muted-foreground/60" />
             </TouchableOpacity>
           </View>
         )}

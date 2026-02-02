@@ -5,8 +5,8 @@ import {
   LegalText,
 } from '@/features/legal/components/LegalLayout';
 import { useLegalStore } from '@/features/legal/stores/useLegalStore';
+import { Lock } from 'lucide-react-native';
 import { View } from 'react-native';
-import { LockClosedIcon } from 'react-native-heroicons/solid';
 
 export default function PrivacyScreen() {
   const markPrivacyRead = useLegalStore((state) => state.markPrivacyRead);
@@ -15,7 +15,7 @@ export default function PrivacyScreen() {
     <LegalLayout
       title="Gizlilik Politikası"
       subtitle="Verileriniz nasıl işleniyor?"
-      icon={LockClosedIcon}
+      icon={Lock}
       onReadComplete={markPrivacyRead}>
       <LegalText>
         YKS Asistanın ("Platform") olarak, gizliliğinize ve kişisel verilerinizin korunmasına büyük

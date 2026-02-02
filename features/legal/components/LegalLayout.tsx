@@ -3,6 +3,7 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'expo-router';
+import { ArrowLeft, CheckCircle2, ShieldCheck } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
   NativeScrollEvent,
@@ -11,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ArrowLeftIcon, CheckCircleIcon, ShieldCheckIcon } from 'react-native-heroicons/solid';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface LegalLayoutProps {
@@ -26,7 +26,7 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
   children,
   title,
   subtitle,
-  icon: IconComponent = ShieldCheckIcon,
+  icon: IconComponent = ShieldCheck,
   onReadComplete,
 }) => {
   const router = useRouter();
@@ -59,7 +59,7 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
         <TouchableOpacity
           onPress={() => router.back()}
           className="mr-4 h-10 w-10 items-center justify-center rounded-xl bg-secondary/50 active:bg-secondary">
-          <Icon as={ArrowLeftIcon} size={20} className="text-foreground" />
+          <Icon as={ArrowLeft} size={20} className="text-foreground" />
         </TouchableOpacity>
         <View className="flex-1">
           <Text className="text-lg font-bold text-foreground">{title}</Text>
@@ -108,7 +108,7 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
               isAtBottom ? 'bg-primary shadow-primary/30' : 'bg-muted shadow-none'
             )}>
             <Icon
-              as={isAccepted ? CheckCircleIcon : IconComponent}
+              as={isAccepted ? CheckCircle2 : IconComponent}
               size={24}
               className={isAtBottom ? 'mr-2 text-white' : 'mr-2 text-muted-foreground'}
             />

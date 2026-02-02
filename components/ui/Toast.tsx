@@ -1,14 +1,8 @@
 import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
+import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from 'lucide-react-native';
 import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon,
-  XMarkIcon,
-} from 'react-native-heroicons/solid';
 import Animated, {
   FadeInUp,
   FadeOutUp,
@@ -31,7 +25,7 @@ const getToastConfig = (type: ToastType) => {
   switch (type) {
     case 'success':
       return {
-        icon: CheckCircleIcon,
+        icon: CheckCircle2,
         bg: 'bg-green-500/10',
         border: 'border-green-500/20',
         iconColor: 'text-green-500',
@@ -39,7 +33,7 @@ const getToastConfig = (type: ToastType) => {
       };
     case 'error':
       return {
-        icon: ExclamationCircleIcon,
+        icon: AlertCircle,
         bg: 'bg-destructive/10',
         border: 'border-destructive/20',
         iconColor: 'text-destructive',
@@ -47,7 +41,7 @@ const getToastConfig = (type: ToastType) => {
       };
     case 'warning':
       return {
-        icon: ExclamationTriangleIcon,
+        icon: AlertTriangle,
         bg: 'bg-orange-500/10',
         border: 'border-orange-500/20',
         iconColor: 'text-orange-500',
@@ -56,7 +50,7 @@ const getToastConfig = (type: ToastType) => {
     case 'info':
     default:
       return {
-        icon: InformationCircleIcon,
+        icon: Info,
         bg: 'bg-primary/10',
         border: 'border-primary/20',
         iconColor: 'text-primary',
@@ -105,7 +99,7 @@ export const Toast: React.FC<ToastProps> = ({ message, type, title, onHide, dura
             </Text>
           </View>
           <View className="h-full pl-2">
-            <Icon as={XMarkIcon} size={16} className="text-muted-foreground/50" onPress={onHide} />
+            <Icon as={X} size={16} className="text-muted-foreground/50" onPress={onHide} />
           </View>
         </View>
         {/* Progress Bar */}

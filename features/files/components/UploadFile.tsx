@@ -2,9 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import * as DocumentPicker from 'expo-document-picker';
+import { CloudUpload, Upload } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
-import { ArrowUpTrayIcon, CloudArrowUpIcon } from 'react-native-heroicons/solid';
 import { useUploadFile } from '../hooks';
 
 export const UploadFile: React.FC = () => {
@@ -42,7 +42,7 @@ export const UploadFile: React.FC = () => {
         {isUploading ? (
           <View className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
         ) : (
-          <Icon as={CloudArrowUpIcon} size={40} className="text-primary" />
+          <Icon as={CloudUpload} size={40} className="text-primary" />
         )}
       </View>
 
@@ -58,7 +58,7 @@ export const UploadFile: React.FC = () => {
         disabled={isUploading}
         size="lg"
         className="w-full shadow-lg shadow-primary/20">
-        <Icon as={ArrowUpTrayIcon} size={20} className="text-primary-foreground" />
+        <Icon as={Upload} size={20} className="text-primary-foreground" />
         <Text className="font-bold text-primary-foreground">
           {isUploading ? 'Yükleniyor...' : 'Dosya Seç'}
         </Text>

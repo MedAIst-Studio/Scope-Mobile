@@ -3,9 +3,9 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { FileText, Plus, Send, X } from 'lucide-react-native';
 import React from 'react';
 import { FlatList, Image, TouchableOpacity, View } from 'react-native';
-import { DocumentIcon, PaperAirplaneIcon, PlusIcon, XMarkIcon } from 'react-native-heroicons/solid';
 import { Attachment } from '../hooks/useChat';
 
 interface ChatInputProps {
@@ -49,7 +49,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                   <Image source={{ uri: item.uri }} className="h-full w-full rounded-[14px]" />
                 ) : (
                   <View className="h-full w-full items-center justify-center gap-1 p-2">
-                    <Icon as={DocumentIcon} size={24} className="text-primary" />
+                    <Icon as={FileText} size={24} className="text-primary" />
                     <Text className="text-[10px] font-bold text-foreground" numberOfLines={1}>
                       {item.name}
                     </Text>
@@ -58,7 +58,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 <TouchableOpacity
                   onPress={() => onRemoveAttachment(index)}
                   className="absolute -right-2 -top-2 h-6 w-6 items-center justify-center rounded-full bg-destructive shadow-md">
-                  <Icon as={XMarkIcon} size={14} color="white" />
+                  <Icon as={X} size={14} color="white" />
                 </TouchableOpacity>
               </View>
             )}
@@ -70,7 +70,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         <TouchableOpacity
           onPress={onAttachPress}
           className="h-14 w-14 items-center justify-center rounded-2xl bg-secondary/80 shadow-sm active:scale-95">
-          <Icon as={PlusIcon} size={28} className="text-foreground" />
+          <Icon as={Plus} size={28} className="text-foreground" />
         </TouchableOpacity>
 
         <View className="flex-1">
@@ -97,7 +97,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           disabled={(!message.trim() && !hasAttachments) || isSending}
           size="icon">
           <Icon
-            as={PaperAirplaneIcon}
+            as={Send}
             size={24}
             className={
               message.trim() || hasAttachments ? 'text-primary-foreground' : 'text-muted-foreground'

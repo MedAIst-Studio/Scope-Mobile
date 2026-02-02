@@ -13,21 +13,14 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
-import { User } from '@/features/users/types';
+import { User as UserType } from '@/features/users/types';
 import { router } from 'expo-router';
+import { Check, ChevronLeft, Lock, LogOut, Trash2, User } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
-import {
-  ArrowRightOnRectangleIcon,
-  CheckIcon,
-  ChevronLeftIcon,
-  LockClosedIcon,
-  TrashIcon,
-  UserIcon,
-} from 'react-native-heroicons/outline';
 
 interface AccountScreenProps {
-  user: User | undefined;
+  user: UserType | undefined;
   onSave: (username: string) => void;
   onLogout: () => void;
   onDeleteAccount: () => void;
@@ -83,7 +76,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
         <TouchableOpacity
           onPress={() => router.back()}
           className="flex flex-1 flex-row items-center justify-between">
-          <Icon as={ChevronLeftIcon} size={24} className="text-foreground" />
+          <Icon as={ChevronLeft} size={24} className="text-foreground" />
           <Text className="text-2xl font-bold text-foreground">Profil</Text>
           <View />
         </TouchableOpacity>
@@ -91,7 +84,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
           <TouchableOpacity
             onPress={handleSave}
             className="h-8 w-8 items-center justify-center rounded-full bg-blue-500">
-            <Icon as={CheckIcon} size={16} color="#FFFFFF" />
+            <Icon as={Check} size={16} color="#FFFFFF" />
           </TouchableOpacity>
         )}
       </View>
@@ -100,7 +93,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
         {/* Profile Photo */}
         <View className="mb-8 items-center">
           <View className="mb-3 h-24 w-24 items-center justify-center rounded-full bg-muted">
-            <Icon as={UserIcon} size={32} color="#6B7280" />
+            <Icon as={User} size={32} color="#6B7280" />
           </View>
           <TouchableOpacity onPress={handleUploadImage}>
             <Text className="text-base font-medium text-blue-500">Resim Yükle</Text>
@@ -135,7 +128,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
                 variant="outline"
                 className="flex-row items-center justify-center border-border bg-card">
                 <View className="flex-row items-center">
-                  <Icon as={LockClosedIcon} size={16} className="text-foreground" />
+                  <Icon as={Lock} size={16} className="text-foreground" />
                   <Text className="ml-2 font-medium text-foreground">Şifreyi Değiştir</Text>
                 </View>
               </Button>
@@ -148,7 +141,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
                 variant="outline"
                 className="flex-row items-center justify-center border-orange-200 bg-orange-50">
                 <View className="flex-row items-center">
-                  <Icon as={ArrowRightOnRectangleIcon} size={16} color="#F97316" />
+                  <Icon as={LogOut} size={16} color="#F97316" />
                   <Text className="ml-2 font-medium text-orange-600">Çıkış Yap</Text>
                 </View>
               </Button>
@@ -161,7 +154,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
                   variant="outline"
                   className="flex-row items-center justify-center border-red-200 bg-red-50">
                   <View className="flex-row items-center">
-                    <Icon as={TrashIcon} size={16} color="#EF4444" />
+                    <Icon as={Trash2} size={16} color="#EF4444" />
                     <Text className="ml-2 font-medium text-red-600">Hesabı Sil</Text>
                   </View>
                 </Button>

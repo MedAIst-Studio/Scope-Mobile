@@ -2,9 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useRouter } from 'expo-router';
+import { ChevronLeft, Search } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, TextInput, TouchableOpacity, View } from 'react-native';
-import { ChevronLeftIcon, MagnifyingGlassIcon } from 'react-native-heroicons/outline';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSubmissions } from '../hooks/useQueries';
 import { AttemptsResponseData } from '../validation';
@@ -62,14 +62,14 @@ export const QuizResultsScreen: React.FC = () => {
         {/* Header */}
         <View className="mb-4 flex-row items-center gap-4">
           <TouchableOpacity onPress={handleBack} className="-ml-2 p-2">
-            <Icon as={ChevronLeftIcon} size={24} className="text-foreground" />
+            <Icon as={ChevronLeft} size={24} className="text-foreground" />
           </TouchableOpacity>
           <Text className="text-xl font-bold text-foreground">Sonuçlarım</Text>
         </View>
 
         {/* Search */}
         <View className="mb-4 flex-row items-center rounded-lg border border-border bg-card px-4 py-1">
-          <Icon as={MagnifyingGlassIcon} size={20} className="mr-2 text-muted-foreground" />
+          <Icon as={Search} size={20} className="mr-2 text-muted-foreground" />
           <TextInput
             className="flex-1 text-base text-foreground"
             placeholder="Sonuçlarda ara..."

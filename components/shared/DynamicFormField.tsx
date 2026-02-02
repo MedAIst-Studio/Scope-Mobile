@@ -3,10 +3,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
+import { Eye, EyeOff } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form';
 import { TouchableOpacity, View } from 'react-native';
-import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline';
 
 export enum FormFieldType {
   INPUT = 'input',
@@ -80,11 +80,7 @@ function DynamicFormField<
         onPress={() => setIsPasswordVisible(!isPasswordVisible)}
         className="absolute right-3 top-1/2 -translate-y-1/2"
         disabled={disabled}>
-        <Icon
-          as={isPasswordVisible ? EyeSlashIcon : EyeIcon}
-          size={20}
-          className="text-muted-foreground"
-        />
+        <Icon as={isPasswordVisible ? EyeOff : Eye} size={20} className="text-muted-foreground" />
       </TouchableOpacity>
     );
   };

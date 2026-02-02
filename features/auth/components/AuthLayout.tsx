@@ -3,6 +3,7 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { StatusBar } from 'expo-status-bar';
+import { ArrowLeft, Box, Mail } from 'lucide-react-native';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -13,7 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ArrowLeftIcon, CubeIcon, EnvelopeIcon } from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const google = require('@/assets/images/google.png');
@@ -39,14 +39,14 @@ const providerConfig = {
     backgroundColor: 'bg-[#1877F2]',
     textColor: 'text-white',
     borderColor: 'border-[#1877F2]',
-    icon: <Icon as={CubeIcon} size={20} color="#FFFFFF" />,
+    icon: <Icon as={Box} size={20} color="#FFFFFF" />,
   },
   email: {
     label: 'E-posta ile devam et',
     backgroundColor: 'bg-secondary/50',
     textColor: 'text-foreground',
     borderColor: 'border-transparent',
-    icon: <Icon as={EnvelopeIcon} size={20} className="text-primary" />,
+    icon: <Icon as={Mail} size={20} className="text-primary" />,
   },
 };
 
@@ -190,7 +190,7 @@ export function AuthLayout({
                         onPress={handleBackToSocial}
                         className="mb-8 flex-row items-center">
                         <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-secondary/50">
-                          <Icon as={ArrowLeftIcon} size={18} className="text-muted-foreground" />
+                          <Icon as={ArrowLeft} size={18} className="text-muted-foreground" />
                         </View>
                         <Text className="font-bold text-muted-foreground/60">Sosyal Giriş</Text>
                       </TouchableOpacity>

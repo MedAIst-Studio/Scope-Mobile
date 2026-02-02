@@ -1,11 +1,12 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { AttemptsResponseData } from '@/features/quiz/validation';
+import { ChevronRight } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
-import { ChevronRightIcon } from 'react-native-heroicons/solid';
 
 interface QuizResultCardProps {
   attempt: AttemptsResponseData['attempts'][0];
@@ -52,7 +53,7 @@ export const QuizResultCard: React.FC<QuizResultCardProps> = ({ attempt, onViewR
           className="w-full flex-row items-center justify-center"
           size="default">
           <Text className="font-bold text-foreground">Detayları İncele</Text>
-          <ChevronRightIcon size={16} className="text-foreground" />
+          <Icon as={ChevronRight} size={16} className="text-foreground" />
         </Button>
       </CardFooter>
     </Card>

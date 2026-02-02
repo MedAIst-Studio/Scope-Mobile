@@ -1,9 +1,9 @@
 import { CustomHeader } from '@/components/shared/CustomHeader';
 import { Icon } from '@/components/ui/icon';
 import { Tabs, useRouter } from 'expo-router';
+import { Camera } from 'lucide-react-native';
 import React from 'react';
 import { TouchableOpacity, useColorScheme } from 'react-native';
-import { CameraIcon } from 'react-native-heroicons/outline';
 
 const TabsLayout = () => {
   const colorScheme = useColorScheme();
@@ -30,7 +30,7 @@ const TabsLayout = () => {
           title: 'Sohbet',
           headerRight: () => (
             <TouchableOpacity onPress={() => router.push('/(tabs)/scan')}>
-              <Icon as={CameraIcon} size={24} className="text-foreground" />
+              <Icon as={Camera} size={24} className="text-foreground" />
             </TouchableOpacity>
           ),
         }}

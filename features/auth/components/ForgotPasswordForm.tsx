@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
+import { Check } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { CheckIcon } from 'react-native-heroicons/outline';
 import { z } from 'zod';
 
 const forgotPasswordSchema = z.object({
@@ -40,7 +40,7 @@ export function ForgotPasswordForm() {
       <View className="flex flex-col gap-8 py-4">
         <View className="flex flex-col items-center gap-6">
           <View className="h-20 w-20 items-center justify-center rounded-[2rem] bg-green-500/10 shadow-sm shadow-green-500/10">
-            <CheckIcon size={40} color="#10b981" />
+            <Check size={40} color="#10b981" />
           </View>
 
           <View className="gap-2">

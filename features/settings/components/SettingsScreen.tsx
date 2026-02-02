@@ -1,9 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
+import { Bell, HelpCircle, Palette } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { BellIcon, QuestionMarkCircleIcon, SwatchIcon } from 'react-native-heroicons/solid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSettings } from '../hooks/useSettings';
 import { SettingsItem } from './SettingsItem';
@@ -27,7 +27,7 @@ export const SettingsScreen: React.FC = () => {
           <Card className="gap-1 rounded-[2.5rem] border-border/20 p-3 shadow-sm">
             <View className="flex-row items-center rounded-2xl px-2 py-3">
               <View className="mr-4 h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
-                <Icon as={SwatchIcon} size={22} className="text-primary" />
+                <Icon as={Palette} size={22} className="text-primary" />
               </View>
               <View className="flex-1">
                 <Text className="text-[17px] font-bold tracking-tight text-foreground">Tema</Text>
@@ -47,7 +47,7 @@ export const SettingsScreen: React.FC = () => {
           </Text>
           <Card className="gap-1 rounded-[2.5rem] border-border/20 p-3 shadow-sm">
             <SettingsItem
-              icon={BellIcon}
+              icon={Bell}
               title="Bildirimler"
               subtitle="Anlık haber ve güncellemeler"
               type="switch"
@@ -65,7 +65,7 @@ export const SettingsScreen: React.FC = () => {
           </Text>
           <Card className="gap-1 rounded-[2.5rem] border-border/20 p-3 shadow-sm">
             <SettingsItem
-              icon={QuestionMarkCircleIcon}
+              icon={HelpCircle}
               title="Destek & Yardım"
               subtitle="Bize ulaşın veya SSS"
               onPress={handleHelpPress}
