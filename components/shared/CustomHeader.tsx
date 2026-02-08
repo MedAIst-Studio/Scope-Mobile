@@ -137,10 +137,7 @@ export function CustomHeader({ layout, options, route, navigation }: BottomTabHe
             <View className="flex-1">
               <View className="flex-row items-center justify-between px-6 py-8">
                 <View className="flex-row items-center gap-3">
-                  <View className="h-10 w-10 items-center justify-center rounded-2xl bg-primary">
-                    <GraduationCap size={24} color="white" />
-                  </View>
-                  <Text className="text-2xl font-bold tracking-tighter text-foreground">YksAI</Text>
+                  <Text className="text-2xl font-bold tracking-tighter text-foreground">Scope</Text>
                 </View>
                 <TouchableOpacity
                   onPress={closeMenu}
