@@ -17,8 +17,6 @@ export const useQuiz = () => {
 
   const handleCreateQuizSubmit = async (data: QuizRequestData) => {
     await createQuiz(data);
-    // Navigation back is handled by the form component via onSuccess callback
-    // or we can invalidate queries here
   };
 
   return {
