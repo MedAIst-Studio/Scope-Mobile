@@ -55,10 +55,10 @@ export default function HomeScreen() {
             className="mb-8 overflow-hidden rounded-[2.5rem] bg-primary p-8 shadow-xl shadow-primary/30">
             <View className="mb-8 flex-row items-center justify-between">
               <View className="h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
-                <Icon as={Camera} size={32} color="white" />
+                <Icon className="text-white" as={Camera} size={32} />
               </View>
               <Badge variant="default" className="h-8 border-0 bg-white/20 px-4">
-                <Sparkles size={14} color="white" className="" />
+                <Sparkles size={14} color="white" />
                 <Text className="text-[10px] font-bold uppercase tracking-wider text-white">
                   YENİ ÖZELLİK
                 </Text>
@@ -67,9 +67,6 @@ export default function HomeScreen() {
             <View>
               <Text className="text-3xl font-bold tracking-tight text-white">Soru Tarat</Text>
               <Text className="text-lg font-medium text-white/80">Yapay zeka ile anında çözüm</Text>
-            </View>
-            <View className="absolute bottom-8 right-8 h-12 w-12 items-center justify-center rounded-full bg-white/10">
-              <ArrowRight size={24} color="white" />
             </View>
           </TouchableOpacity>
 

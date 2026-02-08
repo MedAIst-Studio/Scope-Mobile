@@ -1,4 +1,3 @@
-export { ChatHeader } from './components/ChatHeader';
 export { ChatInput } from './components/ChatInput';
 export { ChatMessageList } from './components/ChatMessageList';
 export { ChatScreen } from './components/ChatScreen';

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import React from 'react';
 import { Modal, Pressable, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export interface ActionItem {
   label: string;
@@ -20,10 +21,17 @@ interface ActionMenuProps {
 }
 
 export const ActionMenu: React.FC<ActionMenuProps> = ({ isVisible, onClose, title, actions }) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <Modal visible={isVisible} transparent animationType="none" onRequestClose={onClose}>
-      <View className="flex-1 justify-end">
-        <Pressable className="flex-1" onPress={onClose}>
+    <Modal
+      visible={isVisible}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={onClose}>
+      <View className="relative flex-1 justify-end">
+        <Pressable className="absolute inset-0" onPress={onClose}>
           <Animated.View
             entering={FadeIn}
             exiting={FadeOut}
@@ -34,7 +42,8 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({ isVisible, onClose, titl
         <Animated.View
           entering={SlideInDown}
           exiting={SlideOutDown}
-          className="rounded-t-[32px] bg-card px-6 pb-12 pt-6 shadow-2xl">
+          style={{ paddingBottom: insets.bottom }}
+          className="rounded-t-[32px] bg-card px-6 pt-6 shadow-2xl">
           <View className="mb-6 h-1 w-12 self-center rounded-full bg-border" />
 
           {title && (
