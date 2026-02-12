@@ -170,9 +170,7 @@ axiosInstance.interceptors.response.use(
     const apiError = createApiError(error, 'API_RESPONSE_ERROR');
 
     logger.error('API Error', apiError);
-    if (error.response?.status === 500) {
-      ApiErrorHandler.handle(error as any);
-    }
+    ApiErrorHandler.handle(error as any);
 
     return Promise.reject(apiError);
   }

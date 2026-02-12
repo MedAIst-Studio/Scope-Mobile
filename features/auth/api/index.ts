@@ -5,8 +5,10 @@ import {
   LoginFormData,
   loginResponseSchema,
   loginSchema,
+  OAuthLoginFormData,
+  oauthLoginResponseSchema,
+  oauthLoginSchema,
   SignupFormData,
-  verifyOauthResponseSchema,
 } from '../utils/validation';
 import { refreshAuthToken } from './refresh';
 
@@ -64,14 +66,11 @@ export const AuthAPI = {
     return await refreshAuthToken(refreshToken);
   },
 
-  async verifyOauthSession(session: string) {
-    const { data, error, success } = await apiClient.post(
-      `${AUTH_PATH}/exchange`,
-      { session },
-      {
-        response: verifyOauthResponseSchema,
-      }
-    );
+  async oauthLogin(request: OAuthLoginFormData) {
+    const { data, error, success } = await apiClient.post(`/api/auth/oauth/mobile`, request, {
+      request: oauthLoginSchema,
+      response: oauthLoginResponseSchema,
+    });
 
     return { data, error, success };
   },

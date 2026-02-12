@@ -205,7 +205,7 @@ export function AuthLayout({
 
               <View className="mt-8 items-center">
                 <Text className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/20">
-                  YksAl Studio tarafından geliştirilmiştir
+                  Kuaru Labs tarafından geliştirilmiştir
                 </Text>
               </View>
             </View>

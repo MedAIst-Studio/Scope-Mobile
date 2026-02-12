@@ -42,15 +42,6 @@ export class ApiErrorHandler {
       return;
     }
 
-    if (status === 404) {
-      errorEventBus.emit('SHOW_TOAST', {
-        title: 'Bulunamadı',
-        message: 'İstediğiniz kaynak bulunamadı.',
-        type: 'warning',
-      });
-      return;
-    }
-
     if (status >= 500) {
       errorEventBus.emit('SHOW_TOAST', {
         title: 'Sunucu Hatası',

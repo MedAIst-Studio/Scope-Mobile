@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
 import { Alert } from 'react-native';
 
 import { AuthAPI } from '@/features/auth/api';
@@ -73,8 +72,6 @@ export const useUpdatePassword = () => {
 };
 
 export const useDeleteAccount = () => {
-  const router = useRouter();
-
   return useMutation({
     mutationFn: async () => {
       const { error } = await userAPI.deleteAccount();

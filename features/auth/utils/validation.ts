@@ -6,14 +6,20 @@ export const loginSchema = z.object({
   rememberMe: z.boolean().optional(),
 });
 
+export const oauthLoginSchema = z.object({
+  provider: z.enum(['google', 'facebook']),
+  idToken: z.string(),
+  accessToken: z.string(),
+});
+
+export const oauthLoginResponseSchema = z.object({
+  access_token: z.string(),
+  refresh_token: z.string(),
+});
+
 export const loginResponseSchema = z.object({
   accessToken: z.string(),
   refreshToken: z.string(),
-});
-
-export const verifyOauthResponseSchema = z.object({
-  access_token: z.string(),
-  refresh_token: z.string(),
 });
 
 export const refreshTokenResponseSchema = z.object({
@@ -79,6 +85,7 @@ export const verifyEmailSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignupFormData = z.infer<typeof signupSchema>;
+export type OAuthLoginFormData = z.infer<typeof oauthLoginSchema>;
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 export type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>;
