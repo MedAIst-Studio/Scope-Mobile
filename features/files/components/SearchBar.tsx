@@ -13,7 +13,7 @@ interface SearchBarProps {
 export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChangeText,
-  placeholder = 'Doküman ara...',
+  placeholder = 'Dosya ara...',
 }) => (
   <View className="relative mb-4">
     <View className="absolute left-3 top-1/2 z-10 -translate-y-1/2">

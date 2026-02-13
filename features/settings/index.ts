@@ -1,5 +1,6 @@
 export { AccountScreen } from './components/AccountScreen';
-export { AccountSection } from './components/AccountSection';
+export { ChangePasswordScreen } from './components/ChangePasswordScreen';
+export { ProfileScreen } from './components/ProfileScreen';
 export { SettingsItem } from './components/SettingsItem';
 export { SettingsScreen } from './components/SettingsScreen';
 export { ThemeSelector } from './components/ThemeSelector';

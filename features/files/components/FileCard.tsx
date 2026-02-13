@@ -3,83 +3,115 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { FileText, MessageSquare, MoreVertical } from 'lucide-react-native';
+import { cn } from '@/lib/utils';
+import {
+  File as FileIcon,
+  FileText,
+  Image as ImageIcon,
+  MessageCircle,
+  Trash2,
+} from 'lucide-react-native';
 import React from 'react';
-import { View } from 'react-native';
-import { PDFFile } from '../types';
-import { getFileStatusBadge } from '../utils/mockData';
+import { Image, View } from 'react-native';
+import { File as FileType } from '../types';
 
 interface FileCardProps {
-  file: PDFFile;
+  file: FileType;
   onChatStart: (fileId: string) => void;
   onDelete?: (fileId: string) => void;
 }
 
+const getFileInfo = (fileName: string) => {
+  const ext = fileName.toLowerCase().split('.').pop() || '';
+
+  if (['pdf'].includes(ext)) {
+    return {
+      icon: FileText,
+      bgColor: 'bg-red-500/10',
+      iconColor: 'text-red-500',
+    };
+  }
+
+  if (['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(ext)) {
+    return {
+      icon: ImageIcon,
+      bgColor: 'bg-blue-500/10',
+      iconColor: 'text-blue-500',
+    };
+  }
+
+  return {
+    icon: FileIcon,
+    bgColor: 'bg-zinc-500/10',
+    iconColor: 'text-zinc-500',
+  };
+};
+
 export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete }) => {
-  const statusBadge = getFileStatusBadge(file);
+  const formattedSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+  const formattedDate = new Date(file.created_at).toLocaleDateString('tr-TR', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+
+  const { icon, bgColor, iconColor } = getFileInfo(file.title);
 
   return (
     <Card className="mb-4">
-      {/* File Header */}
-      <CardHeader className="flex-row items-start gap-3">
-        <View className="h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-          <FileText size={24} color="#3B82F6" />
+      <CardHeader className="flex-row items-center gap-4">
+        <View
+          className={cn(
+            'h-14 w-14 items-center justify-center overflow-hidden rounded-2xl',
+            bgColor
+          )}>
+          {['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(
+            file.title.toLowerCase().split('.').pop() || ''
+          ) && file.url ? (
+            <Image source={{ uri: file.url }} className="h-full w-full" resizeMode="cover" />
+          ) : (
+            <Icon as={icon} size={28} className={iconColor} />
+          )}
         </View>
 
         <View className="flex-1">
-          <Text className="text-base font-semibold text-foreground">{file.name}</Text>
-          <Text className="text-sm text-muted-foreground">{file.fileName}</Text>
+          <Text className="mb-1 text-lg font-bold leading-tight text-foreground" numberOfLines={1}>
+            {file.title}
+          </Text>
+          <View className="flex-row items-center gap-2">
+            <Text className="text-xs text-muted-foreground/60">{formattedDate}</Text>
+            <View className="h-1 w-1 rounded-full bg-muted-foreground/30" />
+            <Text className="text-xs text-muted-foreground/60">{formattedSize}</Text>
+          </View>
         </View>
 
-        <Badge variant={statusBadge.variant}>
-          <Text>{statusBadge.text}</Text>
-        </Badge>
-
-        <Button size="icon-sm" variant="outline" className="!border-zinc-700 !bg-background">
-          <Icon as={MoreVertical} size={16} />
-        </Button>
+        {onDelete && (
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            onPress={() => onDelete(file.id)}
+            className="h-10 w-10">
+            <Icon as={Trash2} size={20} className="text-destructive/60" />
+          </Button>
+        )}
       </CardHeader>
 
-      {/* Processing Progress */}
-      {file.isProcessing && file.processingProgress !== undefined && (
-        <CardContent>
-          <View className="h-2 rounded-full bg-muted">
-            <View
-              className="h-full rounded-full bg-orange-500"
-              style={{ width: `${file.processingProgress}%` }}
-            />
-          </View>
-          <Text className="mt-1 text-xs text-muted-foreground">
-            Doküman işleniyor... {file.processingProgress}%
-          </Text>
-        </CardContent>
-      )}
-
-      {/* File Info */}
-      <CardContent className="flex-row items-center justify-between">
-        <Text className="text-sm text-muted-foreground">Boyut: {file.size}</Text>
-        <Text className="text-sm text-muted-foreground">{file.uploadDate}</Text>
+      <CardContent className="flex-row items-center justify-between pt-0">
+        <Badge variant="default" className="bg-primary/5">
+          <View className="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+          <Text className="text-[10px] font-bold text-primary">ANALİZ EDİLDİ</Text>
+        </Badge>
       </CardContent>
 
-      {/* Message Count & Chat Button */}
-      {file.status === 'ready' ? (
-        <CardFooter className="flex-row items-center justify-between">
-          <View className="flex-row items-center gap-1">
-            <MessageSquare size={16} color="#6B7280" />
-            <Text className="text-sm text-muted-foreground">{file.messageCount} mesaj</Text>
-          </View>
-
-          <Button onPress={() => onChatStart(file.id)} className="rounded-full">
-            <Text className="font-medium text-primary-foreground">Chat Başlat</Text>
-          </Button>
-        </CardFooter>
-      ) : (
-        <CardFooter className="items-center">
-          <Text className="text-sm text-muted-foreground">
-            {file.isProcessing ? 'Doküman hazırlanıyor...' : 'Sohbet için hazırlanıyor'}
-          </Text>
-        </CardFooter>
-      )}
+      <CardFooter className="pt-2">
+        <Button
+          onPress={() => onChatStart(file.id)}
+          className="w-full flex-row items-center justify-center"
+          size="default">
+          <Icon as={MessageCircle} size={20} className="text-primary-foreground" />
+          <Text className="font-bold text-primary-foreground">Sohbeti Başlat</Text>
+        </Button>
+      </CardFooter>
     </Card>
   );
 };

@@ -19,6 +19,9 @@ web-build/
 # Metro
 .metro-health-check*
 
+.env
+.env.local
+
 # debug
 npm-debug.*
 yarn-debug.*
@@ -31,6 +34,8 @@ yarn-error.*
 # local env files
 .env*.local
 
+android/
+
 # typescript
 *.tsbuildinfo
 
@@ -39,3 +44,5 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+
+.idea

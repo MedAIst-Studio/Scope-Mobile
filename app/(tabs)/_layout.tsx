@@ -1,55 +1,65 @@
-import { Tabs } from 'expo-router';
-import { Brain, FileText, MessageCircle, Settings } from 'lucide-react-native';
+import { CustomHeader } from '@/components/shared/CustomHeader';
+import { Icon } from '@/components/ui/icon';
+import { Tabs, useRouter } from 'expo-router';
+import { Camera } from 'lucide-react-native';
 import React from 'react';
-import { useColorScheme } from 'react-native';
+import { TouchableOpacity, useColorScheme } from 'react-native';
 
 const TabsLayout = () => {
   const colorScheme = useColorScheme();
+  const router = useRouter();
 
   return (
     <Tabs
+      tabBar={() => null}
       screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          borderTopWidth: 1,
-          paddingTop: 5,
-          marginBottom: 5,
-          elevation: 0,
-          shadowOpacity: 0,
-          backgroundColor: colorScheme === 'dark' ? '#171717' : '#FFFFFF',
-        },
-        tabBarIconStyle: {
-          width: 20,
-          height: 20,
-        },
+        headerShown: true,
+        header: (props) => <CustomHeader {...props} />,
         tabBarHideOnKeyboard: true,
       }}>
       <Tabs.Screen
         name="index"
         options={{
+          title: 'Anasayfa',
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
           title: 'Sohbet',
-          tabBarIcon: ({ color }) => <MessageCircle size={20} color={color} />,
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.push('/(tabs)/scan')}>
+              <Icon as={Camera} size={24} className="text-foreground" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="scan"
+        options={{
+          title: 'Soru Tarat',
+          headerShown: false,
+          href: null,
+          tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen
         name="files"
         options={{
-          title: 'Dosyalar',
-          tabBarIcon: ({ color }) => <FileText size={20} color={color} />,
+          title: 'Dosyalarım',
         }}
       />
       <Tabs.Screen
         name="quiz"
         options={{
-          title: 'Quiz',
-          tabBarIcon: ({ color }) => <Brain size={20} color={color} />,
+          title: 'Sınavlarım',
         }}
       />
       <Tabs.Screen
         name="(settings)/settings"
         options={{
           title: 'Ayarlar',
-          tabBarIcon: ({ color }) => <Settings size={20} color={color} />,
         }}
       />
       <Tabs.Screen

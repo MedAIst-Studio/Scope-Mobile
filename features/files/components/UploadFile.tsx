@@ -1,79 +1,72 @@
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { Plus, Upload } from 'lucide-react-native';
-import React, { useState } from 'react';
-import { Alert, View } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
+import { CloudUpload, Upload } from 'lucide-react-native';
+import React from 'react';
+import { View } from 'react-native';
+import { useUploadFile } from '../hooks';
 
-interface UploadFileProps {
-  onFileUpload: (fileName: string, fileSize: string) => void;
-}
+export const UploadFile: React.FC = () => {
+  const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
 
-export const UploadFile: React.FC<UploadFileProps> = ({ onFileUpload }) => {
-  const [isUploading, setIsUploading] = useState(false);
+  const handleFileUpload = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'image/*'],
+        copyToCacheDirectory: true,
+      });
 
-  const handleFileUpload = () => {
-    if (isUploading) return;
+      if (result.canceled) return;
 
-    // Simulate file picker
-    Alert.alert('Dosya Seç', 'Hangi dosya türünü yüklemek istiyorsunuz?', [
-      {
-        text: 'PDF Dokümanı',
-        onPress: () => simulateUpload('Yeni-Dokuman.pdf', '3.2 MB'),
-      },
-      {
-        text: 'Tıbbi Rapor',
-        onPress: () => simulateUpload('Tibbi-Rapor-2024.pdf', '1.8 MB'),
-      },
-      { text: 'İptal', style: 'cancel' },
-    ]);
-  };
+      const file = result.assets[0];
 
-  const simulateUpload = (fileName: string, fileSize: string) => {
-    setIsUploading(true);
-
-    // Simulate upload delay
-    setTimeout(() => {
-      onFileUpload(fileName, fileSize);
-      setIsUploading(false);
-    }, 1000);
+      uploadFile({
+        file_title: file.name,
+        file_data: {
+          uri: file.uri,
+          name: file.name,
+          type:
+            file.mimeType ||
+            (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg'),
+        },
+      });
+    } catch (error) {
+      console.error('File pick error', error);
+    }
   };
 
   return (
-    <View className="mb-2 rounded-xl border border-dashed border-muted-foreground/30 bg-muted p-4">
-      <View className="flex-row items-center gap-3">
-        <View className="h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-          {isUploading ? (
-            <View className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          ) : (
-            <Upload size={20} color="#3B82F6" />
-          )}
-        </View>
-
-        <View className="flex-1">
-          <Text className="font-medium text-foreground">Yeni PDF Yükle</Text>
-          <Text className="text-xs text-muted-foreground">PDF • Maks 10MB</Text>
-        </View>
-
-        <Button
-          onPress={handleFileUpload}
-          disabled={isUploading}
-          size="sm"
-          className="rounded-full">
-          <View className="flex-row items-center gap-1">
-            {isUploading ? (
-              <>
-                <View className="h-3 w-3 animate-spin rounded-full border border-primary-foreground border-t-transparent" />
-                <Text className="text-xs font-medium text-primary-foreground">Yükleniyor</Text>
-              </>
-            ) : (
-              <>
-                <Plus size={14} color="white" />
-                <Text className="text-xs font-medium text-primary-foreground">Ekle</Text>
-              </>
-            )}
-          </View>
-        </Button>
+    <View className="mb-6 items-center justify-center rounded-[2rem] border-2 border-dashed border-border/40 bg-card/50 p-6">
+      <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-primary/10">
+        {isUploading ? (
+          <View className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        ) : (
+          <Icon as={CloudUpload} size={40} className="text-primary" />
+        )}
       </View>
+
+      <View className="mb-6 items-center">
+        <Text className="mb-1 text-xl font-bold text-foreground">Yeni Dosya Yükle</Text>
+        <Text className="px-4 text-center text-sm text-muted-foreground/60">
+          YKS hazırlık sürecinde analiz için döküman veya görsel ekleyin
+        </Text>
+      </View>
+
+      <Button
+        onPress={handleFileUpload}
+        disabled={isUploading}
+        size="lg"
+        className="w-full shadow-lg shadow-primary/20">
+        <Icon as={Upload} size={20} className="text-primary-foreground" />
+        <Text className="font-bold text-primary-foreground">
+          {isUploading ? 'Yükleniyor...' : 'Dosya Seç'}
+        </Text>
+      </Button>
+
+      <Text className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+        PDF, GÖRÜNTÜ • MAKSİMUM 10MB
+      </Text>
     </View>
   );
 };

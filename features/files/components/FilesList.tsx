@@ -1,11 +1,11 @@
 import { Text } from '@/components/ui/text';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
-import { PDFFile } from '../types';
+import { File } from '../types';
 import { FileCard } from './FileCard';
 
 interface FilesListProps {
-  files: PDFFile[];
+  files: File[];
   onChatStart: (fileId: string) => void;
   onDeleteFile?: (fileId: string) => void;
 }

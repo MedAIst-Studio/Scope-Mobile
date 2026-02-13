@@ -1,3 +1,3 @@
-import { QuizScreen } from '@/features/quiz';
+import { QuizListScreen } from '@/features/quiz';
 
-export default QuizScreen;
+export default QuizListScreen;

@@ -6,18 +6,33 @@ export const loginSchema = z.object({
   rememberMe: z.boolean().optional(),
 });
 
+export const oauthLoginSchema = z.object({
+  provider: z.enum(['google', 'facebook']),
+  idToken: z.string(),
+  accessToken: z.string(),
+});
+
+export const oauthLoginResponseSchema = z.object({
+  access_token: z.string(),
+  refresh_token: z.string(),
+});
+
+export const loginResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+});
+
+export const refreshTokenResponseSchema = z.object({
+  access_token: z.string(),
+});
+
 export const signupSchema = z
   .object({
-    firstName: z
+    username: z
       .string()
-      .min(1, 'Ad gereklidir')
-      .min(2, 'Ad en az 2 karakter olmalıdır')
-      .max(50, 'Ad en fazla 50 karakter olabilir'),
-    lastName: z
-      .string()
-      .min(1, 'Soyad gereklidir')
-      .min(2, 'Soyad en az 2 karakter olmalıdır')
-      .max(50, 'Soyad en fazla 50 karakter olabilir'),
+      .min(1, 'Kullanıcı adı gereklidir')
+      .min(2, 'Kullanıcı adı en az 2 karakter olmalıdır')
+      .max(50, 'Kullanıcı adı en fazla 50 karakter olabilir'),
     email: z
       .string()
       .min(1, 'E-posta adresi gereklidir')
@@ -70,6 +85,7 @@ export const verifyEmailSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignupFormData = z.infer<typeof signupSchema>;
+export type OAuthLoginFormData = z.infer<typeof oauthLoginSchema>;
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 export type VerifyEmailFormData = z.infer<typeof verifyEmailSchema>;

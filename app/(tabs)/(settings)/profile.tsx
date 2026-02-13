@@ -1,31 +1,25 @@
-import { AccountScreen, useSettings } from '@/features/settings';
 import React from 'react';
+import { StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ProfileScreen = () => {
-  const { settings, updateProfile } = useSettings();
-
-  const handleSave = (updatedProfile: typeof settings.profile) => {
-    updateProfile(updatedProfile);
-  };
-
-  const handleLogout = () => {
-    // TODO: Clear user session/tokens
-    console.log('User logged out');
-  };
-
-  const handleDeleteAccount = () => {
-    // TODO: Delete user account from backend
-    console.log('Account deleted');
-  };
-
   return (
-    <AccountScreen
-      profile={settings.profile}
-      onSave={handleSave}
-      onLogout={handleLogout}
-      onDeleteAccount={handleDeleteAccount}
-    />
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.text}>Profile Screen</Text>
+    </SafeAreaView>
   );
 };
 
 export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+});

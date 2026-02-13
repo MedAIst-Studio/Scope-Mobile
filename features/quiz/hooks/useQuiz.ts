@@ -1,45 +1,30 @@
-import { useState } from 'react';
-import { Quiz, QuizFilters } from '../types';
-import { mockQuizzes } from '../utils/mockData';
+import { QuizRequestData } from '../validation';
+import { useCreateQuiz, useQuizzes, useSubmissions } from './useQueries';
 
 export const useQuiz = () => {
-  const [quizzes] = useState<Quiz[]>(mockQuizzes);
-  const [filters, setFilters] = useState<QuizFilters>({
-    category: 'Tümü',
-    difficulty: 'Tümü',
-    status: 'Tümü',
-  });
+  const {
+    data: quizzes,
+    isLoading: isQuizzesLoading,
+    error: quizzesError,
+    refetch: refetchQuizzes,
+  } = useQuizzes();
+  const {
+    data: submissionsData,
+    isLoading: isSubmissionsLoading,
+    refetch: refetchSubmissions,
+  } = useSubmissions();
+  const { mutateAsync: createQuiz } = useCreateQuiz();
 
-  const filteredQuizzes = quizzes.filter((quiz) => {
-    const categoryMatch = filters.category === 'Tümü' || quiz.category === filters.category;
-    const difficultyMatch = filters.difficulty === 'Tümü' || quiz.difficulty === filters.difficulty;
-    const statusMatch =
-      filters.status === 'Tümü' ||
-      (filters.status === 'Tamamlanan' && quiz.status === 'completed') ||
-      (filters.status === 'Tamamlanmayan' && quiz.status !== 'completed');
-
-    return categoryMatch && difficultyMatch && statusMatch;
-  });
-
-  const updateFilter = <K extends keyof QuizFilters>(key: K, value: QuizFilters[K]) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleStartQuiz = (quizId: string) => {
-    console.log('Starting quiz:', quizId);
-    // TODO: Navigate to quiz or implement quiz logic
-  };
-
-  const handleCreateQuiz = () => {
-    console.log('Creating new quiz');
-    // TODO: Navigate to quiz creation
+  const handleCreateQuizSubmit = async (data: QuizRequestData) => {
+    await createQuiz(data);
   };
 
   return {
-    quizzes: filteredQuizzes,
-    filters,
-    updateFilter,
-    handleStartQuiz,
-    handleCreateQuiz,
+    quizzes,
+    submissions: submissionsData?.attempts || [],
+    isLoading: isQuizzesLoading || isSubmissionsLoading,
+    error: quizzesError,
+    refetch: () => Promise.all([refetchQuizzes(), refetchSubmissions()]),
+    handleCreateQuizSubmit,
   };
 };

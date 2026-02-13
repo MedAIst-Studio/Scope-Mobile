@@ -5,7 +5,7 @@ import { Platform, Pressable } from 'react-native';
 
 const buttonVariants = cva(
   cn(
-    'group shrink-0 flex-row items-center justify-center gap-2 rounded-xl shadow-none',
+    'group shrink-0 flex-row items-center justify-center gap-2 rounded-2xl transition-transform duration-100 active:scale-95',
     Platform.select({
       web: "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap outline-none transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
     })
@@ -14,24 +14,24 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: cn(
-          'border-2 border-b-4 border-primary-darker bg-primary shadow-sm shadow-black/5 active:bg-primary/90',
-          Platform.select({ web: 'hover:bg-primary/90' })
+          'bg-primary shadow-sm active:opacity-90',
+          Platform.select({ web: 'hover:opacity-90' })
         ),
         destructive: cn(
-          'border-2 border-b-4 border-red-600 bg-destructive active:bg-destructive/90 dark:bg-destructive/60',
+          'bg-destructive active:opacity-90 dark:bg-destructive/80',
           Platform.select({
-            web: 'hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+            web: 'hover:opacity-90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
           })
         ),
         outline: cn(
-          'border-2 border-b-4 border-slate-200 bg-white shadow-black/5 active:bg-accent dark:border-input dark:bg-input/30 dark:active:bg-input/50',
+          'border border-border bg-transparent active:bg-secondary/50 dark:border-input dark:active:bg-input/50',
           Platform.select({
             web: 'hover:bg-accent dark:hover:bg-input/50',
           })
         ),
         secondary: cn(
-          'bg-secondary shadow-sm shadow-black/5 active:bg-secondary/80',
-          Platform.select({ web: 'hover:bg-secondary/80' })
+          'bg-secondary active:opacity-80',
+          Platform.select({ web: 'hover:opacity-80' })
         ),
         ghost: cn(
           'active:bg-accent dark:active:bg-accent/50',
@@ -40,14 +40,14 @@ const buttonVariants = cva(
         link: '',
       },
       size: {
-        default: cn('h-11 px-4 py-2 sm:h-9', Platform.select({ web: 'has-[>svg]:px-3' })),
+        default: cn('h-14 px-6', Platform.select({ web: 'has-[>svg]:px-3' })),
         sm: cn(
-          'h-10 gap-1.5 rounded-md px-3 sm:h-8',
+          'h-10 gap-1.5 rounded-xl px-3 sm:h-8',
           Platform.select({ web: 'has-[>svg]:px-2.5' })
         ),
-        lg: cn('h-12 rounded-xl px-6 sm:h-10', Platform.select({ web: 'has-[>svg]:px-4' })),
-        icon: 'h-10 w-10 sm:h-9 sm:w-9',
-        'icon-sm': 'h-8 w-8 sm:h-7 sm:w-7',
+        lg: cn('h-16 rounded-[2rem] px-8 sm:h-12', Platform.select({ web: 'has-[>svg]:px-4' })),
+        icon: 'h-12 w-12 rounded-xl sm:h-10 sm:w-10',
+        'icon-sm': 'h-9 w-9 rounded-lg sm:h-8 sm:w-8',
       },
     },
     defaultVariants: {
@@ -59,7 +59,7 @@ const buttonVariants = cva(
 
 const buttonTextVariants = cva(
   cn(
-    'text-sm font-medium text-foreground',
+    'text-base font-semibold text-foreground',
     Platform.select({ web: 'pointer-events-none transition-colors' })
   ),
   {
@@ -67,21 +67,15 @@ const buttonTextVariants = cva(
       variant: {
         default: 'text-primary-foreground',
         destructive: 'text-white',
-        outline: cn(
-          'group-active:text-accent-foreground',
-          Platform.select({ web: 'group-hover:text-accent-foreground' })
-        ),
+        outline: 'text-foreground',
         secondary: 'text-secondary-foreground',
-        ghost: 'group-active:text-accent-foreground',
-        link: cn(
-          'text-primary group-active:underline',
-          Platform.select({ web: 'underline-offset-4 hover:underline group-hover:underline' })
-        ),
+        ghost: 'text-foreground/70',
+        link: cn('text-primary', Platform.select({ web: 'underline-offset-4 hover:underline' })),
       },
       size: {
         default: '',
-        sm: '',
-        lg: '',
+        sm: 'text-sm',
+        lg: 'text-lg',
         icon: '',
         'icon-sm': '',
       },

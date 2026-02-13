@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
+import { Check } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { z } from 'zod';
 
 const forgotPasswordSchema = z.object({
@@ -36,18 +37,22 @@ export function ForgotPasswordForm() {
 
   if (emailSent) {
     return (
-      <View className="flex flex-col gap-6 text-center">
-        <View className="flex flex-col items-center gap-4">
-          <View className="mb-2 h-16 w-16 items-center justify-center rounded-full bg-green-100">
-            <Text className="text-2xl text-green-600">✓</Text>
+      <View className="flex flex-col gap-8 py-4">
+        <View className="flex flex-col items-center gap-6">
+          <View className="h-20 w-20 items-center justify-center rounded-[2rem] bg-green-500/10 shadow-sm shadow-green-500/10">
+            <Check size={40} color="#10b981" />
           </View>
 
-          <Text className="text-xl font-semibold text-foreground">E-posta Gönderildi</Text>
-
-          <Text className="text-center text-muted-foreground">
-            Şifre sıfırlama bağlantısını {form.getValues('email')} adresine gönderdik. E-posta
-            kutunuzu kontrol edin.
-          </Text>
+          <View className="gap-2">
+            <Text className="text-center text-2xl font-bold tracking-tight text-foreground">
+              E-posta Gönderildi
+            </Text>
+            <Text className="px-4 text-center text-base font-medium leading-6 text-muted-foreground/60">
+              Şifre sıfırlama bağlantısını{' '}
+              <Text className="font-bold text-foreground">{form.getValues('email')}</Text> adresine
+              gönderdik.
+            </Text>
+          </View>
         </View>
 
         <View className="flex flex-col gap-4">
@@ -56,14 +61,18 @@ export function ForgotPasswordForm() {
               setEmailSent(false);
               form.reset();
             }}
-            variant="outline"
-            className="w-full">
-            Tekrar Dene
+            variant="secondary"
+            className="h-14 w-full rounded-2xl">
+            <Text className="text-base font-bold tracking-tight text-foreground">Tekrar Dene</Text>
           </Button>
 
           <Link href="/(auth)/login" asChild>
-            <TouchableOpacity>
-              <Button className="w-full">Giriş Sayfasına Dön</Button>
+            <TouchableOpacity activeOpacity={0.7}>
+              <Button className="h-14 w-full rounded-2xl bg-primary shadow-xl shadow-primary/30">
+                <Text className="text-base font-bold tracking-tight text-primary-foreground">
+                  Giriş Sayfasına Dön
+                </Text>
+              </Button>
             </TouchableOpacity>
           </Link>
         </View>
@@ -72,7 +81,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <View className="flex flex-col gap-6">
+    <View className="flex flex-col gap-8">
       <View className="flex flex-col gap-4">
         <DynamicFormField
           control={form.control}
@@ -82,24 +91,29 @@ export function ForgotPasswordForm() {
           placeholder="E-posta adresiniz"
           type={FormFieldType.EMAIL}
           required
-          description="Bu e-posta adresine şifre sıfırlama bağlantısı göndereceğiz"
+          description="Sıfırlama bağlantısı bu adrese gönderilecek."
         />
       </View>
 
       <Button
         onPress={form.handleSubmit(onSubmit)}
         disabled={isLoading}
-        className="w-full"
+        className="h-14 w-full flex-row items-center justify-center rounded-2xl bg-primary shadow-xl shadow-primary/30"
         size="lg">
-        <Text>{isLoading ? 'Gönderiliyor...' : 'Şifre Sıfırlama Bağlantısı Gönder'}</Text>
+        {isLoading ? (
+          <ActivityIndicator color="white" />
+        ) : (
+          <Text className="text-base font-bold tracking-tight text-primary-foreground">
+            Bağlantı Gönder
+          </Text>
+        )}
       </Button>
 
-      {/* Geri Dön Linki */}
-      <View className="flex-row items-center justify-center gap-1">
-        <Text className="text-sm text-muted-foreground">Şifrenizi hatırladınız mı?</Text>
+      <View className="flex-row items-center justify-center gap-2">
+        <Text className="text-sm font-medium text-muted-foreground/50">Şifreni hatırladın mı?</Text>
         <Link href="/(auth)/login" asChild>
-          <TouchableOpacity>
-            <Text className="text-sm font-medium text-primary">Giriş Yap</Text>
+          <TouchableOpacity activeOpacity={0.7}>
+            <Text className="text-sm font-bold text-primary">Giriş Yap</Text>
           </TouchableOpacity>
         </Link>
       </View>
