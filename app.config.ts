@@ -6,7 +6,7 @@ export default {
   expo: {
     name: IS_DEV ? 'Scope Dev' : 'Scope',
     slug: 'Scope',
-    version: '1.0.0',
+    version: '1.0.2',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
     scheme: 'Scope',
@@ -29,6 +29,7 @@ export default {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#1E1E1E',
       },
+      versionCode: 8,
       package: IS_DEV ? 'com.kuarulabs.scope.dev' : 'com.kuarulabs.scope',
     },
     web: {

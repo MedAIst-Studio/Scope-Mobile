@@ -8,7 +8,10 @@
     "ios": "expo start -c --ios",
     "web": "expo start -c --web",
     "clean": "rm -rf .expo node_modules",
-    "build:dev": "eas build --profile development --platform android --local"
+    "build:dev": "eas build --profile development --platform android",
+    "build:prod": "eas build --profile production --platform android",
+    "build:dev:local": "cd android && ./gradlew clean assembleDebug -g C:\\Android && cd ..",
+    "build:prod:local": "cd android && ./gradlew clean bundleRelease -g C:\\Android && cd .."
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
