@@ -93,13 +93,6 @@ const TypingIndicator = () => {
   );
 };
 
-const SUGGESTED_QUESTIONS = [
-  'Bu soruyu çözmeme yardım eder misin?',
-  'Problemin mantığını anlatır mısın?',
-  'Bu konuyu özetleyip püf noktalarını söyler misin?',
-  'Hatalı yaptığım yeri bulabilir misin?',
-];
-
 export const ChatMessageList: React.FC<ChatMessageListProps> = ({
   messages,
   scrollViewRef,
@@ -126,32 +119,6 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
         <Text className="mb-12 text-center text-[15px] leading-relaxed text-muted-foreground/60">
           Sınav hazırlık sürecinde çözemediğin soruları veya anlamadığın konuları sorabilirsin.
         </Text>
-
-        <View className="w-full gap-3">
-          <View className="mb-1 flex-row items-center gap-2">
-            <View className="h-[1px] flex-1 bg-border/40" />
-            <Text className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40">
-              Hızlı Başlangıç
-            </Text>
-            <View className="h-[1px] flex-1 bg-border/40" />
-          </View>
-
-          {SUGGESTED_QUESTIONS.map((q, i) => (
-            <TouchableOpacity
-              key={i}
-              onPress={() => onQuestionPress(q)}
-              activeOpacity={0.7}
-              className="active:scale-[0.98]">
-              <LinearGradient
-                colors={['transparent', 'rgba(249, 115, 22, 0.02)']}
-                style={{ borderRadius: 16 }}
-                className="flex-row items-center justify-between border border-border/40 bg-card/30 p-4">
-                <Text className="flex-1 text-[14px] font-semibold text-foreground/80">{q}</Text>
-                <Icon as={ChevronRight} size={16} className="text-muted-foreground/30" />
-              </LinearGradient>
-            </TouchableOpacity>
-          ))}
-        </View>
       </View>
     ) : null}
   </ScrollView>

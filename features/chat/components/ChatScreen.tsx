@@ -40,7 +40,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useChat } from '../hooks/useChat';
 
 import { useChats, useDeleteChat, useUpdateChat } from '../hooks/queries';
@@ -139,6 +139,7 @@ export const ChatScreen: React.FC = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const chatId = Array.isArray(id) ? id[0] : id;
+  const insets = useSafeAreaInsets();
 
   const [renameModalVisible, setRenameModalVisible] = useState(false);
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] = useState(false);
@@ -265,130 +266,133 @@ export const ChatScreen: React.FC = () => {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['left', 'right', 'bottom']}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1"
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 90}>
-        <Modal
-          visible={!!croppingImage}
-          animationType="fade"
-          transparent={false}
-          onRequestClose={() => setCroppingImage(null)}>
-          {croppingImage && (
-            <ImageCropper
-              imageUri={croppingImage}
-              onCrop={handleCropConfirm}
-              onCancel={() => setCroppingImage(null)}
-            />
-          )}
-        </Modal>
-
-        {activeFile && (
-          <View className="mx-4 mt-2 flex-row items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
-            <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <Icon as={FileText} size={20} className="text-primary" />
-            </View>
-            <View className="flex-1">
-              <Text className="text-sm font-bold text-foreground" numberOfLines={1}>
-                {activeFile.title}
-              </Text>
-              <Text className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">
-                Aktif Döküman
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => setActiveFile(null)}
-              className="h-8 w-8 items-center justify-center rounded-lg bg-background/50">
-              <Icon as={X} size={18} className="text-muted-foreground/60" />
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {isLoading ? (
-          <View className="flex-1 px-4 py-6">
-            <View className="flex-1 space-y-6">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <SkeletonItem key={i} index={i} />
-              ))}
-            </View>
-            <View className="absolute inset-0 items-center justify-center">
-              <StatusIndicator />
-            </View>
-          </View>
-        ) : (
-          <ChatMessageList
-            messages={messages}
-            scrollViewRef={scrollViewRef}
-            onQuestionPress={setMessage}
-            isTyping={isSending}
+    <View className="flex-1 bg-background">
+      <Modal
+        visible={!!croppingImage}
+        animationType="fade"
+        transparent={false}
+        onRequestClose={() => setCroppingImage(null)}>
+        {croppingImage && (
+          <ImageCropper
+            imageUri={croppingImage}
+            onCrop={handleCropConfirm}
+            onCancel={() => setCroppingImage(null)}
           />
         )}
+      </Modal>
 
-        <ChatInput
-          message={message}
-          attachments={attachments}
-          isSending={isSending}
-          inputHeight={inputHeight}
-          onChangeText={setMessage}
-          onSend={handleSendMessage}
-          onContentSizeChange={handleContentSizeChange}
-          onAttachPress={() => setIsAttachMenuVisible(true)}
-          onRemoveAttachment={removeAttachment}
-        />
+      {activeFile && (
+        <View className="mx-4 mt-2 mb-2 flex-row items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
+          <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+            <Icon as={FileText} size={20} className="text-primary" />
+          </View>
+          <View className="flex-1">
+            <Text className="text-sm font-bold text-foreground" numberOfLines={1}>
+              {activeFile.title}
+            </Text>
+            <Text className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">
+              Aktif Döküman
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => setActiveFile(null)}
+            className="h-8 w-8 items-center justify-center rounded-lg bg-background/50">
+            <Icon as={X} size={18} className="text-muted-foreground/60" />
+          </TouchableOpacity>
+        </View>
+      )}
 
-        <ActionMenu
-          isVisible={isHeaderMenuVisible}
-          onClose={() => setIsHeaderMenuVisible(false)}
-          title="Sohbet Ayarları"
-          actions={headerActions}
-        />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
+        <View className="flex-1">
+          {isLoading ? (
+            <View className="flex-1 px-4 py-6">
+              <View className="flex-1 space-y-6">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <SkeletonItem key={i} index={i} />
+                ))}
+              </View>
+              <View className="absolute inset-0 items-center justify-center">
+                <StatusIndicator />
+              </View>
+            </View>
+          ) : (
+            <ChatMessageList
+              messages={messages}
+              scrollViewRef={scrollViewRef}
+              onQuestionPress={setMessage}
+              isTyping={isSending}
+            />
+          )}
 
-        <ActionMenu
-          isVisible={isAttachMenuVisible}
-          onClose={() => setIsAttachMenuVisible(false)}
-          title="Dosya Ekle"
-          actions={attachActions}
-        />
-
-        <AlertDialog open={isDeleteAlertVisible} onOpenChange={setIsDeleteAlertVisible}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Sohbeti Sil</AlertDialogTitle>
-              <AlertDialogDescription>
-                Bu sohbeti silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>
-                <Text className="text-muted-foreground">Vazgeç</Text>
-              </AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-destructive hover:bg-destructive/90"
-                onPress={handleDelete}>
-                <Text className="text-destructive-foreground">Sil</Text>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-        <FileSelector
-          isVisible={isFileSelectorVisible}
-          onClose={() => setIsFileSelectorVisible(false)}
-          onSelect={handleFileSelect}
-        />
-
-        <RenameModal
-          isVisible={renameModalVisible}
-          onClose={() => setRenameModalVisible(false)}
-          initialTitle="Soru Çözümü"
-          onRename={(newTitle) => {
-            if (chatId) {
-              updateChat({ chatId, title: newTitle });
-            }
-          }}
-        />
+          <ChatInput
+            message={message}
+            attachments={attachments}
+            isSending={isSending}
+            inputHeight={inputHeight}
+            onChangeText={setMessage}
+            onSend={handleSendMessage}
+            onContentSizeChange={handleContentSizeChange}
+            onAttachPress={() => setIsAttachMenuVisible(true)}
+            onRemoveAttachment={removeAttachment}
+          />
+          <View style={{ height: insets.bottom }} />
+        </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+
+      <ActionMenu
+        isVisible={isHeaderMenuVisible}
+        onClose={() => setIsHeaderMenuVisible(false)}
+        title="Sohbet Ayarları"
+        actions={headerActions}
+      />
+
+      <ActionMenu
+        isVisible={isAttachMenuVisible}
+        onClose={() => setIsAttachMenuVisible(false)}
+        title="Dosya Ekle"
+        actions={attachActions}
+      />
+
+      <AlertDialog open={isDeleteAlertVisible} onOpenChange={setIsDeleteAlertVisible}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sohbeti Sil</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bu sohbeti silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              <Text className="text-muted-foreground">Vazgeç</Text>
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive hover:bg-destructive/90"
+              onPress={handleDelete}>
+              <Text className="text-destructive-foreground">Sil</Text>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <FileSelector
+        isVisible={isFileSelectorVisible}
+        onClose={() => setIsFileSelectorVisible(false)}
+        onSelect={handleFileSelect}
+      />
+
+      <RenameModal
+        isVisible={renameModalVisible}
+        onClose={() => setRenameModalVisible(false)}
+        initialTitle="Soru Çözümü"
+        onRename={(newTitle) => {
+          if (chatId) {
+            updateChat({ chatId, title: newTitle });
+          }
+        }}
+      />
+    </View>
   );
 };
