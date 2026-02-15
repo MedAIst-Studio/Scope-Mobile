@@ -18,7 +18,7 @@ export default function PrivacyScreen() {
       icon={Lock}
       onReadComplete={markPrivacyRead}>
       <LegalText>
-        YKS Asistanın ("Platform") olarak, gizliliğinize ve kişisel verilerinizin korunmasına büyük
+        Scope ("Platform") olarak, gizliliğinize ve kişisel verilerinizin korunmasına büyük
         önem veriyoruz. Bu Gizlilik Politikası, 6698 sayılı Kişisel Verilerin Korunması Kanunu
         ("KVKK") ve ilgili mevzuat uyarınca, Platformu kullanırken topladığımız verileri, bu
         verilerin nasıl işlendiğini, saklandığını ve haklarınızı detaylı bir şekilde açıklamaktadır.
@@ -108,7 +108,7 @@ export default function PrivacyScreen() {
         <LegalBullet>Aleyhinize çıkan bir sonuca itiraz etme.</LegalBullet>
         <LegalText className="mt-2">
           Bu haklarınızı kullanmak için{' '}
-          <LegalText className="font-bold text-primary">yasal@yksasistanin.com</LegalText> üzerinden
+          <LegalText className="font-bold text-primary">kuarulabs.main@gmail.com</LegalText> üzerinden
           bizimle iletişime geçebilirsiniz.
         </LegalText>
       </LegalSection>

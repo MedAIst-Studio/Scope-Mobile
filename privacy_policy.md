@@ -2,7 +2,7 @@
 
 **Son Güncelleme:** 04.02.2026
 
-MedAIst-Mobile ("Uygulama") olarak, gizliliğinize önem veriyoruz. Bu Gizlilik Politikası, uygulamamızı kullandığınızda verilerinizin nasıl toplandığını, kullanıldığını ve paylaşıldığını açıklar. Google Play Store politikalarına ve yerel yasalara uyumlu olarak hazırlanmıştır.
+Scope ("Uygulama") olarak, gizliliğinize önem veriyoruz. Bu Gizlilik Politikası, uygulamamızı kullandığınızda verilerinizin nasıl toplandığını, kullanıldığını ve paylaşıldığını açıklar. Google Play Store politikalarına ve yerel yasalara uyumlu olarak hazırlanmıştır.
 
 ## 1. Topladığımız Bilgiler
 

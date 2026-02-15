@@ -90,7 +90,7 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
         {/* Footer info */}
         <View className="mt-12 items-center border-t border-border/20 pt-8">
           <Text className="text-center text-xs text-muted-foreground/40">
-            © 2024 YKS Asistanın. Tüm hakları saklıdır.
+            © 2026 Scope. Tüm hakları saklıdır.
           </Text>
         </View>
       </ScrollView>

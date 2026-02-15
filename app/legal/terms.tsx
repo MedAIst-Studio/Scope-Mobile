@@ -18,14 +18,14 @@ export default function TermsScreen() {
       icon={FileText}
       onReadComplete={markTermsRead}>
       <LegalText>
-        YKS Asistanın ("Uygulama") hizmetlerine erişiminiz ve kullanımınız, işbu Kullanım Koşulları
+        Scope ("Uygulama") hizmetlerine erişiminiz ve kullanımınız, işbu Kullanım Koşulları
         ("Koşullar") hükümlerine tabidir. Uygulamayı indirerek veya kullanarak, bu koşulları okumuş,
         anlamış ve kabul etmiş sayılırsınız.
       </LegalText>
 
       <LegalSection title="1. Hizmetin Kapsamı ve Niteliği">
         <LegalText>
-          YKS Asistanın, lise öğrencilerine üniversiteye hazırlık sürecinde (TYT/AYT/YDT) yapay zeka
+          Scope, lise öğrencilerine üniversiteye hazırlık sürecinde (TYT/AYT/YDT) yapay zeka
           destekli yardımcı kaynaklar sunan bir eğitim teknolojisi aracıdır.
         </LegalText>
         <LegalBullet>
@@ -100,14 +100,14 @@ export default function TermsScreen() {
 
       <LegalSection title="5. Fikri Mülkiyet">
         <LegalText>
-          Uygulamanın tasarımı, logosu, yazılımı ve özel içerikleri YKS Asistanın mülkiyetindedir.
+          Uygulamanın tasarımı, logosu, yazılımı ve özel içerikleri Scope mülkiyetindedir.
           İzinsiz kopyalanamaz veya çoğaltılamaz.
         </LegalText>
       </LegalSection>
 
       <LegalSection title="6. Değişiklik ve Fesih">
         <LegalText>
-          YKS Asistanın, herhangi bir zamanda hizmeti durdurma, özelliklerini değiştirme veya bu
+          Scope, herhangi bir zamanda hizmeti durdurma, özelliklerini değiştirme veya bu
           koşulları güncelleme hakkını saklı tutar. Kuralların ihlali durumunda hesabınız bildirim
           yapılmaksızın askıya alınabilir veya silinebilir.
         </LegalText>

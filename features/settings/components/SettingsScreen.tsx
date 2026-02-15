@@ -75,7 +75,7 @@ export const SettingsScreen: React.FC = () => {
 
         <View className="mb-12 items-center">
           <Text className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/20">
-            MedAIst Version 1.0.0
+            Scope Version 1.0.4
           </Text>
         </View>
       </ScrollView>

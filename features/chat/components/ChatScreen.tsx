@@ -126,7 +126,7 @@ const StatusIndicator = () => {
         className="flex-row items-center gap-3 border border-primary/30 px-8 py-4 shadow-2xl shadow-primary/20">
         <View className="h-3 w-3 rounded-full bg-primary" />
         <Text className="text-base font-bold tracking-tight text-primary">
-          YKS Asistanın hazırlanıyor...
+          Scope sohbet hazırlanıyor...
         </Text>
       </LinearGradient>
     </View>
@@ -220,7 +220,7 @@ export const ChatScreen: React.FC = () => {
 
   useLayoutEffect(() => {
     const title = chatId
-      ? currentChat?.title || 'YKS Asistanı'
+      ? currentChat?.title || 'Scope Sohbet'
       : activeFile?.title || 'Yeni Sohbet';
 
     navigation.setOptions({

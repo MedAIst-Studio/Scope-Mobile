@@ -222,7 +222,7 @@ export function LoginLayout({
   return (
     <AuthLayout
       title="Hoş Geldiniz"
-      subtitle="YKS hazırlık asistanına erişmek için oturum açın."
+      subtitle="Scope'a erişmek için oturum açın."
       className={className}
       enableSocialLogin={true}
       onGoogleLogin={onGoogleLogin}

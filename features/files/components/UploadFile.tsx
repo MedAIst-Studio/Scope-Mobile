@@ -49,7 +49,7 @@ export const UploadFile: React.FC = () => {
       <View className="mb-6 items-center">
         <Text className="mb-1 text-xl font-bold text-foreground">Yeni Dosya Yükle</Text>
         <Text className="px-4 text-center text-sm text-muted-foreground/60">
-          YKS hazırlık sürecinde analiz için döküman veya görsel ekleyin
+          Sohbetlerde analiz için döküman veya görsel ekleyin
         </Text>
       </View>
 

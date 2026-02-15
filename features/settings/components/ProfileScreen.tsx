@@ -113,7 +113,7 @@ export const ProfileScreen: React.FC = () => {
                       placeholder="Kullanıcı Adı"
                     />
                   </View>
-                  <Button onPress={handleUpdate} disabled={isUpdating} className="w-full">
+                  <Button onPress={handleUpdate} disabled={isUpdating || !username.trim() || username === user?.username} className="w-full">
                     {isUpdating ? (
                       <ActivityIndicator color="white" />
                     ) : (

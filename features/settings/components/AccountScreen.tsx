@@ -41,7 +41,6 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
     }
   }, [user]);
 
-  // Track changes
   useEffect(() => {
     if (!user) return;
     const isChanged = username !== user.username;
@@ -50,14 +49,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
 
   const handleSave = () => {
     onSave(username);
-    // Optimistically reset changes or wait for props update.
-    // Ideally mutation success would trigger prop update.
     setHasChanges(false);
-  };
-
-  const handleUploadImage = () => {
-    // TODO: Implement image picker
-    console.log('Upload image pressed');
   };
 
   const handleLogout = () => {
@@ -70,7 +62,6 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
 
   return (
     <View className="flex-1 bg-background">
-      {/* Header */}
       <View className="flex-row items-center justify-between px-4 pb-6 pt-12">
         <TouchableOpacity
           onPress={() => router.back()}
@@ -89,17 +80,12 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
       </View>
 
       <ScrollView className="flex-1 px-4">
-        {/* Profile Photo */}
         <View className="mb-8 items-center">
           <View className="mb-3 h-24 w-24 items-center justify-center rounded-full bg-muted">
             <Icon as={User} size={32} color="#6B7280" />
           </View>
-          <TouchableOpacity onPress={handleUploadImage}>
-            <Text className="text-base font-medium text-blue-500">Resim Yükle</Text>
-          </TouchableOpacity>
         </View>
 
-        {/* Form Fields */}
         <View>
           {/* Username */}
           <View className="mb-6">
