@@ -42,9 +42,8 @@ export function useLoginForm() {
 
     if (!result.success) {
       setError(result.error || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.');
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return { form, isLoading, error, onSubmit, setIsLoading };
@@ -78,9 +77,9 @@ export function useSignupForm() {
 
     if (!result.success) {
       setError(result.error || 'Kayıt olunamadı. Lütfen bilgilerinizi kontrol edin.');
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
+    // On success, navigation happens — component will unmount
   };
 
   return { form, isLoading, error, onSubmit, setIsLoading };

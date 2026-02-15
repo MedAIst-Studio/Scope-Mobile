@@ -55,28 +55,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (data: LoginFormData): Promise<AuthResult> => {
-    setIsAuthLoading(true);
     const { data: responseData, error, success } = await AuthAPI.login(data);
 
     if (!success || !responseData) {
-      setIsAuthLoading(false);
       return { success: false, error: error?.message || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.' };
     }
 
     await SecureStore.setItemAsync('accessToken', responseData.accessToken);
     await SecureStore.setItemAsync('refreshToken', responseData.refreshToken);
-    await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+
+    await queryClient.refetchQueries({ queryKey: ['user', 'profile'] });
 
     router.replace('/(tabs)' as any);
     return { success: true };
   };
 
   const signup = async (data: SignupFormData): Promise<AuthResult> => {
-    setIsAuthLoading(true);
     const { error, success } = await AuthAPI.signup(data);
 
     if (!success) {
-      setIsAuthLoading(false);
       return { success: false, error: error?.message || 'Kayıt olunamadı. Lütfen bilgilerinizi kontrol edin.' };
     }
 
