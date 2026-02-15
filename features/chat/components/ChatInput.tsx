@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { Textarea } from '@/components/ui/textarea';
+
 import { cn } from '@/lib/utils';
 import { FileText, Plus, Send, X } from 'lucide-react-native';
 import React from 'react';
-import { FlatList, Image, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, TextInput, TouchableOpacity, View } from 'react-native';
 import { Attachment } from '../hooks/useChat';
 
 interface ChatInputProps {
@@ -24,7 +24,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   message,
   attachments,
   isSending = false,
-  inputHeight,
   onChangeText,
   onSend,
   onContentSizeChange,
@@ -66,30 +65,30 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         </View>
       )}
 
-      <View className="flex-row items-end gap-2">
+      <View className="min-h-[60px] flex-row items-center gap-2 rounded-[28px] border border-border/40 bg-card p-1.5 shadow-lg shadow-black/5">
         <TouchableOpacity
           onPress={onAttachPress}
-          className="h-14 w-14 items-center justify-center rounded-2xl bg-secondary/80 shadow-sm active:scale-95">
-          <Icon as={Plus} size={28} className="text-foreground" />
+          className="h-11 w-11 items-center justify-center rounded-full bg-secondary/50 active:scale-95">
+          <Icon as={Plus} size={22} className="text-foreground/70" />
         </TouchableOpacity>
 
-        <View className="flex-1">
-          <Textarea
-            value={message}
-            onChangeText={onChangeText}
-            placeholder="Sorunuzu buraya yazın..."
-            className="min-h-[56px] border-border/40 bg-card shadow-lg shadow-black/5"
-            style={{
-              maxHeight: 140,
-            }}
-            onContentSizeChange={onContentSizeChange}
-          />
-        </View>
+        <TextInput
+          value={message}
+          onChangeText={onChangeText}
+          placeholder="Sorunuzu buraya yazın..."
+          placeholderTextColor="rgba(150,150,150,0.5)"
+          multiline
+          className="flex-1 px-2 py-3 text-base text-foreground"
+          style={{
+            maxHeight: 140,
+          }}
+          onContentSizeChange={onContentSizeChange}
+        />
 
         <Button
           onPress={onSend}
           className={cn(
-            'h-14 w-14 rounded-2xl shadow-lg active:scale-95',
+            'h-11 w-11 rounded-full shadow-sm active:scale-95',
             message.trim() || hasAttachments
               ? 'bg-primary shadow-primary/30'
               : 'bg-muted opacity-50'
@@ -98,7 +97,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           size="icon">
           <Icon
             as={Send}
-            size={24}
+            size={20}
             className={
               message.trim() || hasAttachments ? 'text-primary-foreground' : 'text-muted-foreground'
             }

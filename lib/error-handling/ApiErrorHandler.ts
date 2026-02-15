@@ -24,6 +24,13 @@ export class ApiErrorHandler {
     const errorMessage = data?.message || data?.errors?.[0] || 'Beklenmedik bir hata oluştu.';
 
     if (status === 401) {
+      if (
+        error.config?.url?.includes('/auth/login') ||
+        error.config?.url?.includes('/auth/signup')
+      ) {
+        return;
+      }
+
       errorEventBus.emit('REDIRECT_LOGIN');
       errorEventBus.emit('SHOW_TOAST', {
         title: 'Oturum Süresi Doldu',
