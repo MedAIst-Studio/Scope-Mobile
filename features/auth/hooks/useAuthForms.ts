@@ -37,15 +37,14 @@ export function useLoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     setError(null);
-    try {
-      await login(data);
-    } catch (err: any) {
-      console.error('Login error', err);
-      const errorMessage = err?.message || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+
+    const result = await login(data);
+
+    if (!result.success) {
+      setError(result.error || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.');
     }
+
+    setIsLoading(false);
   };
 
   return { form, isLoading, error, onSubmit, setIsLoading };
@@ -74,15 +73,14 @@ export function useSignupForm() {
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
     setError(null);
-    try {
-      await signup(data);
-    } catch (err: any) {
-      console.error('Signup error', err);
-      const errorMessage = err?.message || 'Kayıt olunamadı. Lütfen bilgilerinizi kontrol edin.';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+
+    const result = await signup(data);
+
+    if (!result.success) {
+      setError(result.error || 'Kayıt olunamadı. Lütfen bilgilerinizi kontrol edin.');
     }
+
+    setIsLoading(false);
   };
 
   return { form, isLoading, error, onSubmit, setIsLoading };

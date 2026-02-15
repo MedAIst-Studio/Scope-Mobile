@@ -1,4 +1,4 @@
-import {z} from "zod";
+import { z } from "zod";
 
 // HTTP Methods
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -20,6 +20,7 @@ export interface ApiRequestConfig<TRequest = any, TResponse = any> {
   validationSchema?: z.ZodSchema<TRequest>;
   responseSchema?: z.ZodSchema<TResponse>;
   skipValidation?: boolean;
+  skipGlobalErrorHandler?: boolean;
   skipLogging?: boolean;
   retries?: number;
   timeout?: number;

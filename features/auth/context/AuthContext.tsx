@@ -10,12 +10,17 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { User } from '@/features/users/types';
 
+interface AuthResult {
+  success: boolean;
+  error?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (data: LoginFormData) => Promise<void>;
-  signup: (data: SignupFormData) => Promise<void>;
+  login: (data: LoginFormData) => Promise<AuthResult>;
+  signup: (data: SignupFormData) => Promise<AuthResult>;
   oauthLogin: (data: OAuthLoginFormData) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -49,42 +54,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const login = async (data: LoginFormData) => {
+  const login = async (data: LoginFormData): Promise<AuthResult> => {
     setIsAuthLoading(true);
-    try {
-      const response = await AuthAPI.login(data);
+    const { data: responseData, error, success } = await AuthAPI.login(data);
 
-      if (!response.success || !response.data) {
-        throw new Error(response.error?.message || 'Login failed');
-      }
-
-      await SecureStore.setItemAsync('accessToken', response.data.accessToken);
-      await SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
-
-      await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
-
-      router.replace('/(tabs)' as any);
-    } catch (error) {
-      throw error;
-    } finally {
+    if (!success || !responseData) {
       setIsAuthLoading(false);
+      return { success: false, error: error?.message || 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.' };
     }
+
+    await SecureStore.setItemAsync('accessToken', responseData.accessToken);
+    await SecureStore.setItemAsync('refreshToken', responseData.refreshToken);
+    await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+
+    router.replace('/(tabs)' as any);
+    return { success: true };
   };
 
-  const signup = async (data: SignupFormData) => {
+  const signup = async (data: SignupFormData): Promise<AuthResult> => {
     setIsAuthLoading(true);
-    try {
-      const response = await AuthAPI.signup(data);
+    const { error, success } = await AuthAPI.signup(data);
 
-      if (!response.success) {
-        throw new Error(response.error?.message || 'Signup failed');
-      }
-      await login({ email: data.email, password: data.password });
-    } catch (error) {
-      throw error;
-    } finally {
+    if (!success) {
       setIsAuthLoading(false);
+      return { success: false, error: error?.message || 'Kayıt olunamadı. Lütfen bilgilerinizi kontrol edin.' };
     }
+
+    return await login({ email: data.email, password: data.password });
   };
 
   const oauthLogin = async (data: OAuthLoginFormData) => {

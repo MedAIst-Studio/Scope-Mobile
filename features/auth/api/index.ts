@@ -20,6 +20,8 @@ export const AuthAPI = {
     const { data, error, success } = await apiClient.post(`${AUTH_PATH}/login`, request, {
       request: loginSchema,
       response: loginResponseSchema,
+    }, {
+      skipGlobalErrorHandler: true,
     });
 
     return { data, error, success };
@@ -30,6 +32,8 @@ export const AuthAPI = {
       username: request.username,
       email: request.email,
       password: request.password,
+    }, {}, {
+      skipGlobalErrorHandler: true,
     });
 
     return { data, error, success };

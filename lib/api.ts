@@ -174,6 +174,10 @@ axiosInstance.interceptors.response.use(
       });
     }
 
+    if (originalRequest?.skipGlobalErrorHandler) {
+      return Promise.reject(error);
+    }
+
     const apiError = createApiError(error, 'API_RESPONSE_ERROR');
 
     logger.error('API Error', apiError);
@@ -206,6 +210,7 @@ class ApiClient {
       skipValidation = false,
       timeout,
       responseType,
+      skipGlobalErrorHandler,
     } = requestConfig;
 
     // Request validation
@@ -239,7 +244,8 @@ class ApiClient {
         headers,
         ...(timeout && { timeout }),
         ...(responseType && { responseType }),
-      };
+        skipGlobalErrorHandler,
+      } as any;
 
       const response = await this.instance.request(axiosConfig);
 
@@ -297,13 +303,15 @@ class ApiClient {
   async get<TSchema extends z.ZodTypeAny>(
     url: string,
     params?: object,
-    responseSchema?: TSchema
+    responseSchema?: TSchema,
+    config?: Partial<ApiRequestConfig>
   ): Promise<ApiResponse<TSchema extends z.ZodTypeAny ? z.infer<TSchema> : any>> {
     return this.request<TSchema extends z.ZodTypeAny ? z.infer<TSchema> : any, any>({
       url,
       method: 'GET',
       params,
       responseSchema: responseSchema as any,
+      ...config,
     });
   }
 
@@ -313,7 +321,8 @@ class ApiClient {
     schemas?: {
       request?: TRequestSchema;
       response?: TResponseSchema;
-    }
+    },
+    config?: Partial<ApiRequestConfig>
   ): Promise<ApiResponse<TResponseSchema extends z.ZodTypeAny ? z.infer<TResponseSchema> : any>> {
     return this.request<TResponseSchema extends z.ZodTypeAny ? z.infer<TResponseSchema> : any, any>(
       {
@@ -322,6 +331,7 @@ class ApiClient {
         data,
         validationSchema: schemas?.request as any,
         responseSchema: schemas?.response as any,
+        ...config,
       }
     );
   }
@@ -332,7 +342,8 @@ class ApiClient {
     schemas?: {
       request?: TRequestSchema;
       response?: TResponseSchema;
-    }
+    },
+    config?: Partial<ApiRequestConfig>
   ): Promise<ApiResponse<TResponseSchema extends z.ZodTypeAny ? z.infer<TResponseSchema> : any>> {
     return this.request<TResponseSchema extends z.ZodTypeAny ? z.infer<TResponseSchema> : any, any>(
       {
@@ -341,6 +352,7 @@ class ApiClient {
         data,
         validationSchema: schemas?.request as any,
         responseSchema: schemas?.response as any,
+        ...config,
       }
     );
   }
@@ -351,7 +363,8 @@ class ApiClient {
     schemas?: {
       request?: TRequestSchema;
       response?: TResponseSchema;
-    }
+    },
+    config?: Partial<ApiRequestConfig>
   ): Promise<ApiResponse<TResponseSchema extends z.ZodTypeAny ? z.infer<TResponseSchema> : any>> {
     return this.request<TResponseSchema extends z.ZodTypeAny ? z.infer<TResponseSchema> : any, any>(
       {
@@ -360,18 +373,21 @@ class ApiClient {
         data,
         validationSchema: schemas?.request as any,
         responseSchema: schemas?.response as any,
+        ...config,
       }
     );
   }
 
   async delete<TSchema extends z.ZodTypeAny>(
     url: string,
-    responseSchema?: TSchema
+    responseSchema?: TSchema,
+    config?: Partial<ApiRequestConfig>
   ): Promise<ApiResponse<TSchema extends z.ZodTypeAny ? z.infer<TSchema> : any>> {
     return this.request<TSchema extends z.ZodTypeAny ? z.infer<TSchema> : any, any>({
       url,
       method: 'DELETE',
       responseSchema: responseSchema as any,
+      ...config,
     });
   }
 }

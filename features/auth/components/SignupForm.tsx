@@ -161,12 +161,12 @@ function SignupFormContent({
 
 export function SignupForm() {
   const { form, isLoading, error, onSubmit, setIsLoading } = useSignupForm();
-  const { handleGoogleSignup, handleFacebookSignup } = useSocialAuth(setIsLoading);
+  const { handleGoogleLogin, handleFacebookLogin } = useSocialAuth(setIsLoading);
 
   return (
     <SignupLayout
-      onGoogleLogin={handleGoogleSignup}
-      onFacebookLogin={handleFacebookSignup}
+      onGoogleLogin={handleGoogleLogin}
+      onFacebookLogin={handleFacebookLogin}
       isLoading={isLoading}>
       <SignupFormContent form={form} isLoading={isLoading} error={error} onSubmit={onSubmit} />
     </SignupLayout>
