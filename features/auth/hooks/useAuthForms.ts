@@ -79,7 +79,6 @@ export function useSignupForm() {
       setError(result.error || 'Kayıt olunamadı. Lütfen bilgilerinizi kontrol edin.');
       setIsLoading(false);
     }
-    // On success, navigation happens — component will unmount
   };
 
   return { form, isLoading, error, onSubmit, setIsLoading };

@@ -60,8 +60,14 @@ export const AuthAPI = {
     return { error, success };
   },
 
-  async logout() {
-    const { error, success } = await apiClient.post(`${AUTH_PATH}/logout`);
+  async logout(
+    refreshToken: string
+  ) {
+    const { error, success } = await apiClient.post(`${AUTH_PATH}/logout`, {
+      refreshToken,
+    }, {}, {
+      skipGlobalErrorHandler: true,
+    });
 
     return { error, success };
   },

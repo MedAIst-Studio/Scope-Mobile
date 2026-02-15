@@ -35,7 +35,6 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
   const [username, setUsername] = useState(user?.username || '');
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Sync state with props
   useEffect(() => {
     if (user) {
       setUsername(user.username);

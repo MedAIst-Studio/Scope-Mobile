@@ -105,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     setIsAuthLoading(true);
     try {
-      await AuthAPI.logout();
+      await AuthAPI.logout(await SecureStore.getItemAsync('refreshToken') || '');
     } catch (error) {
       console.warn('Logout API call failed', error);
     } finally {
