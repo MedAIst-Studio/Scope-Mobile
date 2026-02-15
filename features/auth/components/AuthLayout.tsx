@@ -5,15 +5,8 @@ import { cn } from '@/lib/utils';
 import { StatusBar } from 'expo-status-bar';
 import { ArrowLeft, Box, Mail } from 'lucide-react-native';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Animated, Image, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const google = require('@/assets/images/google.png');
@@ -71,7 +64,7 @@ function SocialLoginButton({
         disabled && 'opacity-50',
         className
       )}>
-      <View className="mr-3">{config.icon}</View>
+      <View>{config.icon}</View>
       <Text className={cn('text-base font-bold tracking-tight', config.textColor)}>
         {isLoading ? 'Bağlanıyor...' : config.label}
       </Text>
@@ -139,78 +132,72 @@ export function AuthLayout({
       <StatusBar style="auto" />
 
       <SafeAreaView className="flex-1">
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="flex-1"
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 60}>
-          <ScrollView
-            className="flex-1"
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}>
-            <View className="flex-1 justify-center px-4 py-6">
-              <Animated.View
-                style={{
-                  opacity: fadeAnim,
-                  transform: [{ translateY: slideAnim }],
-                }}
-                className={cn('mx-auto w-full max-w-sm', className)}>
-                {enableSocialLogin && !showEmailForm ? (
-                  <View className="flex flex-col gap-4">
-                    {onGoogleLogin && (
-                      <SocialLoginButton
-                        provider="google"
-                        onPress={onGoogleLogin}
-                        disabled={isLoading}
-                        isLoading={isLoading}
-                      />
-                    )}
-
-                    {onFacebookLogin && (
-                      <SocialLoginButton
-                        provider="facebook"
-                        onPress={onFacebookLogin}
-                        disabled={isLoading}
-                        isLoading={isLoading}
-                      />
-                    )}
-
-                    <SocialLoginDivider />
-
+        <KeyboardAwareScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <View className="flex-1 justify-center px-4 py-6">
+            <Animated.View
+              style={{
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              }}
+              className={cn('mx-auto w-full max-w-sm', className)}>
+              {enableSocialLogin && !showEmailForm ? (
+                <View className="flex flex-col gap-4">
+                  {onGoogleLogin && (
                     <SocialLoginButton
-                      provider="email"
-                      onPress={handleEmailLogin}
+                      provider="google"
+                      onPress={onGoogleLogin}
                       disabled={isLoading}
+                      isLoading={isLoading}
                     />
-                  </View>
-                ) : (
-                  <View>
-                    {enableSocialLogin && (
-                      <TouchableOpacity
-                        onPress={handleBackToSocial}
-                        className="mb-8 flex-row items-center">
-                        <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-secondary/50">
-                          <Icon as={ArrowLeft} size={18} className="text-muted-foreground" />
-                        </View>
-                        <Text className="font-bold text-muted-foreground/60">Sosyal Giriş</Text>
-                      </TouchableOpacity>
-                    )}
+                  )}
 
-                    <View className="rounded-[2.5rem] border border-border/20 bg-card p-6 shadow-sm">
-                      {children}
-                    </View>
-                  </View>
-                )}
-              </Animated.View>
+                  {onFacebookLogin && (
+                    <SocialLoginButton
+                      provider="facebook"
+                      onPress={onFacebookLogin}
+                      disabled={isLoading}
+                      isLoading={isLoading}
+                    />
+                  )}
 
-              <View className="mt-8 items-center">
-                <Text className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/20">
-                  Kuaru Labs tarafından geliştirilmiştir
-                </Text>
-              </View>
+                  <SocialLoginDivider />
+
+                  <SocialLoginButton
+                    provider="email"
+                    onPress={handleEmailLogin}
+                    disabled={isLoading}
+                  />
+                </View>
+              ) : (
+                <View>
+                  {enableSocialLogin && (
+                    <TouchableOpacity
+                      onPress={handleBackToSocial}
+                      className="mb-8 flex-row items-center">
+                      <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-secondary/50">
+                        <Icon as={ArrowLeft} size={18} className="text-muted-foreground" />
+                      </View>
+                      <Text className="font-bold text-muted-foreground/60">Sosyal Giriş</Text>
+                    </TouchableOpacity>
+                  )}
+
+                  <View className="rounded-[2.5rem] border border-border/20 bg-card p-6 shadow-sm">
+                    {children}
+                  </View>
+                </View>
+              )}
+            </Animated.View>
+
+            <View className="mt-8 items-center">
+              <Text className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/20">
+                Kuaru Labs tarafından geliştirilmiştir
+              </Text>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
+          </View>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     </View>
   );

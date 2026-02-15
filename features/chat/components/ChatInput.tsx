@@ -65,7 +65,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         </View>
       )}
 
-      <View className="min-h-[60px] flex-row items-center gap-2 rounded-[28px] border border-border/40 bg-card p-1.5 shadow-lg shadow-black/5">
+      <View className="min-h-[60px] flex-row items-center gap-2 rounded-[28px] border border-border/40 bg-card px-1.5 py-1 shadow-lg shadow-black/5">
         <TouchableOpacity
           onPress={onAttachPress}
           className="h-11 w-11 items-center justify-center rounded-full bg-secondary/50 active:scale-95">

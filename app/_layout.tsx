@@ -8,6 +8,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import 'react-native-reanimated';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -30,14 +31,16 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <GlobalErrorProvider>
-          <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-            <AuthGuard>
-              <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: true }} />
-              <PortalHost />
-              <PortalHost name="navigation-portal" />
-            </AuthGuard>
-          </ThemeProvider>
+          <KeyboardProvider>
+            <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+              <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+              <AuthGuard>
+                <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: false }} />
+                <PortalHost />
+                <PortalHost name="navigation-portal" />
+              </AuthGuard>
+            </ThemeProvider>
+          </KeyboardProvider>
         </GlobalErrorProvider>
       </AuthProvider>
     </QueryClientProvider>

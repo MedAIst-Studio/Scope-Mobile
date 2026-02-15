@@ -25,14 +25,13 @@ import {
 } from 'lucide-react-native';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -302,31 +301,28 @@ export const ChatScreen: React.FC = () => {
         </View>
       )}
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1"
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
-        <View className="flex-1">
-          {isLoading ? (
-            <View className="flex-1 px-4 py-6">
-              <View className="flex-1 space-y-6">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <SkeletonItem key={i} index={i} />
-                ))}
-              </View>
-              <View className="absolute inset-0 items-center justify-center">
-                <StatusIndicator />
-              </View>
+      <View className="flex-1">
+        {isLoading ? (
+          <View className="flex-1 px-4 py-6">
+            <View className="flex-1 space-y-6">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <SkeletonItem key={i} index={i} />
+              ))}
             </View>
-          ) : (
-            <ChatMessageList
-              messages={messages}
-              scrollViewRef={scrollViewRef}
-              onQuestionPress={setMessage}
-              isTyping={isSending}
-            />
-          )}
+            <View className="absolute inset-0 items-center justify-center">
+              <StatusIndicator />
+            </View>
+          </View>
+        ) : (
+          <ChatMessageList
+            messages={messages}
+            scrollViewRef={scrollViewRef}
+            onQuestionPress={setMessage}
+            isTyping={isSending}
+          />
+        )}
 
+        <KeyboardStickyView offset={{ closed: -insets.bottom, opened: 0 }}>
           <ChatInput
             message={message}
             attachments={attachments}
@@ -338,9 +334,8 @@ export const ChatScreen: React.FC = () => {
             onAttachPress={() => setIsAttachMenuVisible(true)}
             onRemoveAttachment={removeAttachment}
           />
-          <View style={{ height: insets.bottom }} />
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardStickyView>
+      </View>
 
       <ActionMenu
         isVisible={isHeaderMenuVisible}
