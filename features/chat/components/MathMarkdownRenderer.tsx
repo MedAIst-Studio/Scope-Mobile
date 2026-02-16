@@ -12,6 +12,50 @@ interface MathMarkdownRendererProps {
   isDark: boolean;
 }
 
+const MATHJAX_BASE_OPTIONS = {
+  messageStyle: 'none',
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX', 'output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [
+      ['$', '$'],
+      ['\\(', '\\)'],
+    ],
+    displayMath: [
+      ['$$', '$$'],
+      ['\\[', '\\]'],
+    ],
+    processEscapes: true,
+  },
+  TeX: {
+    extensions: ['AMSmath.js', 'AMSsymbols.js', 'noErrors.js', 'noUndefined.js'],
+  },
+};
+
+const getMathJaxOptions = (textColor: string, isDisplay: boolean) => ({
+  ...MATHJAX_BASE_OPTIONS,
+  'HTML-CSS': {
+    availableFonts: ['TeX'],
+    scale: isDisplay ? 85 : 95,
+    styles: {
+      '.MathJax_Display': {
+        'text-align': 'center',
+        margin: '4px 0',
+      },
+      '.MathJax': {
+        'font-size': isDisplay ? '90%' : '95%',
+      },
+      body: {
+        'background-color': 'transparent',
+        margin: 0,
+        padding: 0,
+        color: textColor,
+        'overflow-x': 'auto',
+      },
+    },
+  },
+});
+
 export const MathMarkdownRenderer: React.FC<MathMarkdownRendererProps> = ({
   content,
   isUser,
@@ -31,52 +75,27 @@ export const MathMarkdownRenderer: React.FC<MathMarkdownRendererProps> = ({
               key={part.key}
               style={{
                 alignSelf: 'center',
-                marginVertical: 12,
+                marginVertical: 4,
                 width: '100%',
               }}>
               <MathJax
                 html={`
-                  <div style="color: ${textColor}; text-align: center;">
+                  <div style="
+                    color: ${textColor};
+                    text-align: center;
+                    font-size: 14px;
+                    overflow-x: auto;
+                  ">
                     ${part.content}
                   </div>
                 `}
-                mathJaxOptions={{
-                  messageStyle: 'none',
-                  extensions: ['tex2jax.js'],
-                  jax: ['input/TeX', 'output/HTML-CSS'],
-                  tex2jax: {
-                    inlineMath: [
-                      ['$', '$'],
-                      ['\\(', '\\)'],
-                    ],
-                    displayMath: [
-                      ['$$', '$$'],
-                      ['\\[', '\\]'],
-                    ],
-                    processEscapes: true,
-                  },
-                  TeX: {
-                    extensions: ['AMSmath.js', 'AMSsymbols.js', 'noErrors.js', 'noUndefined.js'],
-                  },
-                  'HTML-CSS': {
-                    availableFonts: ['TeX'],
-                    styles: {
-                      '.MathJax_Display': { 'text-align': 'center', margin: 0 },
-                      body: {
-                        'background-color': 'transparent',
-                        margin: 0,
-                        padding: 0,
-                        color: textColor,
-                      },
-                    },
-                  },
-                }}
+                mathJaxOptions={getMathJaxOptions(textColor, true)}
                 style={{ backgroundColor: 'transparent', width: '100%' }}
               />
             </View>
           );
         } else {
-          const hasInlineMath = /(\$[^$]+\$|\\\([\s\S]*?\\\))/.test(part.content);
+          const hasInlineMath = /(\$[^$]+\$|\\\([\\s\\S]*?\\\))/.test(part.content);
 
           if (hasInlineMath) {
             let htmlContent = part.content
@@ -85,48 +104,20 @@ export const MathMarkdownRenderer: React.FC<MathMarkdownRendererProps> = ({
               .replace(/\*(.*?)\*/g, '<i>$1</i>');
 
             return (
-              <View key={part.key} style={{ width: '100%', marginVertical: 4 }}>
+              <View key={part.key} style={{ width: '100%', marginVertical: 2 }}>
                 <MathJax
                   html={`
                     <div style="
                       color: ${textColor}; 
                       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', sans-serif;
-                      font-size: 15px;
-                      line-height: 1.5;
+                      font-size: 14px;
+                      line-height: 1.6;
+                      overflow-x: auto;
                     ">
                       ${htmlContent}
                     </div>
                   `}
-                  mathJaxOptions={{
-                    messageStyle: 'none',
-                    extensions: ['tex2jax.js'],
-                    jax: ['input/TeX', 'output/HTML-CSS'],
-                    tex2jax: {
-                      inlineMath: [
-                        ['$', '$'],
-                        ['\\(', '\\)'],
-                      ],
-                      displayMath: [
-                        ['$$', '$$'],
-                        ['\\[', '\\]'],
-                      ],
-                      processEscapes: true,
-                    },
-                    TeX: {
-                      extensions: ['AMSmath.js', 'AMSsymbols.js', 'noErrors.js', 'noUndefined.js'],
-                    },
-                    'HTML-CSS': {
-                      availableFonts: ['TeX'],
-                      styles: {
-                        body: {
-                          'background-color': 'transparent',
-                          margin: 0,
-                          padding: 0,
-                          color: textColor,
-                        },
-                      },
-                    },
-                  }}
+                  mathJaxOptions={getMathJaxOptions(textColor, false)}
                   style={{ backgroundColor: 'transparent', width: '100%' }}
                 />
               </View>
@@ -145,7 +136,7 @@ export const MathMarkdownRenderer: React.FC<MathMarkdownRendererProps> = ({
                     body: {
                       color: textColor,
                       fontSize: 16,
-                      lineHeight: 24,
+                      lineHeight: 23,
                     },
                   } as any
                 }>
