@@ -53,12 +53,12 @@ export const useChat = () => {
   const [attachments, setAttachments] = useState<Attachment[]>(
     initialImg
       ? [
-          {
-            type: 'image',
-            name: 'captured_image.jpg',
-            uri: resolveUri(initialImg),
-          },
-        ]
+        {
+          type: 'image',
+          name: 'captured_image.jpg',
+          uri: resolveUri(initialImg),
+        },
+      ]
       : []
   );
 
@@ -145,34 +145,44 @@ export const useChat = () => {
       }
     }
 
+    // Save current values for rollback on error
+    const savedMessage = message.trim();
+    const savedAttachments = [...attachments];
+    const savedActiveFile = activeFile;
+    const savedInputHeight = inputHeight;
+
+    // Optimistically clear input immediately
+    setMessage('');
+    setAttachments([]);
+    setActiveFile(null);
+    setInputHeight(40);
+
+    try {
+      router.setParams({
+        initialMessage: '',
+        imageUri: '',
+        autoSend: '',
+        fileName: '',
+        file_id: '',
+      });
+    } catch (e) {
+      console.error('Error clearing route params:', e);
+    }
+
     sendMessage(
       {
-        message: message.trim(),
-        file_id: activeFile?.id,
+        message: savedMessage,
+        file_id: savedActiveFile?.id,
         chatId: chatId,
         image_url: imageUrl,
         localImageUri: imageAttachment?.uri,
       },
       {
-        onSuccess: () => {
-          try {
-            setTimeout(() => {
-              setMessage('');
-              setAttachments([]);
-              setActiveFile(null);
-              setInputHeight(40);
-            }, 100);
-
-            router.setParams({
-              initialMessage: '',
-              imageUri: '',
-              autoSend: '',
-              fileName: '',
-              file_id: '',
-            });
-          } catch (e) {
-            console.error('Error clearing chat state:', e);
-          }
+        onError: () => {
+          setMessage(savedMessage);
+          setAttachments(savedAttachments);
+          setActiveFile(savedActiveFile);
+          setInputHeight(savedInputHeight);
         },
       }
     );

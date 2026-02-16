@@ -12,13 +12,14 @@ import {
   Trash2,
 } from 'lucide-react-native';
 import React from 'react';
-import { Image, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { File as FileType } from '../types';
 
 interface FileCardProps {
   file: FileType;
   onChatStart: (fileId: string) => void;
   onDelete?: (fileId: string) => void;
+  onPreview?: (file: FileType) => void;
 }
 
 const getFileInfo = (fileName: string) => {
@@ -47,7 +48,7 @@ const getFileInfo = (fileName: string) => {
   };
 };
 
-export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete }) => {
+export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete, onPreview }) => {
   const formattedSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
   const formattedDate = new Date(file.created_at).toLocaleDateString('tr-TR', {
     day: 'numeric',
@@ -57,22 +58,26 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete 
 
   const { icon, bgColor, iconColor } = getFileInfo(file.title);
 
+  const isImage = ['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(
+    file.title.toLowerCase().split('.').pop() || ''
+  );
+
   return (
     <Card className="mb-4">
       <CardHeader className="flex-row items-center gap-4">
-        <View
+        <TouchableOpacity
+          activeOpacity={isImage ? 0.7 : 1}
+          onPress={() => isImage && onPreview?.(file)}
           className={cn(
             'h-14 w-14 items-center justify-center overflow-hidden rounded-2xl',
             bgColor
           )}>
-          {['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(
-            file.title.toLowerCase().split('.').pop() || ''
-          ) && file.url ? (
+          {isImage && file.url ? (
             <Image source={{ uri: file.url }} className="h-full w-full" resizeMode="cover" />
           ) : (
             <Icon as={icon} size={28} className={iconColor} />
           )}
-        </View>
+        </TouchableOpacity>
 
         <View className="flex-1">
           <Text className="mb-1 text-lg font-bold leading-tight text-foreground" numberOfLines={1}>

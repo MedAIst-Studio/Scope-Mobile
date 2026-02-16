@@ -2,14 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import React, { useEffect, useState } from 'react';
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Keyboard, Modal, Platform, TouchableWithoutFeedback, View } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 interface RenameModalProps {
   isVisible: boolean;

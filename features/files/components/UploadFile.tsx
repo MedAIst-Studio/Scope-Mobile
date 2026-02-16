@@ -65,7 +65,7 @@ export const UploadFile: React.FC = () => {
       </Button>
 
       <Text className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
-        PDF, GÖRÜNTÜ • MAKSİMUM 10MB
+        PDF, FOTOĞRAF • MAKSİMUM 10MB
       </Text>
     </View>
   );

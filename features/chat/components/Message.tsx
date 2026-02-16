@@ -76,7 +76,7 @@ export const Message: React.FC<MessageProps> = ({ message }) => {
       <View
         className={cn(
           message.is_user
-            ? 'max-w-[82%] rounded-[2rem] rounded-tr-[4px] bg-primary px-5 py-3.5 shadow-md shadow-primary/20'
+            ? 'max-w-[82%] rounded-[1rem] rounded-br-[4px] bg-secondary px-5 py-1 shadow-md shadow-primary/20'
             : 'max-w-full flex-1'
         )}>
         <MessageContext context={message.context_snapshot} isUser={message.is_user} />
