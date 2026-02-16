@@ -2,8 +2,9 @@ import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import { FileText } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
-import React from 'react';
-import { Image, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { ImagePreviewModal } from '../../files/components/ImagePreviewModal';
 import { Message as MessageType } from '../validations';
 import { MathMarkdownRenderer } from './MathMarkdownRenderer';
 
@@ -42,7 +43,8 @@ const MessageContext: React.FC<{
 
 const MessageAttachments: React.FC<{
   attachments?: MessageType['attachments'];
-}> = ({ attachments }) => {
+  onImagePress: (url: string) => void;
+}> = ({ attachments, onImagePress }) => {
   if (!attachments || attachments.length === 0) return null;
 
   const imageAttachments = attachments.filter((a) => a.type === 'image');
@@ -51,9 +53,13 @@ const MessageAttachments: React.FC<{
   return (
     <View className="mb-3 gap-2">
       {imageAttachments.map((attachment, index) => (
-        <View key={index} className="overflow-hidden rounded-2xl border border-border/10">
+        <TouchableOpacity
+          key={index}
+          onPress={() => onImagePress(attachment.url)}
+          activeOpacity={0.9}
+          className="overflow-hidden rounded-2xl border border-border/10">
           <Image source={{ uri: attachment.url }} className="h-48 w-full" resizeMode="cover" />
-        </View>
+        </TouchableOpacity>
       ))}
     </View>
   );
@@ -70,6 +76,7 @@ const MessageContent: React.FC<{
 export const Message: React.FC<MessageProps> = ({ message }) => {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   return (
     <View className={cn('mb-6 w-full flex-row', message.is_user ? 'justify-end' : 'justify-start')}>
@@ -80,9 +87,19 @@ export const Message: React.FC<MessageProps> = ({ message }) => {
             : 'max-w-full flex-1'
         )}>
         <MessageContext context={message.context_snapshot} isUser={message.is_user} />
-        <MessageAttachments attachments={message.attachments} />
+        <MessageAttachments
+          attachments={message.attachments}
+          onImagePress={(url) => setPreviewImage(url)}
+        />
         <MessageContent content={message.content} isUser={message.is_user} isDark={isDark} />
       </View>
+
+      <ImagePreviewModal
+        isVisible={!!previewImage}
+        onClose={() => setPreviewImage(null)}
+        imageUrl={previewImage || undefined}
+        title="Görsel"
+      />
     </View>
   );
 };

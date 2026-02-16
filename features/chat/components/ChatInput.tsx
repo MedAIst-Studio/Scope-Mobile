@@ -4,8 +4,9 @@ import { Text } from '@/components/ui/text';
 
 import { cn } from '@/lib/utils';
 import { FileText, Plus, Send, X } from 'lucide-react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, Image, TextInput, TouchableOpacity, View } from 'react-native';
+import { ImagePreviewModal } from '../../files/components/ImagePreviewModal';
 import { Attachment } from '../hooks/useChat';
 
 interface ChatInputProps {
@@ -30,6 +31,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   onAttachPress,
   onRemoveAttachment,
 }) => {
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const hasAttachments = attachments.length > 0;
 
   return (
@@ -45,7 +47,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             renderItem={({ item, index }) => (
               <View className="relative h-20 w-20 rounded-2xl bg-secondary/80 p-0.5 shadow-sm">
                 {item.type === 'image' ? (
-                  <Image source={{ uri: item.uri }} className="h-full w-full rounded-[14px]" />
+                  <TouchableOpacity
+                    onPress={() => setPreviewImage(item.uri)}
+                    activeOpacity={0.8}
+                    className="h-full w-full">
+                    <Image source={{ uri: item.uri }} className="h-full w-full rounded-[14px]" />
+                  </TouchableOpacity>
                 ) : (
                   <View className="h-full w-full items-center justify-center gap-1 p-2">
                     <Icon as={FileText} size={24} className="text-primary" />
@@ -104,6 +111,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           />
         </Button>
       </View>
+
+      <ImagePreviewModal
+        isVisible={!!previewImage}
+        onClose={() => setPreviewImage(null)}
+        imageUrl={previewImage || undefined}
+        title="Görsel Önizleme"
+      />
     </View>
   );
 };
