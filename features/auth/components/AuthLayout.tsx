@@ -61,7 +61,6 @@ function SocialLoginButton({
         'h-14 flex-row items-center justify-center rounded-2xl border px-4 shadow-sm active:scale-[0.98]',
         config.backgroundColor,
         config.borderColor,
-        disabled && 'opacity-50',
         className
       )}>
       <View>{config.icon}</View>

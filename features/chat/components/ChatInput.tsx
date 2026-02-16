@@ -91,13 +91,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             'h-11 w-11 rounded-full shadow-sm active:scale-95',
             message.trim() || hasAttachments
               ? 'bg-primary shadow-primary/30'
-              : 'bg-muted opacity-50'
+              : 'bg-muted'
           )}
           disabled={(!message.trim() && !hasAttachments) || isSending}
           size="icon">
           <Icon
             as={Send}
-            size={20}
+            size={18}
             className={
               message.trim() || hasAttachments ? 'text-primary-foreground' : 'text-muted-foreground'
             }

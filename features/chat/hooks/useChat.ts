@@ -145,13 +145,11 @@ export const useChat = () => {
       }
     }
 
-    // Save current values for rollback on error
     const savedMessage = message.trim();
     const savedAttachments = [...attachments];
     const savedActiveFile = activeFile;
     const savedInputHeight = inputHeight;
 
-    // Optimistically clear input immediately
     setMessage('');
     setAttachments([]);
     setActiveFile(null);
