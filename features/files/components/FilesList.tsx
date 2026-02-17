@@ -1,6 +1,8 @@
 import { Text } from '@/components/ui/text';
 import React, { useState } from 'react';
 import { ScrollView, View } from 'react-native';
+import { useSubscription } from '@/features/subscription/context/SubscriptionContext';
+import { PremiumModal } from '@/features/subscription/components/PremiumModal';
 import { File } from '../types';
 import { FileCard } from './FileCard';
 import { ImagePreviewModal } from './ImagePreviewModal';
@@ -13,6 +15,14 @@ interface FilesListProps {
 
 export const FilesList: React.FC<FilesListProps> = ({ files, onChatStart, onDeleteFile }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isPremiumModalVisible, setIsPremiumModalVisible] = useState(false);
+  const { isFeatureLocked } = useSubscription();
+
+  const handleChatStart = (fileId: string) => {
+    // In this mock, we limit based on total file count if they try to interact? 
+    // Or maybe we limit the upload. Let's limit the chat start as well as a fallback.
+    onChatStart(fileId);
+  };
 
   if (files.length === 0) {
     return (
@@ -37,7 +47,7 @@ export const FilesList: React.FC<FilesListProps> = ({ files, onChatStart, onDele
           <FileCard
             key={file.id}
             file={file}
-            onChatStart={onChatStart}
+            onChatStart={handleChatStart}
             onDelete={onDeleteFile}
             onPreview={setSelectedFile}
           />
@@ -50,6 +60,13 @@ export const FilesList: React.FC<FilesListProps> = ({ files, onChatStart, onDele
         imageUrl={selectedFile?.url}
         title={selectedFile?.title || ''}
         size={selectedFile?.size}
+      />
+
+      <PremiumModal
+        isVisible={isPremiumModalVisible}
+        onClose={() => setIsPremiumModalVisible(false)}
+        title="Dosya Sınırına Ulaştınız"
+        description="Ücretsiz planda günlük 5 dosya yükleme hakkınız bulunmaktadır. Sınırsız yükleme için Paket Yükseltin."
       />
     </>
   );

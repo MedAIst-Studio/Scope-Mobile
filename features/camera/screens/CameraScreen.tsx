@@ -9,6 +9,8 @@ import { RefreshCw, X } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSubscription } from '@/features/subscription/context/SubscriptionContext';
+import { PremiumModal } from '@/features/subscription/components/PremiumModal';
 import { ImageCropper } from '../components/ImageCropper';
 
 const AUTO_SEND_PREF_KEY = 'camera.auto_send_enabled';
@@ -22,6 +24,8 @@ export default function CameraScreen() {
   const [autoSend, setAutoSend] = useState(true);
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
+  const [isPremiumModalVisible, setIsPremiumModalVisible] = useState(false);
+  const { isFeatureLocked, incrementScanUsage } = useSubscription();
 
   useEffect(() => {
     SecureStore.getItemAsync(AUTO_SEND_PREF_KEY).then((value) => {
@@ -54,6 +58,11 @@ export default function CameraScreen() {
   };
 
   const takePicture = async () => {
+    if (isFeatureLocked('scans')) {
+      setIsPremiumModalVisible(true);
+      return;
+    }
+
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync({
@@ -63,6 +72,7 @@ export default function CameraScreen() {
 
         if (photo?.uri) {
           setCroppingImage(photo.uri);
+          incrementScanUsage();
         }
       } catch (error) {
         console.error('Failed to take picture:', error);
@@ -155,6 +165,13 @@ export default function CameraScreen() {
           </SafeAreaView>
         </CameraView>
       )}
+
+      <PremiumModal
+        isVisible={isPremiumModalVisible}
+        onClose={() => setIsPremiumModalVisible(false)}
+        title="Tarama Sınırına Ulaştınız"
+        description="Ücretsiz planda günlük 5 doküman tarama hakkınız bulunmaktadır. Sınırsız tarama için Paket Yükseltin."
+      />
     </View>
   );
 }

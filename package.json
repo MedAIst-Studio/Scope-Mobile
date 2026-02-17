@@ -30,6 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "expo": "^54.0.0",
+    "expo-blur": "~15.0.8",
     "expo-camera": "~17.0.10",
     "expo-dev-client": "~6.0.20",
     "expo-document-picker": "~14.0.8",

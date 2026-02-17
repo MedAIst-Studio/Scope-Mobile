@@ -40,6 +40,10 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSubscription } from '@/features/subscription/context/SubscriptionContext';
+import { PremiumModal } from '@/features/subscription/components/PremiumModal';
+import { LIMITS } from '@/features/subscription/types';
+
 import { useChat } from '../hooks/useChat';
 
 import { useChats, useDeleteChat, useUpdateChat } from '../hooks/queries';
@@ -144,6 +148,9 @@ export const ChatScreen: React.FC = () => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] = useState(false);
   const [isAttachMenuVisible, setIsAttachMenuVisible] = useState(false);
   const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
+  const [isPremiumModalVisible, setIsPremiumModalVisible] = useState(false);
+
+  const { tier, usage, incrementChatUsage, isFeatureLocked } = useSubscription();
 
   const {
     message,
@@ -167,6 +174,20 @@ export const ChatScreen: React.FC = () => {
     addAttachment,
     uploadFile,
   } = useChat();
+
+  const handleCustomSendMessage = async () => {
+    if (isFeatureLocked('chatMessages')) {
+      setIsPremiumModalVisible(true);
+      return;
+    }
+
+    await handleSendMessage();
+    incrementChatUsage();
+  };
+
+  const handleContentSizeChangeCustom = (e: any) => {
+    handleContentSizeChange(e);
+  };
 
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
 
@@ -329,8 +350,8 @@ export const ChatScreen: React.FC = () => {
             isSending={isSending}
             inputHeight={inputHeight}
             onChangeText={setMessage}
-            onSend={handleSendMessage}
-            onContentSizeChange={handleContentSizeChange}
+            onSend={handleCustomSendMessage}
+            onContentSizeChange={handleContentSizeChangeCustom}
             onAttachPress={() => setIsAttachMenuVisible(true)}
             onRemoveAttachment={removeAttachment}
           />
@@ -387,6 +408,13 @@ export const ChatScreen: React.FC = () => {
             updateChat({ chatId, title: newTitle });
           }
         }}
+      />
+
+      <PremiumModal
+        isVisible={isPremiumModalVisible}
+        onClose={() => setIsPremiumModalVisible(false)}
+        title="Mesaj Sınırına Ulaştınız"
+        description="Ücretsiz planda günlük 3 mesaj hakkınız bulunmaktadır. Sınırsız mesajlaşma için Paket Yükseltin."
       />
     </View>
   );

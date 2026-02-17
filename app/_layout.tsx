@@ -13,6 +13,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 export { ErrorBoundary } from 'expo-router';
 
 import { AuthGuard, AuthProvider } from '@/features/auth';
+import { SubscriptionProvider } from '@/features/subscription/context/SubscriptionContext';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -30,18 +31,20 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <GlobalErrorProvider>
-          <KeyboardProvider>
-            <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-              <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-              <AuthGuard>
-                <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: false }} />
-                <PortalHost />
-                <PortalHost name="navigation-portal" />
-              </AuthGuard>
-            </ThemeProvider>
-          </KeyboardProvider>
-        </GlobalErrorProvider>
+        <SubscriptionProvider>
+          <GlobalErrorProvider>
+            <KeyboardProvider>
+              <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+                <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+                <AuthGuard>
+                  <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: false }} />
+                  <PortalHost />
+                  <PortalHost name="navigation-portal" />
+                </AuthGuard>
+              </ThemeProvider>
+            </KeyboardProvider>
+          </GlobalErrorProvider>
+        </SubscriptionProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

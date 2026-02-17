@@ -7,6 +7,8 @@ import { BarChart2, Plus, Search } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSubscription } from '@/features/subscription/context/SubscriptionContext';
+import { SubscriptionBlurOverlay } from '@/features/subscription/components/SubscriptionBlurOverlay';
 import { useQuizzes } from '../hooks/useQueries';
 import { QuizListItem } from '../types';
 import { QuizList } from './QuizList';
@@ -15,6 +17,7 @@ export const QuizListScreen: React.FC = () => {
   const router = useRouter();
   const { data: quizzesData, isLoading, error, refetch } = useQuizzes();
   const [searchQuery, setSearchQuery] = useState('');
+  const { tier } = useSubscription();
 
   const quizzes = quizzesData || [];
 
@@ -63,47 +66,49 @@ export const QuizListScreen: React.FC = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top', 'left', 'right']}>
-      <View className="flex-1 px-4 pt-6">
-        {/* Header */}
-        <View className="mb-6 flex-row items-center justify-between">
-          <View>
-            <Text className="text-3xl font-bold tracking-tight text-foreground">Denemeler</Text>
-            <Text className="text-sm text-muted-foreground">
-              Toplam {quizzes.length} kayıtlı deneme
-            </Text>
-          </View>
-          <View className="flex-row gap-2">
-            <Button
-              size="icon"
-              variant="outline"
-              onPress={handleGoToResults}
-              className="h-12 w-12 rounded-xl">
-              <Icon as={BarChart2} size={22} className="text-foreground" />
-            </Button>
-            <Button size="icon" onPress={handleCreateQuiz} className="h-12 w-12 rounded-xl">
-              <Icon as={Plus} size={22} className="text-primary-foreground" />
-            </Button>
-          </View>
-        </View>
-
-        {/* Search */}
-        <View className="mb-6">
-          <View className="relative">
-            <Input
-              placeholder="Deneme ara..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              className="pl-12"
-            />
-            <View className="absolute left-4 top-4">
-              <Icon as={Search} size={20} className="text-muted-foreground/50" />
+      <SubscriptionBlurOverlay isVisible={tier === 'FREE'}>
+        <View className="flex-1 px-4 pt-6">
+          {/* Header */}
+          <View className="mb-6 flex-row items-center justify-between">
+            <View>
+              <Text className="text-3xl font-bold tracking-tight text-foreground">Denemeler</Text>
+              <Text className="text-sm text-muted-foreground">
+                Toplam {quizzes.length} kayıtlı deneme
+              </Text>
+            </View>
+            <View className="flex-row gap-2">
+              <Button
+                size="icon"
+                variant="outline"
+                onPress={handleGoToResults}
+                className="h-12 w-12 rounded-xl">
+                <Icon as={BarChart2} size={22} className="text-foreground" />
+              </Button>
+              <Button size="icon" onPress={handleCreateQuiz} className="h-12 w-12 rounded-xl">
+                <Icon as={Plus} size={22} className="text-primary-foreground" />
+              </Button>
             </View>
           </View>
-        </View>
 
-        {/* Content */}
-        <QuizList quizzes={filteredQuizzes} onStartQuiz={handleStartQuiz} />
-      </View>
+          {/* Search */}
+          <View className="mb-6">
+            <View className="relative">
+              <Input
+                placeholder="Deneme ara..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                className="pl-12"
+              />
+              <View className="absolute left-4 top-4">
+                <Icon as={Search} size={20} className="text-muted-foreground/50" />
+              </View>
+            </View>
+          </View>
+
+          {/* Content */}
+          <QuizList quizzes={filteredQuizzes} onStartQuiz={handleStartQuiz} />
+        </View>
+      </SubscriptionBlurOverlay>
     </SafeAreaView>
   );
 };

@@ -3,12 +3,16 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import * as DocumentPicker from 'expo-document-picker';
 import { CloudUpload, Upload } from 'lucide-react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
+import { useSubscription } from '@/features/subscription/context/SubscriptionContext';
+import { PremiumModal } from '@/features/subscription/components/PremiumModal';
 import { useUploadFile } from '../hooks';
 
 export const UploadFile: React.FC = () => {
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
+  const [isPremiumModalVisible, setIsPremiumModalVisible] = useState(false);
+  const { isFeatureLocked, incrementFileUsage } = useSubscription();
 
   const handleFileUpload = async () => {
     try {
@@ -21,6 +25,11 @@ export const UploadFile: React.FC = () => {
 
       const file = result.assets[0];
 
+      if (isFeatureLocked('fileUploads')) {
+        setIsPremiumModalVisible(true);
+        return;
+      }
+
       uploadFile({
         file_title: file.name,
         file_data: {
@@ -30,6 +39,10 @@ export const UploadFile: React.FC = () => {
             file.mimeType ||
             (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg'),
         },
+      }, {
+        onSuccess: () => {
+          incrementFileUsage();
+        }
       });
     } catch (error) {
       console.error('File pick error', error);
@@ -67,6 +80,13 @@ export const UploadFile: React.FC = () => {
       <Text className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
         PDF, FOTOĞRAF • MAKSİMUM 10MB
       </Text>
+
+      <PremiumModal
+        isVisible={isPremiumModalVisible}
+        onClose={() => setIsPremiumModalVisible(false)}
+        title="Dosya Sınırına Ulaştınız"
+        description="Ücretsiz planda günlük 5 dosya yükleme hakkınız bulunmaktadır. Sınırsız yükleme için Paket Yükseltin."
+      />
     </View>
   );
 };
