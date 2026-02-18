@@ -7,7 +7,12 @@ export const mockUserProfile: SettingsData = {
     photo: undefined,
   },
   theme: 'system',
-  notifications: true,
+  notifications: {
+    motivation: true,
+    reminders: true,
+    announcements: true,
+    newFeatures: false,
+  },
 };
 
 export const themeOptions = [

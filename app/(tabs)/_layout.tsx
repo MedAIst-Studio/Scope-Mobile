@@ -1,13 +1,14 @@
 import { CustomHeader } from '@/components/shared/CustomHeader';
 import { Icon } from '@/components/ui/icon';
+import { registerForPushNotificationsAsync } from '@/features/notifications/utils';
 import { Tabs, useRouter } from 'expo-router';
 import { Camera } from 'lucide-react-native';
 import React from 'react';
-import { TouchableOpacity, useColorScheme } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 const TabsLayout = () => {
-  const colorScheme = useColorScheme();
   const router = useRouter();
+  registerForPushNotificationsAsync()
 
   return (
     <Tabs

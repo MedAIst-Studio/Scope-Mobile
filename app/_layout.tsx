@@ -7,14 +7,20 @@ import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
-import 'react-native-reanimated';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-
+import 'react-native-reanimated';
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 export { ErrorBoundary } from 'expo-router';
 
 import { AuthGuard, AuthProvider } from '@/features/auth';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
+
 
 const queryClient = new QueryClient({
   defaultOptions: {

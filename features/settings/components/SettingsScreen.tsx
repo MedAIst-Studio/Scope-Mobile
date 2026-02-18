@@ -48,11 +48,38 @@ export const SettingsScreen: React.FC = () => {
           <Card className="gap-1 rounded-[2.5rem] border-border/20 p-3 shadow-sm">
             <SettingsItem
               icon={Bell}
-              title="Bildirimler"
-              subtitle="Anlık haber ve güncellemeler"
+              title="Motivasyon"
+              subtitle="Günlük motivasyon ve sözler"
               type="switch"
-              value={settings.notifications}
-              onPress={toggleNotifications}
+              value={settings.notifications.motivation}
+              onPress={() => toggleNotifications('motivation')}
+              showArrow={false}
+            />
+            <SettingsItem
+              icon={Bell}
+              title="Hatırlatıcılar"
+              subtitle="Görev ve çalışma hatırlatıcıları"
+              type="switch"
+              value={settings.notifications.reminders}
+              onPress={() => toggleNotifications('reminders')}
+              showArrow={false}
+            />
+            <SettingsItem
+              icon={Bell}
+              title="Duyurular"
+              subtitle="Önemli duyuru ve haberler"
+              type="switch"
+              value={settings.notifications.announcements}
+              onPress={() => toggleNotifications('announcements')}
+              showArrow={false}
+            />
+            <SettingsItem
+              icon={Bell}
+              title="Yeni Özellikler"
+              subtitle="Yeni özellikler hakkında bilgiler"
+              type="switch"
+              value={settings.notifications.newFeatures}
+              onPress={() => toggleNotifications('newFeatures')}
               showArrow={false}
             />
           </Card>

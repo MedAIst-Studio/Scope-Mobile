@@ -19,8 +19,14 @@ export const useSettings = () => {
     setColorScheme(theme);
   };
 
-  const toggleNotifications = () => {
-    setSettings((prev) => ({ ...prev, notifications: !prev.notifications }));
+  const toggleNotifications = (key: keyof SettingsData['notifications']) => {
+    setSettings((prev) => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        [key]: !prev.notifications[key],
+      },
+    }));
   };
 
   return {

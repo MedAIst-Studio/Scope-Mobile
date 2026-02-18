@@ -14,7 +14,6 @@ export default function QuizDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 
-  // Renamed to avoid confusion with the custom hook in useQuiz.ts
   const { data: quiz, isLoading, error } = useQuizQuery(id!);
   const { mutateAsync: submitQuiz, isPending: isSubmitting } = useSubmitQuiz();
 

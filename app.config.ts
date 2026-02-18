@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
-const IS_DEV = process.env.APP_VARIANT === 'development';
+const IS_DEV =
+  process.env.APP_VARIANT === 'development';
 
 export default {
   expo: {
@@ -12,6 +13,10 @@ export default {
     scheme: 'Scope',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
+    updates: {
+      url: "https://u.expo.dev/2fb3b0c8-e8a1-443b-b4da-7748ebcf38ac"
+    },
+    runtimeVersion: "1.0.4",
     splash: {
       image: './assets/images/splash.png',
       resizeMode: 'contain',
@@ -21,10 +26,12 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: IS_DEV ? 'com.kuarulabs.scope.dev' : 'com.kuarulabs.scope',
+      googleServicesFile: './google-services.json',
     },
     android: {
       edgeToEdgeEnabled: true,
       softwareKeyboardLayoutMode: 'pan',
+      googleServicesFile: IS_DEV ? './google-services-dev.json' : './google-services.json',
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#1E1E1E',

@@ -9,7 +9,12 @@ export interface UserProfile {
 export interface SettingsData {
   profile: UserProfile;
   theme: Theme;
-  notifications: boolean;
+  notifications: {
+    motivation: boolean;
+    reminders: boolean;
+    announcements: boolean;
+    newFeatures: boolean;
+  };
 }
 
 export interface SettingsItemProps {
