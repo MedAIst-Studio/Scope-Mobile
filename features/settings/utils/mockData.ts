@@ -10,8 +10,7 @@ export const mockUserProfile: SettingsData = {
   notifications: {
     motivation: true,
     reminders: true,
-    announcements: true,
-    newFeatures: false,
+    updates: true,
   },
 };
 

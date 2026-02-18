@@ -12,8 +12,7 @@ export interface SettingsData {
   notifications: {
     motivation: boolean;
     reminders: boolean;
-    announcements: boolean;
-    newFeatures: boolean;
+    updates: boolean;
   };
 }
 

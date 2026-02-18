@@ -69,17 +69,8 @@ export const SettingsScreen: React.FC = () => {
               title="Duyurular"
               subtitle="Önemli duyuru ve haberler"
               type="switch"
-              value={settings.notifications.announcements}
-              onPress={() => toggleNotifications('announcements')}
-              showArrow={false}
-            />
-            <SettingsItem
-              icon={Bell}
-              title="Yeni Özellikler"
-              subtitle="Yeni özellikler hakkında bilgiler"
-              type="switch"
-              value={settings.notifications.newFeatures}
-              onPress={() => toggleNotifications('newFeatures')}
+              value={settings.notifications.updates}
+              onPress={() => toggleNotifications('updates')}
               showArrow={false}
             />
           </Card>

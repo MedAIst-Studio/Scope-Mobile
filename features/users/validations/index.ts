@@ -11,8 +11,7 @@ export const userProfileResponse = z.object({
     notifications: z.object({
       motivation: z.boolean(),
       reminders: z.boolean(),
-      announcements: z.boolean(),
-      newFeatures: z.boolean(),
+      updates: z.boolean(),
     }),
   }).optional(),
 });
@@ -22,8 +21,7 @@ export const userPreferencesRequest = z.object({
   notifications: z.object({
     motivation: z.boolean().optional(),
     reminders: z.boolean().optional(),
-    announcements: z.boolean().optional(),
-    newFeatures: z.boolean().optional(),
+    updates: z.boolean().optional(),
   }).optional(),
 });
 

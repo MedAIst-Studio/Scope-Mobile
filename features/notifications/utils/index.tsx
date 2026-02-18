@@ -1,3 +1,4 @@
+import { apiClient } from '@/lib/api';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 
@@ -17,6 +18,12 @@ export async function registerForPushNotificationsAsync() {
         }
 
         const token = (await Notifications.getExpoPushTokenAsync()).data;
+
+        const { error } = await apiClient.patch("/users/fcm-token", { token });
+
+        if (error) {
+            console.error("FCM token registration failed:", error);
+        }
     } else {
         alert('Emülatörde push notification çalışmaz, gerçek cihaz lazım.');
     }
