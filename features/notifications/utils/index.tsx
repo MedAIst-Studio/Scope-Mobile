@@ -19,7 +19,7 @@ export async function registerForPushNotificationsAsync() {
 
         const token = (await Notifications.getExpoPushTokenAsync()).data;
 
-        const { error } = await apiClient.patch("/users/fcm-token", { token });
+        const { error } = await apiClient.patch("/users/fcm-token", { fcm_token: token });
 
         if (error) {
             console.error("FCM token registration failed:", error);

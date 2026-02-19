@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon';
 import { useAuth } from '@/features/auth/context/AuthContext';
+import { StreakIndicator } from '@/features/streaks/components/StreakIndicator';
 import { useRouter } from 'expo-router';
 import {
   ArrowRight,
@@ -35,9 +36,12 @@ export default function HomeScreen() {
               <Text className="text-sm font-bold uppercase tracking-widest text-muted-foreground/50">
                 {getGreeting()}
               </Text>
-              <Text className="text-3xl font-bold capitalize tracking-tighter text-foreground">
-                {user?.username || 'Ömer Faruk'}
-              </Text>
+              <View className="flex-row items-center gap-3">
+                <Text className="text-3xl font-bold capitalize tracking-tighter text-foreground">
+                  {user?.username || 'Ömer Faruk'}
+                </Text>
+                <StreakIndicator />
+              </View>
             </View>
             <TouchableOpacity
               onPress={() => router.push('/(app)/profile')}

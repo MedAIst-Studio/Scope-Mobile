@@ -11,6 +11,7 @@ export default function AppLayout() {
       <Stack.Screen name="quiz/result/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="profile/index" options={{ headerShown: false }} />
       <Stack.Screen name="profile/password" options={{ headerShown: false }} />
+      <Stack.Screen name="streak" options={{ headerShown: false, presentation: 'fullScreenModal' }} />
     </Stack>
   );
 }
