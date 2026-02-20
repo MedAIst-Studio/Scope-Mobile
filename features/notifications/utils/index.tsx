@@ -17,7 +17,7 @@ export async function registerForPushNotificationsAsync() {
             return;
         }
 
-        const token = (await Notifications.getExpoPushTokenAsync()).data;
+        const token = (await Notifications.getDevicePushTokenAsync()).data;
 
         const { error } = await apiClient.patch("/users/fcm-token", { fcm_token: token });
 

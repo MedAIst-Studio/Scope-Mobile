@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 
 // import {chatKeys} from "@/features/chat/hooks";
 
+import { UsageStatsResponse } from '@/features/streaks/validation';
 import { fileAPI } from '../api';
 
 export const FILES_QUERY_KEY = 'files';
@@ -41,6 +42,12 @@ export const useUploadFile = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [FILES_QUERY_KEY] });
+
+      const currentStreak = queryClient.getQueryData<UsageStatsResponse>(["streak"]);
+
+      if (currentStreak && currentStreak.has_played_today === false) {
+        queryClient.invalidateQueries({ queryKey: ['streak'] });
+      }
     },
     onError: (error: Error) => {
       Alert.alert('Hata', error.message || 'Dosya yüklenirken bir hata oluştu.');

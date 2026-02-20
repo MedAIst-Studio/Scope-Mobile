@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import { Calendar, CheckCircle2, ChevronLeft, Flame, ShieldCheck, Star, Trophy, Zap } from 'lucide-react-native';
+import { Calendar, ChevronLeft, Flame, ShieldCheck, Star, Trophy, Zap } from 'lucide-react-native';
 import React, { useEffect, useMemo } from 'react';
 import { ActivityIndicator, Dimensions, ScrollView, View } from 'react-native';
 import Animated, {
@@ -33,14 +33,8 @@ const STREAK_RULES = [
     {
         id: 2,
         title: 'Hedeflerine Ulaş',
-        description: 'Günlük çalışma hedeflerini tamamla ve ekstra puan kazan.',
+        description: 'Günlük çalışma hedeflerini tamamla.',
         icon: Trophy,
-    },
-    {
-        id: 3,
-        title: 'Düzenli Ol',
-        description: 'Üst üste 7 gün aktif olursan özel rozet kazanırsın.',
-        icon: CheckCircle2,
     },
 ];
 
@@ -151,7 +145,6 @@ export default function StreakScreen() {
                     colors={hasStreak ? ['#f97316', '#ea580c', '#c2410c'] : ['#334155', '#1e293b', '#0f172a']}
                     className="pb-24 pt-16 px-6 rounded-b-[4rem] overflow-hidden"
                 >
-                    {/* Background Particles */}
                     <BackgroundParticle x={50} y={150} size={40} duration={4000} delay={0} />
                     <BackgroundParticle x={SCREEN_WIDTH - 80} y={100} size={25} duration={3000} delay={500} />
                     <BackgroundParticle x={SCREEN_WIDTH / 2} y={250} size={15} duration={5000} delay={1000} />

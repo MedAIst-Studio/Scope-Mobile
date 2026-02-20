@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Alert } from 'react-native';
 
+import { UsageStatsResponse } from '@/features/streaks/validation';
 import { chatAPI } from '../api';
 
 export const chatKeys = {
@@ -92,12 +93,12 @@ export const useSendMessage = () => {
 
       const optimisticAttachments = attachmentUri
         ? [
-            {
-              type: 'image' as const,
-              name: 'Image',
-              url: attachmentUri,
-            },
-          ]
+          {
+            type: 'image' as const,
+            name: 'Image',
+            url: attachmentUri,
+          },
+        ]
         : undefined;
 
       queryClient.setQueryData(queryKey, (old: any) => [
@@ -126,25 +127,25 @@ export const useSendMessage = () => {
 
           const optimisticAttachments = variables.image_url
             ? [
-                {
-                  type: 'image' as const,
-                  name: 'Image',
-                  url: variables.image_url,
-                },
-              ]
+              {
+                type: 'image' as const,
+                name: 'Image',
+                url: variables.image_url,
+              },
+            ]
             : undefined;
 
           const updatedMessages = hasUserMessage
             ? messages
             : [
-                ...messages,
-                {
-                  content: variables.message,
-                  is_user: true,
-                  timestamp: new Date().toISOString(),
-                  attachments: optimisticAttachments,
-                },
-              ];
+              ...messages,
+              {
+                content: variables.message,
+                is_user: true,
+                timestamp: new Date().toISOString(),
+                attachments: optimisticAttachments,
+              },
+            ];
 
           return [
             ...updatedMessages,
@@ -173,6 +174,12 @@ export const useSendMessage = () => {
             autoSend: '',
           },
         });
+      }
+
+      const currentStreak = queryClient.getQueryData<UsageStatsResponse>(["streak"]);
+
+      if (currentStreak && currentStreak.has_played_today === false) {
+        queryClient.invalidateQueries({ queryKey: ['streak'] });
       }
     },
     onError: (error: Error, variables, context) => {
