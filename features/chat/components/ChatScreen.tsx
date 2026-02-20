@@ -381,7 +381,7 @@ export const ChatScreen: React.FC = () => {
       <RenameModal
         isVisible={renameModalVisible}
         onClose={() => setRenameModalVisible(false)}
-        initialTitle="Soru Çözümü"
+        initialTitle={currentChat?.title || 'Yeni Sohbet'}
         onRename={(newTitle) => {
           if (chatId) {
             updateChat({ chatId, title: newTitle });
