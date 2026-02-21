@@ -26,3 +26,4 @@ export const createApiError = (error: any, code?: string): ApiError => {
     requestId: error?.config?.requestId,
   };
 };
+

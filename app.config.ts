@@ -7,7 +7,7 @@ export default {
   expo: {
     name: IS_DEV ? 'Scope Dev' : 'Scope',
     slug: 'Scope',
-    version: '1.0.4',
+    version: '1.0.9',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
     scheme: 'Scope',
@@ -16,7 +16,7 @@ export default {
     updates: {
       url: "https://u.expo.dev/2fb3b0c8-e8a1-443b-b4da-7748ebcf38ac"
     },
-    runtimeVersion: "1.0.4",
+    runtimeVersion: "1.0.9",
     splash: {
       image: './assets/images/splash.png',
       resizeMode: 'contain',

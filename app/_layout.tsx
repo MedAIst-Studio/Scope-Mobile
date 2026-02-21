@@ -14,6 +14,7 @@ export { ErrorBoundary } from 'expo-router';
 
 import { AuthGuard, AuthProvider } from '@/features/auth';
 
+import { UpdateLockModal } from '@/components/update-lock-modal';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 configureReanimatedLogger({
@@ -44,6 +45,7 @@ export default function RootLayout() {
                 <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: false }} />
                 <PortalHost />
                 <PortalHost name="navigation-portal" />
+                <UpdateLockModal />
               </AuthGuard>
             </ThemeProvider>
           </KeyboardProvider>
