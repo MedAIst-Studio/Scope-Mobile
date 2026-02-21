@@ -93,7 +93,7 @@ export const SettingsScreen: React.FC = () => {
 
         <View className="mb-12 items-center">
           <Text className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/20">
-            Scope Version 1.0.9
+            Scope Version 1.1.0
           </Text>
         </View>
       </ScrollView>
