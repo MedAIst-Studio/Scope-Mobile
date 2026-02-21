@@ -12,6 +12,7 @@ export default function AppLayout() {
       <Stack.Screen name="profile/index" options={{ headerShown: false }} />
       <Stack.Screen name="profile/password" options={{ headerShown: false }} />
       <Stack.Screen name="streak" options={{ headerShown: false, presentation: 'fullScreenModal' }} />
+      <Stack.Screen name="subscription/paywall" options={{ headerShown: false, presentation: 'fullScreenModal' }} />
     </Stack>
   );
 }

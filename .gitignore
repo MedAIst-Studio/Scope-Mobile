@@ -57,3 +57,5 @@ google-services-dev.json
 scope-prod-admin-sdk-key.json
 scope-dev-admin-sdk-key.json
 build-*.apk
+build-*.aab
+

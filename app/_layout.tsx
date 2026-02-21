@@ -13,6 +13,7 @@ import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-rean
 export { ErrorBoundary } from 'expo-router';
 
 import { AuthGuard, AuthProvider } from '@/features/auth';
+import { RevenueCatProvider } from '@/features/subscription';
 
 import { UpdateLockModal } from '@/components/update-lock-modal';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -37,19 +38,21 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <GlobalErrorProvider>
-          <KeyboardProvider>
-            <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-              <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-              <AuthGuard>
-                <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: false }} />
-                <PortalHost />
-                <PortalHost name="navigation-portal" />
-                <UpdateLockModal />
-              </AuthGuard>
-            </ThemeProvider>
-          </KeyboardProvider>
-        </GlobalErrorProvider>
+        <RevenueCatProvider>
+          <GlobalErrorProvider>
+            <KeyboardProvider>
+              <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+                <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+                <AuthGuard>
+                  <Stack screenOptions={{ headerShown: false, keyboardHandlingEnabled: false }} />
+                  <PortalHost />
+                  <PortalHost name="navigation-portal" />
+                  <UpdateLockModal />
+                </AuthGuard>
+              </ThemeProvider>
+            </KeyboardProvider>
+          </GlobalErrorProvider>
+        </RevenueCatProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

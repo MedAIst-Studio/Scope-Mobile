@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
 
 import { AuthAPI } from '@/features/auth/api';
@@ -18,7 +19,7 @@ export const useUserDetails = () => {
         throw new Error(error.message || 'Kullanıcı bilgileri alınamadı');
       }
 
-      return data as User;
+      return data as unknown as User;
     },
     staleTime: Infinity,
     refetchOnMount: false,
@@ -81,7 +82,8 @@ export const useDeleteAccount = () => {
       }
     },
     onSuccess: async () => {
-      await AuthAPI.logout();
+      const refreshToken = await SecureStore.getItemAsync('refreshToken');
+      await AuthAPI.logout(refreshToken || '');
       await handleLogout();
       Alert.alert('Başarılı', 'Hesap başarıyla silindi');
     },
