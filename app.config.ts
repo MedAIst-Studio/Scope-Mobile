@@ -36,7 +36,7 @@ export default {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#1E1E1E',
       },
-      versionCode: 10,
+      versionCode: 11,
       package: IS_DEV ? 'com.kuarulabs.scope.dev' : 'com.kuarulabs.scope',
     },
     web: {
