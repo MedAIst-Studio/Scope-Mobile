@@ -7,8 +7,7 @@ import React, {
     useState
 } from 'react';
 import Purchases, {
-    CustomerInfo,
-    LOG_LEVEL,
+    CustomerInfo
 } from 'react-native-purchases';
 
 import { ENTITLEMENT_ID, SubscriptionState } from '../types';
@@ -28,6 +27,7 @@ export function RevenueCatProvider({ children }: RevenueCatProviderProps) {
 
     const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isConfigured, setIsConfigured] = useState(false);
 
     // ── SDK initialisation (runs once) ──────────────────────────────────────
 
@@ -35,7 +35,7 @@ export function RevenueCatProvider({ children }: RevenueCatProviderProps) {
         const initSDK = async () => {
             try {
                 if (__DEV__) {
-                    Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+                    Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
                 }
 
                 const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_KEY;
@@ -46,6 +46,7 @@ export function RevenueCatProvider({ children }: RevenueCatProviderProps) {
                 }
 
                 Purchases.configure({ apiKey });
+                setIsConfigured(true);
 
                 // Fetch initial customer info
                 const info = await Purchases.getCustomerInfo();
@@ -64,7 +65,7 @@ export function RevenueCatProvider({ children }: RevenueCatProviderProps) {
 
     useEffect(() => {
         const identifyUser = async () => {
-            if (!user?.id) return;
+            if (!isConfigured || !user?.id) return;
 
             try {
                 const { customerInfo: updatedInfo } = await Purchases.logIn(user.id);
@@ -75,11 +76,13 @@ export function RevenueCatProvider({ children }: RevenueCatProviderProps) {
         };
 
         identifyUser();
-    }, [user?.id]);
+    }, [isConfigured, user?.id]);
 
     // ── Real-time customer info listener ────────────────────────────────────
 
     useEffect(() => {
+        if (!isConfigured) return;
+
         const listener = (info: CustomerInfo) => {
             setCustomerInfo(info);
         };
@@ -89,7 +92,7 @@ export function RevenueCatProvider({ children }: RevenueCatProviderProps) {
         return () => {
             Purchases.removeCustomerInfoUpdateListener(listener);
         };
-    }, []);
+    }, [isConfigured]);
 
     // ── Derived state ───────────────────────────────────────────────────────
 

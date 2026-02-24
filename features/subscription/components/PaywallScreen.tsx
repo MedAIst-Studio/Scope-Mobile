@@ -1,165 +1,142 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { useRouter } from 'expo-router';
-import { Crown, ShieldCheck, Sparkles, X, Zap } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { X } from 'lucide-react-native';
+import React from 'react';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
-import type { PurchasesOffering, PurchasesPackage } from 'react-native-purchases';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSubscription } from '../hooks/useSubscription';
-import { PackageCard } from './PackageCard';
-
-const FEATURES = [
-    {
-        icon: Sparkles,
-        title: 'Sınırsız PDF Analizi',
-        description: 'Tüm dökümanlarınızı yapay zeka ile anında analiz edin.',
-    },
-    {
-        icon: Zap,
-        title: 'Akıllı Soru Oluşturma',
-        description: 'Seviyenize uygun, YKS tarzı sınırsız soru üretin.',
-    },
-    {
-        icon: Crown,
-        title: 'Öncelikli Destek',
-        description: 'Sorularınız ve sorunlarınız için VIP destek hattı.',
-    },
-    {
-        icon: ShieldCheck,
-        title: 'Reklamsız Deneyim',
-        description: 'Dikkatiniz dağılmadan sadece hedefinize odaklanın.',
-    },
-];
+import { usePaywall } from '../hooks/usePaywall';
+import { FeatureItem } from './FeatureItem';
+import { IntervalSwitcher } from './IntervalSwitcher';
+import { PlanItem } from './PlanItem';
 
 export const PaywallScreen: React.FC = () => {
-    const router = useRouter();
-    const { getOfferings, purchasePackage, isLoading, restorePurchases } = useSubscription();
-
-    const [offering, setOffering] = useState<PurchasesOffering | null>(null);
-    const [selectedPackage, setSelectedPackage] = useState<PurchasesPackage | null>(null);
-    const [isPurchasing, setIsPurchasing] = useState(false);
-    const [isInitialLoading, setIsInitialLoading] = useState(true);
-
-    useEffect(() => {
-        const load = async () => {
-            const data = await getOfferings();
-            if (data) {
-                setOffering(data);
-                // Default to yearly if available, otherwise first
-                const yearly = data.availablePackages.find(p => p.packageType === 'ANNUAL');
-                setSelectedPackage(yearly || data.availablePackages[0] || null);
-            }
-            setIsInitialLoading(false);
-        };
-        load();
-    }, [getOfferings]);
-
-    const handlePurchase = async () => {
-        if (!selectedPackage) return;
-        setIsPurchasing(true);
-        const success = await purchasePackage(selectedPackage);
-        setIsPurchasing(false);
-        if (success) {
-            router.back();
-        }
-    };
+    const {
+        activeInterval,
+        setActiveInterval,
+        isPurchasing,
+        isInitialLoading,
+        activeIndex,
+        setActiveIndex,
+        filteredPackages,
+        activePackage,
+        getFeaturesForPackage,
+        handleAction,
+        restorePurchases,
+        router
+    } = usePaywall();
 
     if (isInitialLoading) {
         return (
             <View className="flex-1 items-center justify-center bg-background">
-                <ActivityIndicator size="large" color="#FF6347" />
+                <ActivityIndicator size="large" color="hsl(var(--primary))" />
             </View>
         );
     }
 
+    const currentFeatures = activePackage ? getFeaturesForPackage(activePackage) : [];
+
     return (
         <SafeAreaView className="flex-1 bg-background">
-            <View className="absolute right-6 top-12 z-50">
-                <Pressable
-                    onPress={() => router.back()}
-                    className="h-10 w-10 items-center justify-center rounded-full bg-secondary/50"
-                >
-                    <Icon as={X} size={20} className="text-foreground/60" />
-                </Pressable>
-            </View>
+            {/* Background Gradient */}
+            <LinearGradient
+                colors={['#1c1917', '#0c0a09', '#030202']}
+                className="absolute inset-0"
+            />
 
-            <ScrollView className="flex-1 px-6 pt-10" showsVerticalScrollIndicator={false}>
-                {/* Header Section */}
-                <View className="mb-10 items-center">
-                    <View className="mb-6 h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shadow-sm">
-                        <Icon as={Crown} size={28} className="text-primary" />
-                    </View>
-                    <Text className="text-center text-3xl font-black tracking-tight text-foreground">
-                        Scope Pro'ya Geçin
-                    </Text>
-                    <Text className="mt-2 text-center text-base font-medium text-muted-foreground/60">
-                        Hayalindeki üniversiteye bir adım daha yaklaş.
-                    </Text>
+            <View className="flex-1" >
+                {/* Close Button */}
+                <View className="absolute right-6 top-10 z-50">
+                    <Pressable
+                        onPress={() => router.back()}
+                        className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
+                    >
+                        <Icon as={X} size={20} className="text-white/60" />
+                    </Pressable>
                 </View>
 
-                {/* Features List */}
-                <View className="mb-10 space-y-5">
-                    {FEATURES.map((feature, idx) => (
-                        <View key={idx} className="flex-row items-start space-x-4">
-                            <View className="h-10 w-10 items-center justify-center rounded-xl bg-secondary/50">
-                                <Icon as={feature.icon} size={20} className="text-primary" />
-                            </View>
-                            <View className="flex-1">
-                                <Text className="text-base font-bold text-foreground">{feature.title}</Text>
-                                <Text className="text-sm font-medium text-muted-foreground/60">
-                                    {feature.description}
-                                </Text>
+                <View className="flex-1 px-6">
+                    <ScrollView
+                        className="flex-1"
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingTop: 40, paddingBottom: 140 }}
+                    >
+                        {/* Header */}
+                        <View className="mb-8 items-center">
+                            <Text className="text-center text-3xl font-[1000] tracking-tighter text-white leading-9">
+                                Paketler
+                            </Text>
+                            <Text className="mt-2 text-center text-[15px] font-medium text-white/60 px-8">
+                                İhtiyaçlarınıza en uygun planı bulun. İstediğiniz zaman değiştirin.
+                            </Text>
+                        </View>
+
+                        {/* Interval Switcher */}
+                        <IntervalSwitcher
+                            activeInterval={activeInterval}
+                            onIntervalChange={setActiveInterval}
+                        />
+
+                        {/* Plan Selection */}
+                        <View className="mb-8">
+                            {filteredPackages.map((pkg, index) => (
+                                <PlanItem
+                                    key={pkg.identifier}
+                                    pkg={pkg}
+                                    isActive={activeIndex === index}
+                                    onPress={() => setActiveIndex(index)}
+                                    isMostPopular={pkg.identifier.toLowerCase().includes('pro')}
+                                />
+                            ))}
+                        </View>
+
+                        {/* Features List */}
+                        <View className="rounded-3xl bg-white/5 p-6 border border-white/10">
+                            <Text className="mb-4 text-sm font-bold uppercase tracking-widest text-white/40">
+                                Özellikler:
+                            </Text>
+                            <View className="space-y-1">
+                                {currentFeatures.map((feature: string, idx: number) => (
+                                    <FeatureItem key={idx} label={feature} />
+                                ))}
                             </View>
                         </View>
-                    ))}
+
+                        <Text className="mt-8 text-center text-[13px] font-medium text-white/40">
+                            Tüm planlar 7 günlük ücretsiz deneme içerir. İstediğiniz zaman iptal edin.
+                        </Text>
+                    </ScrollView>
                 </View>
 
-                {/* Packages Section */}
-                <View className="mb-10">
-                    <Text className="mb-5 ml-1 text-xs font-bold uppercase tracking-widest text-muted-foreground/40">
-                        Planınızı Seçin
-                    </Text>
-                    {offering?.availablePackages.map((pkg) => (
-                        <PackageCard
-                            key={pkg.identifier}
-                            pkg={pkg}
-                            isSelected={selectedPackage?.identifier === pkg.identifier}
-                            onSelect={setSelectedPackage}
-                            isMostPopular={pkg.packageType === 'ANNUAL'}
-                        />
-                    ))}
-                </View>
-
-                {/* Footer and Action */}
-                <View className="mb-12">
+                {/* Bottom Action Area */}
+                <View className="absolute bottom-0 left-0 right-0 px-8 pt-6">
                     <Button
-                        className="mb-4 h-16 rounded-3xl"
+                        className="h-16 rounded-2xl bg-white shadow-xl"
                         size="lg"
-                        onPress={handlePurchase}
-                        disabled={isPurchasing || !selectedPackage}
+                        onPress={handleAction}
+                        disabled={isPurchasing}
                     >
                         {isPurchasing ? (
-                            <ActivityIndicator color="white" />
+                            <ActivityIndicator color="black" />
                         ) : (
-                            <Text className="text-lg font-bold text-primary-foreground">
-                                Devam Et
+                            <Text className="text-lg font-bold text-black tracking-tight">
+                                {activePackage?.identifier?.includes('free') ? 'Ücretsiz Devam Et' : 'Tam Erişim Al'}
                             </Text>
                         )}
                     </Button>
 
-                    <View className="flex-row justify-center space-x-6">
+                    <View className="mt-6 flex-row justify-center items-center space-x-6">
                         <Pressable onPress={restorePurchases}>
-                            <Text className="text-xs font-bold text-muted-foreground/40">Satın Alımları Geri Yükle</Text>
+                            <Text className="text-[11px] font-bold text-white/20 uppercase tracking-widest">Geri Yükle</Text>
                         </Pressable>
-                        <Text className="text-xs text-muted-foreground/20">•</Text>
+                        <View className="h-1 w-1 rounded-full bg-white/10" />
                         <Pressable onPress={() => { }}>
-                            <Text className="text-xs font-bold text-muted-foreground/40">Kullanım Koşulları</Text>
+                            <Text className="text-[11px] font-bold text-white/20 uppercase tracking-widest">Koşullar</Text>
                         </Pressable>
                     </View>
                 </View>
-            </ScrollView>
+            </View>
         </SafeAreaView>
     );
 };
