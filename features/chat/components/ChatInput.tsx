@@ -35,7 +35,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const hasAttachments = attachments.length > 0;
 
   return (
-    <View className="bg-background px-4 pb-8 pt-2">
+    <View className="bg-background px-4 pb-8">
       {hasAttachments && (
         <View className="mb-3">
           <FlatList
@@ -63,7 +63,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 )}
                 <TouchableOpacity
                   onPress={() => onRemoveAttachment(index)}
-                  className="absolute -right-2 -top-2 h-6 w-6 items-center justify-center rounded-full bg-destructive shadow-md">
+                  className="absolute -right-2 top-0 h-6 w-6 items-center justify-center rounded-full bg-destructive shadow-md">
                   <Icon as={X} size={14} color="white" />
                 </TouchableOpacity>
               </View>

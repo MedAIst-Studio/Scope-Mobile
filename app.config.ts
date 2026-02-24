@@ -10,7 +10,7 @@ export default {
     version: '1.1.1',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
-    scheme: 'Scope',
+    scheme: 'scope',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     updates: {

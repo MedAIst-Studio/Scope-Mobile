@@ -12,18 +12,21 @@ import {
 import { Icon } from '@/components/ui/icon';
 import { ImageCropper } from '@/features/camera/components/ImageCropper';
 import { cn } from '@/lib/utils';
+import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import {
+  Camera,
   FileText,
   FileUp,
   Image as ImageIcon,
   MoreHorizontal,
+  RefreshCw,
   SquarePen,
   Trash2,
   X,
 } from 'lucide-react-native';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -144,6 +147,10 @@ export const ChatScreen: React.FC = () => {
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] = useState(false);
   const [isAttachMenuVisible, setIsAttachMenuVisible] = useState(false);
   const [isDeleteAlertVisible, setIsDeleteAlertVisible] = useState(false);
+  const [isCameraVisible, setIsCameraVisible] = useState(false);
+  const [cameraFacing, setCameraFacing] = useState<CameraType>('back');
+  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
+  const cameraRef = useRef<CameraView>(null);
 
   const {
     message,
@@ -253,7 +260,18 @@ export const ChatScreen: React.FC = () => {
 
   const attachActions = [
     {
-      label: 'Fotoğraflar',
+      label: 'Fotoğraf Çek',
+      icon: Camera,
+      onPress: async () => {
+        if (!cameraPermission?.granted) {
+          const { granted } = await requestCameraPermission();
+          if (!granted) return;
+        }
+        setIsCameraVisible(true);
+      },
+    },
+    {
+      label: 'Galeri',
       icon: ImageIcon,
       onPress: handlePickImage,
     },
@@ -266,6 +284,45 @@ export const ChatScreen: React.FC = () => {
 
   return (
     <View className="flex-1 bg-background">
+      <Modal
+        visible={isCameraVisible}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setIsCameraVisible(false)}>
+        <View style={{ flex: 1, backgroundColor: 'black' }}>
+          <CameraView style={{ flex: 1 }} facing={cameraFacing} ref={cameraRef}>
+            <View style={{ flex: 1, justifyContent: 'space-between' }}>
+              <View className="flex-row items-center justify-between p-4" style={{ paddingTop: insets.top }}>
+                <TouchableOpacity onPress={() => setIsCameraVisible(false)} className="rounded-full bg-black/40 p-2">
+                  <Icon as={X} color="white" size={24} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setCameraFacing(f => f === 'back' ? 'front' : 'back')} className="rounded-full bg-black/40 p-2">
+                  <Icon as={RefreshCw} color="white" size={24} />
+                </TouchableOpacity>
+              </View>
+              <View className="items-center bg-black/20 p-8">
+                <TouchableOpacity
+                  onPress={async () => {
+                    if (!cameraRef.current) return;
+                    try {
+                      const photo = await cameraRef.current.takePictureAsync({ quality: 0.8 });
+                      if (photo?.uri) {
+                        setIsCameraVisible(false);
+                        setCroppingImage(photo.uri);
+                      }
+                    } catch (e) {
+                      console.error('Failed to take picture:', e);
+                    }
+                  }}
+                  className="h-20 w-20 items-center justify-center rounded-full border-4 border-gray-300 bg-white">
+                  <View className="h-16 w-16 rounded-full border-2 border-black bg-white" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </CameraView>
+        </View>
+      </Modal>
+
       <Modal
         visible={!!croppingImage}
         animationType="fade"
