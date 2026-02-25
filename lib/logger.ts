@@ -81,17 +81,21 @@ class Logger {
   private log(level: LogLevel, message: string, data?: any, error?: Error) {
     if (!this.shouldLog(level)) return;
 
-    const entry = this.createLogEntry(level, message, data, error);
+    try {
+      const entry = this.createLogEntry(level, message, data, error);
 
-    if (this.config.enableConsole) {
-      this.logToConsole(entry);
-    }
-
-    if (this.config.enableRemote) {
-      this.buffer.push(entry);
-      if (this.buffer.length >= this.config.bufferSize) {
-        this.flush();
+      if (this.config.enableConsole) {
+        this.logToConsole(entry);
       }
+
+      if (this.config.enableRemote) {
+        this.buffer.push(entry);
+        if (this.buffer.length >= this.config.bufferSize) {
+          this.flush();
+        }
+      }
+    } catch {
+      // Never let logging crash the app
     }
   }
 
@@ -247,11 +251,9 @@ class Logger {
       // Detaylı log - Development
       console.group(
         `%c→ ${request.method} %c${request.url}`,
-        'color: #22c55e; font-weight: bold',
-        'color: #94a3b8'
       );
 
-      console.log('%cRequest ID:', 'color: #64748b; font-weight: bold', request.id);
+      console.log('request.id', request.id);
 
       if (request.headers) {
         const filteredHeaders = { ...request.headers };
@@ -261,13 +263,13 @@ class Logger {
           filteredHeaders.Authorization = 'Bearer ****';
         }
 
-        console.log('%cHeaders:', 'color: #64748b; font-weight: bold', filteredHeaders);
+        console.log(filteredHeaders);
       }
 
       if (request.data) {
         // FormData ise özel işlem
         if (request.data instanceof FormData) {
-          console.log('%cBody:', 'color: #64748b; font-weight: bold', 'FormData');
+          console.log('FormData');
           const formDataEntries: Record<string, any> = {};
 
           request.data.forEach((value, key) => {
@@ -279,13 +281,12 @@ class Logger {
           });
           console.table(formDataEntries);
         } else {
-          console.log('%cBody:', 'color: #64748b; font-weight: bold', request.data);
+          console.log(request.data);
         }
       }
 
       console.log(
-        '%cTimestamp:',
-        'color: #64748b; font-weight: bold',
+        'Timestamp:',
         request.timestamp.toLocaleTimeString()
       );
       console.groupEnd();
@@ -310,49 +311,42 @@ class Logger {
 
     if (isDev) {
       // Detaylı log - Development
-      const statusColor = isError ? '#ef4444' : isSuccess ? '#22c55e' : '#f59e0b';
       const statusIcon = isError ? '❌' : isSuccess ? '✅' : '⚠️';
 
       console.group(
-        `%c${statusIcon} ${response.status} %c${response.duration}ms %c${requestInfo?.method || ''} ${requestInfo?.url || ''}`,
-        `color: ${statusColor}; font-weight: bold`,
-        'color: #94a3b8',
-        'color: #64748b; font-size: 0.9em'
+        `${statusIcon} ${response.status} ${response.duration}ms ${requestInfo?.method || ''} ${requestInfo?.url || ''}`,
       );
 
-      console.log('%cRequest ID:', 'color: #64748b; font-weight: bold', response.requestId);
-      console.log('%cStatus:', 'color: #64748b; font-weight: bold', response.statusText);
+      console.log('Request ID:', response.requestId);
+      console.log('Status:', response.statusText);
 
       if (response.data) {
         if (isError) {
-          console.error('%cResponse:', 'color: #64748b; font-weight: bold', response.data);
+          console.error('Response:', response.data);
         } else {
-          console.log('%cResponse:', 'color: #64748b; font-weight: bold', response.data);
+          console.log('Response:', response.data);
         }
       }
 
       if (response.errors && response.errors.length > 0) {
-        console.error('%cErrors:', 'color: #ef4444; font-weight: bold', response.errors);
+        console.error('Errors:', response.errors);
       }
 
       // Performance warning
       if (response.duration > 3000) {
         console.warn(
-          '%c🐌 Slow Response',
-          'color: #f59e0b; font-weight: bold',
+          '🐌 Slow Response',
           `${response.duration}ms`
         );
       } else if (response.duration > 1000) {
         console.warn(
-          '%c⏱️ Moderate Response',
-          'color: #f59e0b; font-weight: bold',
+          '⏱️ Moderate Response',
           `${response.duration}ms`
         );
       }
 
       console.log(
-        '%cTimestamp:',
-        'color: #64748b; font-weight: bold',
+        'Timestamp:',
         response.timestamp.toLocaleTimeString()
       );
       console.groupEnd();
@@ -381,7 +375,7 @@ class Logger {
       return;
     }
 
-    console.group('%c📊 Pending Requests Summary', 'color: #3b82f6; font-weight: bold');
+    console.group('📊 Pending Requests Summary');
     console.log(`Total: ${this.requestStats.size}`);
 
     const requests = Array.from(this.requestStats.entries()).map(([id, info]) => ({
@@ -411,7 +405,6 @@ class Logger {
       const measures = performance.getEntriesByName(label);
       const duration = measures[measures.length - 1]?.duration;
 
-      // Sadece yavaş işlemleri logla (>1000ms)
       if (duration && duration > 1000) {
         this.warn(`Slow Performance: ${label}`, {
           duration: `${duration?.toFixed(2)}ms`,
@@ -420,7 +413,6 @@ class Logger {
         this.debug(`⚡ ${label}: ${duration?.toFixed(2)}ms`);
       }
 
-      // Cleanup
       performance.clearMarks(`${label}-start`);
       performance.clearMarks(`${label}-end`);
       performance.clearMeasures(label);
@@ -438,24 +430,18 @@ class Logger {
 
 const loggerConfig: LoggerConfig = {
   level: process.env.NODE_ENV === 'production' ? LogLevel.WARN : LogLevel.DEBUG,
-  enableConsole: true,
-  enableRemote: process.env.NODE_ENV === 'production',
-  remoteEndpoint: process.env.NEXT_PUBLIC_LOG_ENDPOINT,
+  enableConsole: process.env.NODE_ENV !== 'production',
+  enableRemote: false,
+  remoteEndpoint: undefined,
   bufferSize: 10,
-  flushInterval: 30000, // 30 seconds
+  flushInterval: 30000,
 };
 
 export const logger = new Logger(loggerConfig);
 
 if (typeof window !== 'undefined') {
-  // Make logger accessible in development console
   if (process.env.NODE_ENV !== 'production') {
     (window as any).__logger = logger;
-    console.info(
-      '%c🔍 Logger available in console as __logger',
-      'color: #3b82f6; font-weight: bold'
-    );
-    console.info('%c💡 Try: __logger.getRequestSummary()', 'color: #64748b');
   }
 
   if (typeof window.addEventListener === 'function') {

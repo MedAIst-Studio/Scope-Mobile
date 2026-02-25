@@ -180,8 +180,14 @@ axiosInstance.interceptors.response.use(
 
     const apiError = createApiError(error, 'API_RESPONSE_ERROR');
 
-    logger.error('API Error', apiError);
+    // Toast (user-facing) must fire first, before any logging
     ApiErrorHandler.handle(error as any);
+
+    try {
+      logger.error('API Error', apiError);
+    } catch (e) {
+      // Never let logger crash block the error flow
+    }
 
     return Promise.reject(apiError);
   }
