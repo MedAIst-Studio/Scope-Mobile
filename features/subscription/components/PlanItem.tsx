@@ -50,8 +50,8 @@ export const PlanItem: React.FC<PlanItemProps> = ({
             className={cn(
                 "mb-3 flex-row items-center rounded-2xl border-2 p-4 transition-all",
                 isActive
-                    ? "border-primary bg-primary/5 shadow-sm"
-                    : "border-border/30 bg-card/50"
+                    ? "border-primary bg-primary/10 shadow-sm"
+                    : "border-border bg-card"
             )}
         >
             {/* Radio-like circle */}
@@ -59,7 +59,7 @@ export const PlanItem: React.FC<PlanItemProps> = ({
                 "mr-4 h-6 w-6 items-center justify-center rounded-full border-2",
                 isActive ? "border-primary bg-primary" : "border-muted-foreground/30"
             )}>
-                {isActive && <View className="h-2 w-2 rounded-full bg-white" />}
+                {isActive && <View className="h-2 w-2 rounded-full bg-primary-foreground" />}
             </View>
 
             {/* Plan Details */}
@@ -77,7 +77,7 @@ export const PlanItem: React.FC<PlanItemProps> = ({
                         </Badge>
                     )}
                 </View>
-                <Text className="text-[13px] font-medium text-muted-foreground/60">
+                <Text className="text-[13px] font-medium text-muted-foreground">
                     {description}
                 </Text>
             </View>
@@ -85,7 +85,7 @@ export const PlanItem: React.FC<PlanItemProps> = ({
             {/* Price */}
             <View className="items-end">
                 <Text className="text-lg font-black text-foreground">{priceString}</Text>
-                <Text className="text-[10px] font-bold text-muted-foreground/30 uppercase">/{period}</Text>
+                <Text className="text-[10px] font-bold text-muted-foreground uppercase">/{period}</Text>
             </View>
         </Pressable>
     );

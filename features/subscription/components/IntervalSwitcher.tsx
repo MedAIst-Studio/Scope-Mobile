@@ -38,7 +38,7 @@ export const IntervalSwitcher: React.FC<IntervalSwitcherProps> = ({
 
     return (
         <View className="mb-6 self-center">
-            <View className="relative h-10 w-[246px] flex-row items-center rounded-full bg-secondary/30 p-1 border border-border/10">
+            <View className="relative h-10 w-[246px] flex-row items-center rounded-full bg-secondary p-1 border border-border">
                 {/* Sliding Background */}
                 <Animated.View
                     style={[{ width: '33.33%', height: '100%' }, animatedStyle]}
@@ -53,7 +53,7 @@ export const IntervalSwitcher: React.FC<IntervalSwitcherProps> = ({
                     >
                         <Text className={cn(
                             'text-[13px] font-bold transition-colors',
-                            activeInterval === item.value ? 'text-primary-foreground' : 'text-muted-foreground/60'
+                            activeInterval === item.value ? 'text-primary-foreground' : 'text-muted-foreground'
                         )}>
                             {item.label}
                         </Text>

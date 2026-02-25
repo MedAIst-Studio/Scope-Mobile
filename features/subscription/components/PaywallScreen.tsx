@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { LinearGradient } from 'expo-linear-gradient';
 import { X } from 'lucide-react-native';
 import React from 'react';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
@@ -39,20 +38,16 @@ export const PaywallScreen: React.FC = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-background">
-            {/* Background Gradient */}
-            <LinearGradient
-                colors={['#1c1917', '#0c0a09', '#030202']}
-                className="absolute inset-0"
-            />
+
 
             <View className="flex-1" >
                 {/* Close Button */}
                 <View className="absolute right-6 top-10 z-50">
                     <Pressable
                         onPress={() => router.back()}
-                        className="h-10 w-10 items-center justify-center rounded-full bg-white/10"
+                        className="h-10 w-10 items-center justify-center rounded-full bg-secondary"
                     >
-                        <Icon as={X} size={20} className="text-white/60" />
+                        <Icon as={X} size={20} className="text-muted-foreground" />
                     </Pressable>
                 </View>
 
@@ -64,10 +59,10 @@ export const PaywallScreen: React.FC = () => {
                     >
                         {/* Header */}
                         <View className="mb-8 items-center">
-                            <Text className="text-center text-3xl font-[1000] tracking-tighter text-white leading-9">
+                            <Text className="text-center text-3xl font-[1000] tracking-tighter text-foreground leading-9">
                                 Paketler
                             </Text>
-                            <Text className="mt-2 text-center text-[15px] font-medium text-white/60 px-8">
+                            <Text className="mt-2 text-center text-[15px] font-medium text-muted-foreground px-8">
                                 İhtiyaçlarınıza en uygun planı bulun. İstediğiniz zaman değiştirin.
                             </Text>
                         </View>
@@ -92,8 +87,8 @@ export const PaywallScreen: React.FC = () => {
                         </View>
 
                         {/* Features List */}
-                        <View className="rounded-3xl bg-white/5 p-6 border border-white/10">
-                            <Text className="mb-4 text-sm font-bold uppercase tracking-widest text-white/40">
+                        <View className="rounded-3xl bg-muted/50 p-6 border border-border">
+                            <Text className="mb-4 text-sm font-bold uppercase tracking-widest text-muted-foreground">
                                 Özellikler:
                             </Text>
                             <View className="space-y-1">
@@ -103,7 +98,7 @@ export const PaywallScreen: React.FC = () => {
                             </View>
                         </View>
 
-                        <Text className="mt-8 text-center text-[13px] font-medium text-white/40">
+                        <Text className="mt-8 text-center text-[13px] font-medium text-muted-foreground">
                             Tüm planlar 7 günlük ücretsiz deneme içerir. İstediğiniz zaman iptal edin.
                         </Text>
                     </ScrollView>
@@ -112,15 +107,16 @@ export const PaywallScreen: React.FC = () => {
                 {/* Bottom Action Area */}
                 <View className="absolute bottom-0 left-0 right-0 px-8 pt-6">
                     <Button
-                        className="h-16 rounded-2xl bg-white shadow-xl"
+                        variant="default"
+                        className="h-16 rounded-2xl shadow-xl"
                         size="lg"
                         onPress={handleAction}
                         disabled={isPurchasing}
                     >
                         {isPurchasing ? (
-                            <ActivityIndicator color="black" />
+                            <ActivityIndicator color="hsl(var(--primary-foreground))" />
                         ) : (
-                            <Text className="text-lg font-bold text-black tracking-tight">
+                            <Text className="text-lg font-bold text-primary-foreground tracking-tight">
                                 {activePackage?.identifier?.includes('free') ? 'Ücretsiz Devam Et' : 'Tam Erişim Al'}
                             </Text>
                         )}
@@ -128,11 +124,11 @@ export const PaywallScreen: React.FC = () => {
 
                     <View className="mt-6 flex-row justify-center items-center space-x-6">
                         <Pressable onPress={restorePurchases}>
-                            <Text className="text-[11px] font-bold text-white/20 uppercase tracking-widest">Geri Yükle</Text>
+                            <Text className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Geri Yükle</Text>
                         </Pressable>
-                        <View className="h-1 w-1 rounded-full bg-white/10" />
+                        <View className="h-1 w-1 rounded-full bg-border" />
                         <Pressable onPress={() => { }}>
-                            <Text className="text-[11px] font-bold text-white/20 uppercase tracking-widest">Koşullar</Text>
+                            <Text className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Koşullar</Text>
                         </Pressable>
                     </View>
                 </View>

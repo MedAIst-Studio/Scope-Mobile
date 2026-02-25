@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Camera, ChevronRight, GraduationCap, MessageSquare, Sparkles } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
   FadeInDown,
   FadeInRight,
@@ -16,7 +16,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const { width, height } = Dimensions.get('window');
 
 const ONBOARDING_DATA = [
   {
@@ -111,9 +110,9 @@ const ScanDemo = () => {
   }));
 
   return (
-    <View className="h-48 w-48 items-center justify-center overflow-hidden rounded-[2.5rem] border-2 border-white/20 bg-white/5">
+    <View className="h-48 w-48 items-center justify-center overflow-hidden rounded-[2.5rem] border-2 border-border bg-muted">
       <Animated.View style={iconStyle}>
-        <Icon as={Camera} size={80} className="text-white" />
+        <Icon as={Camera} size={80} className="text-foreground" />
       </Animated.View>
       <Animated.View
         style={[
@@ -139,14 +138,14 @@ const ChatDemo = () => {
     <View className="w-full gap-4 px-12">
       <Animated.View
         entering={FadeInRight.delay(500)}
-        className="max-w-[80%] self-start rounded-2xl rounded-tl-none bg-white/10 p-4">
-        <Text className="text-xs text-white/60">AI Hoca</Text>
-        <Text className="mt-1 font-medium text-white">Bu konuyu anlamana yardımcı olabilirim!</Text>
+        className="max-w-[80%] self-start rounded-2xl rounded-tl-none bg-secondary p-4">
+        <Text className="text-xs text-muted-foreground">AI Hoca</Text>
+        <Text className="mt-1 font-medium text-foreground">Bu konuyu anlamana yardımcı olabilirim!</Text>
       </Animated.View>
       <Animated.View
         entering={FadeInRight.delay(1500)}
         className="max-w-[80%] self-end rounded-2xl rounded-tr-none bg-primary p-4">
-        <Text className="font-medium text-white">Logaritma mantığını anlatır mısın?</Text>
+        <Text className="font-medium text-primary-foreground">Logaritma mantığını anlatır mısın?</Text>
       </Animated.View>
     </View>
   );
@@ -165,16 +164,16 @@ const QuizDemo = () => {
 
   return (
     <View className="w-64 gap-6">
-      <View className="h-6 w-full overflow-hidden rounded-full bg-white/10">
-        <Animated.View style={progressStyle} className="h-full bg-emerald-500" />
+      <View className="h-6 w-full overflow-hidden rounded-full bg-muted">
+        <Animated.View style={progressStyle} className="h-full bg-primary" />
       </View>
       <View className="flex-row justify-between">
         {[1, 2, 3].map((i) => (
           <Animated.View
             key={i}
             entering={FadeInDown.delay(i * 300)}
-            className="h-12 w-12 items-center justify-center rounded-2xl border border-emerald-500/40 bg-emerald-500/20">
-            <Icon as={GraduationCap} size={24} className="text-emerald-500" />
+            className="h-12 w-12 items-center justify-center rounded-2xl border border-primary/40 bg-primary/20">
+            <Icon as={GraduationCap} size={24} className="text-primary" />
           </Animated.View>
         ))}
       </View>
@@ -198,7 +197,7 @@ export const Onboarding: React.FC = () => {
   const primaryColor = currentStep.colors[0];
 
   return (
-    <View className="flex-1 bg-[#09090B]">
+    <View className="flex-1 bg-background">
       <LinearGradient
         colors={[`${primaryColor}33`, 'transparent']}
         style={StyleSheet.absoluteFill}
@@ -232,11 +231,11 @@ export const Onboarding: React.FC = () => {
             key={`title-${currentIndex}`}
             entering={FadeInDown.duration(800).springify()}
             className="items-center px-4">
-            <Text className="mb-4 px-2 text-center text-3xl font-bold leading-tight tracking-tight text-white">
+            <Text className="mb-4 px-2 text-center text-3xl font-bold leading-tight tracking-tight text-foreground">
               {currentStep.title}
             </Text>
             <Animated.View entering={FadeInDown.delay(200).duration(800).springify()}>
-              <Text className="text-center text-base leading-relaxed text-muted-foreground/80">
+              <Text className="text-center text-base leading-relaxed text-muted-foreground">
                 {currentStep.description}
               </Text>
             </Animated.View>
@@ -252,7 +251,7 @@ export const Onboarding: React.FC = () => {
                 key={i}
                 className={cn(
                   'h-1.5 rounded-full transition-all duration-300',
-                  i === currentIndex ? 'w-8 bg-primary' : 'w-1.5 bg-white/20'
+                  i === currentIndex ? 'w-8 bg-primary' : 'w-1.5 bg-muted'
                 )}
               />
             ))}
@@ -262,11 +261,11 @@ export const Onboarding: React.FC = () => {
           <TouchableOpacity
             onPress={handleNext}
             activeOpacity={0.8}
-            className="h-20 w-full flex-row items-center justify-center rounded-[2rem] bg-primary shadow-xl shadow-primary/30">
-            <Text className="mr-2 text-xl font-bold text-white">
+            className="h-20 w-full flex-row items-center justify-center rounded-[2rem] bg-primary shadow-lg shadow-primary/20">
+            <Text className="mr-2 text-xl font-bold text-primary-foreground">
               {currentIndex === ONBOARDING_DATA.length - 1 ? 'Hemen Başla' : 'Devam Et'}
             </Text>
-            <Icon as={ChevronRight} size={24} className="text-white" />
+            <Icon as={ChevronRight} size={24} className="text-primary-foreground" />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
