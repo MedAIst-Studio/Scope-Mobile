@@ -1,4 +1,4 @@
-type ErrorEventType = 'SHOW_TOAST' | 'SHOW_ALERT' | 'REDIRECT_LOGIN';
+type ErrorEventType = 'SHOW_TOAST' | 'SHOW_ALERT' | 'REDIRECT_LOGIN' | 'SHOW_UPGRADE_MODAL';
 
 export interface ToastPayload {
   message: string;
@@ -13,7 +13,13 @@ export interface AlertPayload {
   buttons?: { text: string; onPress?: () => void; style?: 'default' | 'cancel' | 'destructive' }[];
 }
 
-type EventPayload = ToastPayload | AlertPayload | undefined;
+export type UpgradeFeature = 'message' | 'ocr' | 'pdf_chat' | 'file_upload' | 'quiz';
+
+export interface UpgradePayload {
+  feature: UpgradeFeature;
+}
+
+type EventPayload = ToastPayload | AlertPayload | UpgradePayload | undefined;
 
 type Listener = (payload?: any) => void;
 
