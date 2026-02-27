@@ -4,4 +4,5 @@ export type File = {
   created_at: string;
   size: number;
   url?: string;
+  is_saved?: boolean;
 };

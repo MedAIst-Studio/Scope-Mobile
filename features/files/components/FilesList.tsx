@@ -9,9 +9,17 @@ interface FilesListProps {
   files: File[];
   onChatStart: (fileId: string) => void;
   onDeleteFile?: (fileId: string) => void;
+  onSaveFile?: (fileId: string) => void;
+  savingFileId?: string | null;
 }
 
-export const FilesList: React.FC<FilesListProps> = ({ files, onChatStart, onDeleteFile }) => {
+export const FilesList: React.FC<FilesListProps> = ({
+  files,
+  onChatStart,
+  onDeleteFile,
+  onSaveFile,
+  savingFileId,
+}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   if (files.length === 0) {
@@ -39,6 +47,8 @@ export const FilesList: React.FC<FilesListProps> = ({ files, onChatStart, onDele
             file={file}
             onChatStart={onChatStart}
             onDelete={onDeleteFile}
+            onSave={onSaveFile}
+            isSaving={savingFileId === file.id}
             onPreview={setSelectedFile}
           />
         ))}

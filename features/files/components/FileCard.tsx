@@ -20,6 +20,8 @@ interface FileCardProps {
   onChatStart: (fileId: string) => void;
   onDelete?: (fileId: string) => void;
   onPreview?: (file: FileType) => void;
+  onSave?: (fileId: string) => void;
+  isSaving?: boolean;
 }
 
 const getFileInfo = (fileName: string) => {
@@ -48,7 +50,14 @@ const getFileInfo = (fileName: string) => {
   };
 };
 
-export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete, onPreview }) => {
+export const FileCard: React.FC<FileCardProps> = ({
+  file,
+  onChatStart,
+  onDelete,
+  onPreview,
+  onSave,
+  isSaving,
+}) => {
   const formattedSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
   const formattedDate = new Date(file.created_at).toLocaleDateString('tr-TR', {
     day: 'numeric',
@@ -61,6 +70,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete,
   const isImage = ['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(
     file.title.toLowerCase().split('.').pop() || ''
   );
+  const isSaved = file.is_saved ?? false;
 
   return (
     <Card className="mb-4">
@@ -102,19 +112,60 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onChatStart, onDelete,
       </CardHeader>
 
       <CardContent className="flex-row items-center justify-between pt-0">
-        <Badge variant="default" className="bg-primary/5">
-          <View className="mr-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
-          <Text className="text-[10px] font-bold text-primary">ANALİZ EDİLDİ</Text>
-        </Badge>
+        <View className="flex-1">
+          {isImage && !isSaved ? (
+            <>
+              <Badge variant="outline" className="self-start border-amber-500/40 bg-amber-500/10">
+                <View className="mr-1.5 h-1.5 w-1.5 rounded-full bg-amber-500" />
+                <Text className="text-[10px] font-bold text-amber-600 uppercase">Geçici Görsel</Text>
+              </Badge>
+            </>
+          ) : (
+            <Badge
+              variant="default"
+              className={cn(
+                'self-start bg-primary/5',
+                isSaved && 'border border-emerald-500/40 bg-emerald-500/10'
+              )}>
+              <View
+                className={cn(
+                  'mr-1.5 h-1.5 w-1.5 rounded-full bg-primary',
+                  isSaved && 'bg-emerald-500'
+                )}
+              />
+              <Text
+                className={cn(
+                  'text-[10px] font-bold text-primary uppercase',
+                  isSaved && 'text-emerald-600'
+                )}>
+                {isSaved ? 'Kalıcı Olarak Kayıtlı' : 'Analiz Edildi'}
+              </Text>
+            </Badge>
+          )}
+        </View>
       </CardContent>
 
-      <CardFooter className="pt-2">
+      <CardFooter className="flex-row gap-2 pt-2">
+        {isImage && onSave && (
+          <Button
+            onPress={() => onSave(file.id)}
+            disabled={isSaving}
+            variant="outline"
+            className={cn(
+              "flex-1 h-11 flex-row items-center justify-center",
+              isSaved ? "border-destructive/40 bg-destructive/5" : "border-primary/40 bg-primary/5"
+            )}>
+            <Text className={cn("text-xs font-semibold", isSaved ? "text-destructive" : "text-primary")}>
+              {isSaving ? '...' : (isSaved ? 'Kaydı Kaldır' : 'Kaydet')}
+            </Text>
+          </Button>
+        )}
         <Button
           onPress={() => onChatStart(file.id)}
-          className="w-full flex-row items-center justify-center"
+          className={cn('h-11 flex-row items-center justify-center gap-2', isImage ? 'flex-[2]' : 'w-full')}
           size="default">
-          <Icon as={MessageCircle} size={20} className="text-primary-foreground" />
-          <Text className="font-bold text-primary-foreground">Sohbeti Başlat</Text>
+          <Icon as={MessageCircle} size={18} className="text-primary-foreground" />
+          <Text className="text-sm font-bold text-primary-foreground">Sohbeti Başlat</Text>
         </Button>
       </CardFooter>
     </Card>

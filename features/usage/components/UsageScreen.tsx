@@ -15,7 +15,7 @@ const FEATURE_CONFIG: Record<UpgradeFeature, { label: string; icon: any; action:
     message: { label: 'Zeka Soruları', icon: MessageSquare, action: 'Konuşma' },
     ocr: { label: 'Soru Canavarı', icon: Camera, action: 'Tarama' },
     pdf_chat: { label: 'PDF Sohbeti', icon: FileText, action: 'Sohbet' },
-    file_upload: { label: 'Kütüphane', icon: Upload, action: 'Yükleme' },
+    file_upload: { label: 'PDF Kütüphanesi', icon: Upload, action: 'Yükleme' },
     quiz: { label: 'Sınav Maratonu', icon: GraduationCap, action: 'Quiz' },
 };
 

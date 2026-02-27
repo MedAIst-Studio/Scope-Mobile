@@ -33,7 +33,8 @@ export const useCreateQuiz = () => {
       return responseData;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["quizzes", "user", "usage"] });
+      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "usage"] });
     },
   });
 };
@@ -69,6 +70,7 @@ export const useSubmitQuiz = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["submissions"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "usage"] });
 
       const currentStreak = queryClient.getQueryData<UsageStatsResponse>(["streak"]);
 
