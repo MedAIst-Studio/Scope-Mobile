@@ -1,9 +1,9 @@
+import { useUsage } from '@/features/users/hooks';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PurchasesOffering, PurchasesPackage } from 'react-native-purchases';
 import { SubscriptionInterval } from '../components/IntervalSwitcher';
 import { useSubscription } from './useSubscription';
-
 // ─── Free Tier Configuration ────────────────────────────────────────────────
 
 export const FREE_PACKAGE = {
@@ -18,21 +18,21 @@ export const FREE_PACKAGE = {
 };
 
 export const FREE_FEATURES = [
-    'Günlük 3 soru tarama',
-    'Doğrudan net soru çözümü',
-    '2 PDF dosya yükleme',
-    'Standart destek',
+    'Günde 3 Soru Tarama (Isınma Turu)',
+    'Yapay Zeka ile Net Çözümler',
+    '2 PDF Dosya Analizi',
+    'Sınırlı Asistan Desteği',
 ];
 
 export const usePaywall = () => {
     const router = useRouter();
     const { getOfferings, purchasePackage, isLoading, restorePurchases } = useSubscription();
-
     const [offering, setOffering] = useState<PurchasesOffering | null>(null);
     const [activeInterval, setActiveInterval] = useState<SubscriptionInterval>('ANNUAL');
     const [isPurchasing, setIsPurchasing] = useState(false);
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
+    const { refetch } = useUsage();
 
     useEffect(() => {
         if (isLoading) return;
@@ -99,6 +99,7 @@ export const usePaywall = () => {
             const success = await purchasePackage(activePackage as PurchasesPackage);
             if (success) {
                 router.back();
+                refetch();
             }
         } finally {
             setIsPurchasing(false);

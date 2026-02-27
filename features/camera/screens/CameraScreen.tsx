@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
+import { useFeatureLimit } from '@/features/usage';
+import { errorEventBus } from '@/lib/error-handling/ErrorEventBus';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
@@ -22,6 +24,7 @@ export default function CameraScreen() {
   const [autoSend, setAutoSend] = useState(true);
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
+  const ocrLimit = useFeatureLimit('ocr');
 
   useEffect(() => {
     SecureStore.getItemAsync(AUTO_SEND_PREF_KEY).then((value) => {
@@ -71,6 +74,12 @@ export default function CameraScreen() {
   };
 
   const handleCropConfirm = (croppedUri: string) => {
+    if (ocrLimit.isAtLimit) {
+      setCroppingImage(null);
+      errorEventBus.emit('SHOW_UPGRADE_MODAL', { feature: 'ocr' });
+      return;
+    }
+
     setCroppingImage(null);
     setCapturedImage(croppedUri);
 

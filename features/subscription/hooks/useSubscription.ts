@@ -20,7 +20,6 @@ export function useSubscription(): SubscriptionState & SubscriptionActions {
     // ── Navigation ──────────────────────────────────────────────────────────
 
     const presentPaywall = useCallback(async (): Promise<boolean> => {
-        if (state.isProUser) return true;
         router.push('/(app)/subscription/paywall' as any);
         return false;
     }, [state.isProUser, router]);

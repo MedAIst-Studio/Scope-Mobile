@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { AuthAPI } from '@/features/auth/api';
 
 import { ApiErrorHandler } from './error-handling/ApiErrorHandler';
+import { errorEventBus } from './error-handling/ErrorEventBus';
 import { logger } from './logger';
 import { ApiConfig, ApiError, ApiRequestConfig } from './types';
 import { createApiError } from './utils';
@@ -68,14 +69,19 @@ axiosInstance.interceptors.request.use(
 );
 
 let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
+let refreshSubscribers: { resolve: (token: string) => void; reject: (err: any) => void }[] = [];
 
-function subscribeTokenRefresh(callback: (token: string) => void) {
-  refreshSubscribers.push(callback);
+function subscribeTokenRefresh(resolve: (token: string) => void, reject: (err: any) => void) {
+  refreshSubscribers.push({ resolve, reject });
 }
 
 function onTokenRefreshed(token: string) {
-  refreshSubscribers.forEach((callback) => callback(token));
+  refreshSubscribers.forEach(({ resolve }) => resolve(token));
+  refreshSubscribers = [];
+}
+
+function onTokenRefreshFailed(error: any) {
+  refreshSubscribers.forEach(({ reject }) => reject(error));
   refreshSubscribers = [];
 }
 
@@ -115,7 +121,11 @@ axiosInstance.interceptors.response.use(
         await SecureStore.deleteItemAsync('accessToken');
         await SecureStore.deleteItemAsync('refreshToken');
 
-        return Promise.reject(createApiError(error, 'AUTH_REFRESH_FAILED'));
+        errorEventBus.emit('REDIRECT_LOGIN');
+
+        const apiError = createApiError(error, 'AUTH_REFRESH_FAILED');
+        onTokenRefreshFailed(apiError);
+        return Promise.reject(apiError);
       }
 
       originalRequest._retry = true;
@@ -141,24 +151,31 @@ axiosInstance.interceptors.response.use(
         }
 
         isRefreshing = false;
-        refreshSubscribers = [];
 
         logger.error('Token refresh failed', refreshError);
 
         await SecureStore.deleteItemAsync('accessToken');
         await SecureStore.deleteItemAsync('refreshToken');
 
-        return Promise.reject(createApiError(refreshError, 'TOKEN_REFRESH_ERROR'));
+        errorEventBus.emit('REDIRECT_LOGIN');
+
+        const apiError = createApiError(refreshError, 'TOKEN_REFRESH_ERROR');
+        onTokenRefreshFailed(apiError);
+        return Promise.reject(apiError);
       }
 
-      return new Promise((resolve) => {
-        subscribeTokenRefresh((token: string) => {
-          if (originalRequest.headers) {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
+      return new Promise((resolve, reject) => {
+        subscribeTokenRefresh(
+          (token: string) => {
+            if (originalRequest.headers) {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+            }
+            resolve(axiosInstance(originalRequest));
+          },
+          (err: any) => {
+            reject(err);
           }
-
-          resolve(axiosInstance(originalRequest));
-        });
+        );
       });
     }
 

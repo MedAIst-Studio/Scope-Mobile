@@ -69,6 +69,13 @@ const TabsLayout = () => {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="(settings)/usage"
+        options={{
+          title: 'Kullanım',
+          href: null,
+        }}
+      />
     </Tabs>
   );
 };

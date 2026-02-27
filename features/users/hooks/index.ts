@@ -7,6 +7,7 @@ import { handleLogout } from '@/features/auth/utils';
 
 import { userAPI } from '../api';
 import { User } from '../types';
+import type { UsageResponse } from '../validations';
 
 // User details query
 export const useUserDetails = () => {
@@ -90,5 +91,23 @@ export const useDeleteAccount = () => {
     onError: (error: Error) => {
       Alert.alert('Hata', error.message);
     },
+  });
+};
+
+// Usage query
+export const useUsage = () => {
+  return useQuery<UsageResponse>({
+    queryKey: ['user', 'usage'],
+    queryFn: async (): Promise<UsageResponse> => {
+      const { data, error } = await userAPI.getUsage();
+
+      if (error) {
+        throw new Error(error.message || 'Kullanım bilgileri alınamadı');
+      }
+
+      return data as unknown as UsageResponse;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true,
   });
 };

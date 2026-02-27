@@ -18,29 +18,29 @@ import { View } from 'react-native';
 
 const FEATURE_CONFIG: Record<UpgradeFeature, { label: string; icon: any; description: string }> = {
     message: {
-        label: 'Mesaj',
+        label: 'Sohbet Bitti mi?',
         icon: MessageSquare,
-        description: 'Günlük mesaj limitinize ulaştınız. Daha fazla mesaj göndermek için planınızı yükseltin.',
+        description: 'Bugünkü beyin fırtınası limitin doldu! Yapay zekayla daha fazla konuşup netlerini uçurmak ister misin?',
     },
     ocr: {
-        label: 'Soru Tarama',
+        label: 'Soru Canavarı',
         icon: Camera,
-        description: 'Günlük soru tarama limitinize ulaştınız. Daha fazla soru taramak için planınızı yükseltin.',
+        description: 'Limit bitti ama çözülecek çok soru var! Sınırsız tarama ile hız kesmeden çalışmaya devam et.',
     },
     pdf_chat: {
-        label: 'PDF Sohbet',
+        label: 'PDF Analizi',
         icon: FileText,
-        description: 'PDF sohbet limitinize ulaştınız. Daha fazla PDF analizi için planınızı yükseltin.',
+        description: 'Bu döküman çok dertliymiş, limit yetmedi! Saniyeler içinde tüm dosyayı analiz etmek için Pro\'ya geç.',
     },
     file_upload: {
-        label: 'Dosya Yükleme',
+        label: 'Kütüphane',
         icon: Upload,
-        description: 'Dosya yükleme limitinize ulaştınız. Daha fazla dosya yüklemek için planınızı yükseltin.',
+        description: 'Çantan doldu! Daha fazla kaynak yükleyip her şeyi tek noktada toplamak için yerini ayırt.',
     },
     quiz: {
-        label: 'Quiz',
+        label: 'Sınav Maratonu',
         icon: GraduationCap,
-        description: 'Günlük quiz limitinize ulaştınız. Daha fazla quiz çözmek için planınızı yükseltin.',
+        description: 'Harika gidiyordun! Limit bitti ama hedeflerin bitmedi. Sınırsız quiz ile dereceye oyna.',
     },
 };
 
@@ -59,7 +59,9 @@ export function UpgradeModal({ feature, onClose }: UpgradeModalProps) {
 
     const handleUpgrade = () => {
         onClose();
-        router.push('/(app)/subscription/paywall');
+        setTimeout(() => {
+            router.push('/(app)/subscription/paywall');
+        }, 300);
     };
 
     return (
@@ -70,7 +72,7 @@ export function UpgradeModal({ feature, onClose }: UpgradeModalProps) {
                         <Icon as={config.icon} size={40} className="text-primary" />
                     </View>
                     <AlertDialogTitle className="text-center text-xl font-bold">
-                        {config.label} Limitine Ulaştınız
+                        {config.label} Limitine Ulaştın
                     </AlertDialogTitle>
                     <AlertDialogDescription className="text-center text-base leading-relaxed">
                         {config.description}

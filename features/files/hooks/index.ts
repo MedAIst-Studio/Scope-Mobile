@@ -43,10 +43,10 @@ export const useUploadFile = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [FILES_QUERY_KEY] });
 
-      const currentStreak = queryClient.getQueryData<UsageStatsResponse>(["streak"]);
+      const currentStreak = queryClient.getQueryData<UsageStatsResponse>(["streak", "user", "usage"]);
 
       if (currentStreak && currentStreak.has_played_today === false) {
-        queryClient.invalidateQueries({ queryKey: ['streak'] });
+        queryClient.invalidateQueries({ queryKey: ['streak', 'user', 'usage'] });
       }
     },
     onError: (error: Error) => {

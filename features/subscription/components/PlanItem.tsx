@@ -20,22 +20,29 @@ export const PlanItem: React.FC<PlanItemProps> = ({
     const { product } = pkg;
     const id = pkg.identifier.toLowerCase();
 
-    // Translation logic
     let tierName = 'Pro';
-    let description = 'Profesyoneller için mükemmel';
+    let description = 'Derece hedefleyenler için en iyisi';
 
     if (id.includes('free')) {
         tierName = 'Ücretsiz';
-        description = 'Başlangıç için bireysel paket';
+        description = 'Sınav yolculuğuna ilk adım';
     } else if (id.includes('ultra')) {
         tierName = 'Ultra';
-        description = 'Tüm sınırlar kaldırılsın';
-    } else if (id.includes('basic')) {
-        tierName = 'Başlangıç';
-        description = 'Temel özelliklerle başlayın';
+        description = 'Sınırsız güç, maksimum net';
     }
 
-    const priceString = product.priceString;
+    const formatPrice = (price: string) => {
+        if (!price || price === 'Ücretsiz') return price;
+        return price
+            .replace(/([.,])00(?![0-9])/, '') // Remove .00 or ,00
+            .replace(/[A-Z]{2,3}(?=\$|€|£|₺|¥)/g, '') // Remove prefix ISO codes (e.g., US$ -> $)
+            .replace(/(?<=\$|€|£|₺|¥)\s*[A-Z]{2,3}/g, '') // Remove suffix ISO codes after symbol
+            .replace(/\s+([^\d\s\.,]+)/, '$1') // Remove space before symbol
+            .replace(/([^\d\s\.,]+)\s+/, '$1') // Remove space after symbol
+            .trim();
+    };
+
+    const priceString = formatPrice(product.priceString);
 
     let period = 'ay';
     if (id.includes('annual') || id.includes('yearly')) {

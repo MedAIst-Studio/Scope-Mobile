@@ -34,10 +34,6 @@ export function RevenueCatProvider({ children }: RevenueCatProviderProps) {
     useEffect(() => {
         const initSDK = async () => {
             try {
-                if (__DEV__) {
-                    Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
-                }
-
                 const apiKey = process.env.EXPO_PUBLIC_REVENUECAT_KEY;
                 if (!apiKey) {
                     console.error('[RevenueCat] EXPO_PUBLIC_REVENUECAT_KEY is not defined');

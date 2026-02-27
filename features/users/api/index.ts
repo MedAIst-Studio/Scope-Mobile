@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api";
-import { userPreferencesRequest, UserPreferencesRequest, userProfileResponse } from "../validations";
+import { usageResponseSchema, userPreferencesRequest, UserPreferencesRequest, userProfileResponse } from "../validations";
 
 export const userAPI = {
   getUserDetails: async () => {
@@ -35,5 +35,11 @@ export const userAPI = {
     const { error } = await apiClient.delete(`/users/account`);
 
     return { error };
+  },
+
+  getUsage: async () => {
+    const { data, error } = await apiClient.get(`/users/usage`, {}, usageResponseSchema);
+
+    return { data, error };
   },
 };

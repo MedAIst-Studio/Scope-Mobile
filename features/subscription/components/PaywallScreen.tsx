@@ -37,7 +37,7 @@ export const PaywallScreen: React.FC = () => {
     const currentFeatures = activePackage ? getFeaturesForPackage(activePackage) : [];
 
     return (
-        <SafeAreaView className="flex-1 bg-background">
+        <SafeAreaView className="flex-1 bg-background py-2">
 
 
             <View className="flex-1" >
@@ -59,11 +59,11 @@ export const PaywallScreen: React.FC = () => {
                     >
                         {/* Header */}
                         <View className="mb-8 items-center">
-                            <Text className="text-center text-3xl font-[1000] tracking-tighter text-foreground leading-9">
-                                Paketler
+                            <Text className="text-center text-3xl font-bold tracking-tighter text-foreground leading-9">
+                                Sınav Başarını Katla
                             </Text>
                             <Text className="mt-2 text-center text-[15px] font-medium text-muted-foreground px-8">
-                                İhtiyaçlarınıza en uygun planı bulun. İstediğiniz zaman değiştirin.
+                                Yapay zeka asistanınla çalışma verimini artır, rakiplerine fark at. İstediğin zaman iptal et.
                             </Text>
                         </View>
 
@@ -98,14 +98,11 @@ export const PaywallScreen: React.FC = () => {
                             </View>
                         </View>
 
-                        <Text className="mt-8 text-center text-[13px] font-medium text-muted-foreground">
-                            Tüm planlar 7 günlük ücretsiz deneme içerir. İstediğiniz zaman iptal edin.
-                        </Text>
                     </ScrollView>
                 </View>
 
                 {/* Bottom Action Area */}
-                <View className="absolute bottom-0 left-0 right-0 px-8 pt-6">
+                <View className="absolute bottom-0 left-0 right-0 px-8 bg-background">
                     <Button
                         variant="default"
                         className="h-16 rounded-2xl shadow-xl"
@@ -122,11 +119,11 @@ export const PaywallScreen: React.FC = () => {
                         )}
                     </Button>
 
-                    <View className="mt-6 flex-row justify-center items-center space-x-6">
+                    <View className="mt-6 flex-row justify-center items-center space-x-2">
                         <Pressable onPress={restorePurchases}>
                             <Text className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Geri Yükle</Text>
                         </Pressable>
-                        <View className="h-1 w-1 rounded-full bg-border" />
+                        <View className="h-1 w-1 rounded-full bg-border mx-2" />
                         <Pressable onPress={() => { }}>
                             <Text className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Koşullar</Text>
                         </Pressable>

@@ -33,7 +33,7 @@ export const useCreateQuiz = () => {
       return responseData;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
+      queryClient.invalidateQueries({ queryKey: ["quizzes", "user", "usage"] });
     },
   });
 };
