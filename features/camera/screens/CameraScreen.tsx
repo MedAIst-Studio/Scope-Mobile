@@ -4,6 +4,7 @@ import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { useFeatureLimit } from '@/features/usage';
 import { errorEventBus } from '@/lib/error-handling/ErrorEventBus';
+import { compressImage } from '@/lib/image/compressImage';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
@@ -73,21 +74,23 @@ export default function CameraScreen() {
     }
   };
 
-  const handleCropConfirm = (croppedUri: string) => {
+  const handleCropConfirm = async (croppedUri: string) => {
     if (ocrLimit.isAtLimit) {
       setCroppingImage(null);
       errorEventBus.emit('SHOW_UPGRADE_MODAL', { feature: 'ocr' });
       return;
     }
 
+    const compressedUri = await compressImage(croppedUri);
+
     setCroppingImage(null);
-    setCapturedImage(croppedUri);
+    setCapturedImage(compressedUri);
 
     router.push({
       pathname: '/(tabs)/chat',
       params: {
         initialMessage: 'Bu soruyu açıklar mısın?',
-        imageUri: croppedUri,
+        imageUri: compressedUri,
         autoSend: String(autoSend),
       },
     });

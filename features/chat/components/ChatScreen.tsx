@@ -13,6 +13,7 @@ import { Icon } from '@/components/ui/icon';
 import { ImageCropper } from '@/features/camera/components/ImageCropper';
 import { useFeatureLimit } from '@/features/usage';
 import { errorEventBus } from '@/lib/error-handling/ErrorEventBus';
+import { compressImage } from '@/lib/image/compressImage';
 import { cn } from '@/lib/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
@@ -194,17 +195,19 @@ export const ChatScreen: React.FC = () => {
   const handleCropConfirm = async (croppedUri: string) => {
     setCroppingImage(null);
 
+    const compressedUri = await compressImage(croppedUri);
+
     addAttachment({
       type: 'image',
       name: 'chat_image.jpg',
-      uri: croppedUri,
+      uri: compressedUri,
     });
 
     try {
       uploadFile({
         file_title: 'chat_image.jpg',
         file_data: {
-          uri: croppedUri,
+          uri: compressedUri,
           name: 'chat_image.jpg',
           type: 'image/jpeg',
         },
