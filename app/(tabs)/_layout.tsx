@@ -8,7 +8,10 @@ import { TouchableOpacity } from 'react-native';
 
 const TabsLayout = () => {
   const router = useRouter();
-  registerForPushNotificationsAsync()
+
+  React.useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
 
   return (
     <Tabs

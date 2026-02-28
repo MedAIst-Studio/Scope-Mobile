@@ -4,6 +4,7 @@ import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 
 const CACHE_KEY_FCM_TOKEN = 'last_registered_fcm_token';
+const HAS_SHOWN_PERMISSION_ALERT = 'has_shown_notification_permission_alert';
 
 export async function registerForPushNotificationsAsync() {
     if (Device.isDevice) {
@@ -16,7 +17,11 @@ export async function registerForPushNotificationsAsync() {
         }
 
         if (finalStatus !== 'granted') {
-            alert('Hatırlatıcılar, duyurular ve yeni özelliklerden haberdar olmak için bildirimleri açmalısınız.');
+            const hasShownAlert = await SecureStore.getItemAsync(HAS_SHOWN_PERMISSION_ALERT);
+            if (!hasShownAlert) {
+                alert('Hatırlatıcılar, duyurular ve yeni özelliklerden haberdar olmak için bildirimleri açmalısınız.');
+                await SecureStore.setItemAsync(HAS_SHOWN_PERMISSION_ALERT, 'true');
+            }
             return;
         }
 
