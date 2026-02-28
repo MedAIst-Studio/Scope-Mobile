@@ -61,7 +61,13 @@ export const MathMarkdownRenderer: React.FC<MathMarkdownRendererProps> = ({
   isUser,
   isDark,
 }) => {
-  const textColor = isUser ? '#FFFFFF' : isDark ? '#E2E8F0' : '#1E293B';
+  const textColor = isUser
+    ? isDark
+      ? '#FFFFFF'
+      : '#1E293B' // Dark slate for better readability on light gray background
+    : isDark
+      ? '#E2E8F0'
+      : '#1E293B';
   const styles = getMarkdownStyles(textColor, isUser, isDark);
 
   const parts = useMemo(() => parseContent(content), [content]);

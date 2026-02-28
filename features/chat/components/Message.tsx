@@ -27,12 +27,12 @@ const MessageContext: React.FC<{
       <Icon
         as={FileText}
         size={14}
-        className={cn('mr-1.5', isUser ? 'text-white/70' : 'text-primary')}
+        className={cn('mr-1.5', isUser ? 'text-slate-600 dark:text-white/70' : 'text-primary')}
       />
       <Text
         className={cn(
           'text-[11px] font-medium tracking-tight',
-          isUser ? 'text-white/80' : 'text-muted-foreground'
+          isUser ? 'text-slate-700 dark:text-white/80' : 'text-muted-foreground'
         )}
         numberOfLines={1}>
         {context.cached_title || 'Kaynak Döküman'}
