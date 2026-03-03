@@ -29,7 +29,7 @@ export const QuizList: React.FC<QuizListProps> = ({ quizzes, onStartQuiz }) => {
       contentContainerStyle={{ paddingBottom: 20 }}
       showsVerticalScrollIndicator={false}>
       {quizzes?.map((quiz) => (
-        <QuizCard key={quiz.quizId} quiz={quiz} onStartQuiz={onStartQuiz} />
+        <QuizCard key={quiz.id} quiz={quiz} onStartQuiz={onStartQuiz} />
       ))}
     </ScrollView>
   );

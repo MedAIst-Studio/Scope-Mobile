@@ -28,10 +28,7 @@ export const QuizListScreen: React.FC = () => {
   }, [quizzes, searchQuery]);
 
   const handleStartQuiz = (quizId: string) => {
-    router.push({
-      pathname: '/(app)/quiz/[id]',
-      params: { id: quizId },
-    });
+    router.push(`/(app)/quiz/${quizId}`);
   };
 
   const quizLimit = useFeatureLimit('quiz');

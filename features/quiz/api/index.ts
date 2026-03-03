@@ -1,4 +1,4 @@
-import {apiClient} from "@/lib/api";
+import { apiClient } from '@/lib/api';
 
 import {
   attemptDetailResponseSchema,
@@ -9,61 +9,61 @@ import {
   quizResponseSchema,
   quizzesResponseSchema,
   submitResponseSchema,
-} from "../validation";
+} from '../validation';
 
 export const quizAPI = {
   createQuiz: async (data: QuizRequestData) => {
-    const {data: responseData, error} = await apiClient.request({
-      url: "/quizzes",
-      method: "POST",
+    const { data: responseData, error } = await apiClient.request({
+      url: '/quizzes',
+      method: 'POST',
       data: data,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       timeout: 10 * 60 * 1000,
     });
 
-    return {error, data: responseData};
+    return { error, data: responseData };
   },
 
   getQuizzes: async () => {
-    const {error, data} = await apiClient.get("/quizzes", {
-      response: quizzesResponseSchema,
-    });
+    const { error, data } = await apiClient.get('/quizzes', {}, quizzesResponseSchema);
 
-    return {error, data};
+    return { error, data };
   },
 
   getQuizById: async (id: string) => {
-    const {error, data} = await apiClient.get("/quizzes/" + id, {
-      response: quizResponseSchema,
-    });
+    const { error, data } = await apiClient.get('/quizzes/' + id, undefined, quizResponseSchema);
 
-    return {error, data};
+    return { error, data };
   },
 
   submitQuiz: async (requestData: AttemptRequestData) => {
-    const {error, data} = await apiClient.post(`/quizzes/${requestData.id}/solve`, requestData, {
+    const { error, data } = await apiClient.post(`/quizzes/${requestData.id}/solve`, requestData, {
       request: attemptRequestSchema,
       response: submitResponseSchema,
     });
 
-    return {error, data};
+    return { error, data };
   },
 
   getAttemptDetails: async (id: string) => {
-    const {error, data} = await apiClient.get("/quizzes/attempts/" + id, {
-      response: attemptDetailResponseSchema,
-    });
+    const { error, data } = await apiClient.get(
+      '/quizzes/attempts/' + id,
+      undefined,
+      attemptDetailResponseSchema
+    );
 
-    return {error, data};
+    return { error, data };
   },
 
   getAttempts: async () => {
-    const {error, data} = await apiClient.get("/quizzes/attempts", {
-      response: attemptsResponseSchema,
-    });
+    const { error, data } = await apiClient.get(
+      '/quizzes/attempts',
+      undefined,
+      attemptsResponseSchema
+    );
 
-    return {error, data};
+    return { error, data };
   },
 };

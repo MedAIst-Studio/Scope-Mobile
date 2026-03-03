@@ -32,7 +32,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({ quiz, onStartQuiz }) => {
       </CardHeader>
 
       <CardFooter>
-        <Button onPress={() => onStartQuiz(quiz.quizId)} className="w-full" size="default">
+        <Button onPress={() => onStartQuiz(quiz.id)} className="w-full" size="default">
           <Icon as={Play} size={18} className="text-primary-foreground" />
           <Text className="font-bold text-primary-foreground">Sınavı Başlat</Text>
         </Button>

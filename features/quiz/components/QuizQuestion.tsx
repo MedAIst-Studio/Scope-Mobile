@@ -1,17 +1,9 @@
 import { Text } from '@/components/ui/text';
+import { QuizResponseData } from '@/features/quiz/validation';
 import React from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 
-interface Option {
-  label: string;
-  text: string;
-}
-
-export interface Question {
-  no: number;
-  text: string;
-  options: Option[];
-}
+type Question = QuizResponseData['questions'][number];
 
 interface QuizQuestionProps {
   question: Question;
@@ -28,7 +20,7 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
     <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
       <View className="py-6">
         <Text className="mb-8 text-xl font-semibold leading-relaxed text-foreground">
-          {question.text}
+          {question.questionText}
         </Text>
 
         <View className="gap-4">
