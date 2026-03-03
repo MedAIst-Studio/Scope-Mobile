@@ -2,7 +2,7 @@ import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Camera, ChevronRight, GraduationCap, MessageSquare, Sparkles } from 'lucide-react-native';
+import { Camera, ChevronRight, FileText, GraduationCap, MessageSquare, Search, Sparkles } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
@@ -19,36 +19,36 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ONBOARDING_DATA = [
   {
-    title: 'Hedeflerine Odaklan,\nBaşarıyı Yakala',
+    title: 'Notlarını Yükle,\nSınavını Garantile.',
     description:
-      'YKS hazırlık sürecinde yapay zeka desteğiyle rakiplerinin önüne geç. Her an yanında!',
-    icon: Sparkles,
-    colors: ['#F97316', '#FB923C', '#FDBA74'],
-    demo: 'welcome',
+      "Binlerce sayfa okumakla vakit kaybetme. PDF'lerini veya ders notlarını yükle, Scope senin için özetlesin ve anında Quiz yapsın.",
+    icon: FileText,
+    colors: ['#3B82F6', '#60A5FA', '#93C5FD'],
+    demo: 'pdf',
   },
   {
-    title: 'Saniyeler İçinde\nDetaylı Çözüm',
+    title: "Ezberleme,\nScope ile 'Hack'le.",
     description:
-      'Çözemediğin sorunun fotoğrafını çek, yapay zeka saniyeler içinde adım adım anlatsın.',
-    icon: Camera,
-    colors: ['#8B5CF6', '#A78BFA', '#C4B5FD'],
-    demo: 'scan',
-  },
-  {
-    title: 'Anlamadığın\nKonu Kalmasın',
-    description:
-      '7/24 yanındaki özel hocanla sohbet et, takıldığın yerleri en ince ayrıntısına kadar öğren.',
+      'Sadece sohbet etme; yüklediğin kitaplardan ve notlardan nokta atışı cevaplar al. Senin arşivin, senin kuralların.',
     icon: MessageSquare,
     colors: ['#06B6D4', '#22D3EE', '#67E8F9'],
     demo: 'chat',
   },
   {
-    title: 'Gelişimini Kararlılıkla\nKanıtla',
+    title: 'Tıkandığın Yerde\nFotoğrafını Çek.',
     description:
-      'Kişiselleştirilmiş testlerle eksiklerini kapat, ilerlemeni istatistiklerle takip et.',
-    icon: GraduationCap,
-    colors: ['#10B981', '#34D399', '#6EE7B7'],
-    demo: 'quiz',
+      'Test kitabında çözemediğin soru mu var? Çek gönder, sadece cevabı değil mantığını öğren.',
+    icon: Camera,
+    colors: ['#8B5CF6', '#A78BFA', '#C4B5FD'],
+    demo: 'scan',
+  },
+  {
+    title: 'Üniversite Hayaline\n1 Tık Uzaktasın.',
+    description:
+      'YKS hazırlık sürecinde yapay zeka desteğiyle rakiplerinin önüne geç. Her an yanında!',
+    icon: Sparkles,
+    colors: ['#F97316', '#FB923C', '#FDBA74'],
+    demo: 'welcome',
   },
 ];
 
@@ -129,6 +129,78 @@ const ScanDemo = () => {
           },
         ]}
       />
+    </View>
+  );
+};
+
+const PdfDemo = () => {
+  const searchX = useSharedValue(-40);
+  const searchY = useSharedValue(-40);
+  const fileScale = useSharedValue(1);
+
+  useEffect(() => {
+    searchX.value = withRepeat(
+      withSequence(
+        withTiming(40, { duration: 2000 }),
+        withTiming(40, { duration: 2000 }),
+        withTiming(-40, { duration: 2000 }),
+        withTiming(-40, { duration: 2000 })
+      ),
+      -1,
+      true
+    );
+    searchY.value = withRepeat(
+      withSequence(
+        withTiming(-40, { duration: 2000 }),
+        withTiming(40, { duration: 2000 }),
+        withTiming(40, { duration: 2000 }),
+        withTiming(-40, { duration: 2000 })
+      ),
+      -1,
+      true
+    );
+    fileScale.value = withRepeat(
+      withSequence(withTiming(1.05, { duration: 1000 }), withTiming(1, { duration: 1000 })),
+      -1,
+      true
+    );
+  }, []);
+
+  const searchStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: searchX.value }, { translateY: searchY.value }],
+  }));
+
+  const fileStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: fileScale.value }],
+  }));
+
+  return (
+    <View className="h-48 w-48 items-center justify-center">
+      <Animated.View
+        style={fileStyle}
+        className="h-40 w-32 items-center justify-center rounded-2xl border-2 border-primary/20 bg-primary/10">
+        <Icon as={FileText} size={64} className="text-primary" />
+        <View className="absolute bottom-4 left-4 right-4 h-1 rounded-full bg-primary/20" />
+        <View className="absolute bottom-8 left-4 right-8 h-1 rounded-full bg-primary/20" />
+        <View className="absolute bottom-12 left-4 right-6 h-1 rounded-full bg-primary/20" />
+      </Animated.View>
+      <Animated.View
+        style={[
+          searchStyle,
+          {
+            position: 'absolute',
+            backgroundColor: 'white',
+            padding: 12,
+            borderRadius: 999,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
+            shadowRadius: 10,
+            elevation: 5,
+          },
+        ]}>
+        <Icon as={Search} size={24} className="text-primary" />
+      </Animated.View>
     </View>
   );
 };
@@ -220,10 +292,10 @@ export const Onboarding: React.FC = () => {
               key={`demo-${currentIndex}`}
               entering={FadeInDown.duration(1000).springify()}
               className="w-full items-center justify-center">
-              {currentIndex === 0 && <WelcomeDemo />}
-              {currentIndex === 1 && <ScanDemo />}
-              {currentIndex === 2 && <ChatDemo />}
-              {currentIndex === 3 && <QuizDemo />}
+              {currentIndex === 0 && <PdfDemo />}
+              {currentIndex === 1 && <ChatDemo />}
+              {currentIndex === 2 && <ScanDemo />}
+              {currentIndex === 3 && <WelcomeDemo />}
             </Animated.View>
           </View>
 
@@ -263,7 +335,7 @@ export const Onboarding: React.FC = () => {
             activeOpacity={0.8}
             className="h-20 w-full flex-row items-center justify-center rounded-[2rem] bg-primary shadow-lg shadow-primary/20">
             <Text className="mr-2 text-xl font-bold text-primary-foreground">
-              {currentIndex === ONBOARDING_DATA.length - 1 ? 'Hemen Başla' : 'Devam Et'}
+              {currentIndex === ONBOARDING_DATA.length - 1 ? 'Kendi Arşivini Oluştur' : 'Devam Et'}
             </Text>
             <Icon as={ChevronRight} size={24} className="text-primary-foreground" />
           </TouchableOpacity>
