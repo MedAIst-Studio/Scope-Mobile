@@ -24,10 +24,10 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({ selectedTheme, onT
       <Select
         value={{ value: selectedTheme, label: selectedOption?.label || 'Sistem' }}
         onValueChange={(option) => onThemeChange(option?.value as Theme)}>
-        <SelectTrigger className="h-10 justify-end border-0 bg-transparent p-0 web:w-24">
+        <SelectTrigger className="h-10 justify-end border-0 bg-transparent p-1 web:w-24">
           <SelectValue className="text-right text-sm font-bold text-primary" placeholder="Seç" />
         </SelectTrigger>
-        <SelectContent className="rounded-3xl border-border/20 shadow-xl">
+        <SelectContent className="rounded-xl border-border/20 shadow-xl">
           {themeOptions.map((option) => (
             <SelectItem
               key={option.value}

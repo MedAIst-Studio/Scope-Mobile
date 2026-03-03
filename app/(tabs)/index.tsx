@@ -6,10 +6,10 @@ import { useRouter } from 'expo-router';
 import {
   ArrowRight,
   Camera,
-  FileText,
   GraduationCap,
   MessageSquare,
   Sparkles,
+  Target
 } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -99,19 +99,19 @@ export default function HomeScreen() {
                 </View>
               </TouchableOpacity>
 
-              {/* Secondary: Files */}
+              {/* Secondary: Practice */}
               <TouchableOpacity
                 activeOpacity={0.9}
-                onPress={() => router.push('/(tabs)/files')}
+                onPress={() => router.push('/(app)/quiz/practice')}
                 className="h-44 flex-1 rounded-[2rem] border border-border/40 bg-card p-6 shadow-md shadow-black/5">
                 <View className="flex-1 justify-between">
                   <View className="self-start rounded-2xl bg-secondary/80 p-3">
-                    <Icon as={FileText} size={28} className="text-foreground/60" />
+                    <Icon as={Target} size={28} className="text-foreground/60" />
                   </View>
                   <View>
-                    <Text className="text-xl font-bold text-foreground">Dosyalar</Text>
+                    <Text className="text-xl font-bold text-foreground">Pratik Yap</Text>
                     <Text className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50">
-                      Döküman Arşivi
+                      Mini Sınavlar
                     </Text>
                   </View>
                 </View>

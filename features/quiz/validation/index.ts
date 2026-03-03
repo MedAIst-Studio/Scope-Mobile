@@ -11,6 +11,13 @@ export const quizCreateResponseSchema = z.object({
   quizId: z.string(),
 });
 
+export const generatePracticeQuizRequestSchema = z.object({
+  examType: z.enum(['TYT', 'AYT']),
+  subject: z.string().min(1, 'Ders seçimi gereklidir'),
+  topic: z.string().min(1, 'Konu seçimi gereklidir'),
+  questionCount: z.coerce.number().min(1, 'Soru sayısı seçimi gereklidir'),
+});
+
 export const quizResponseSchema = z.object({
   id: z.string(),
   questions: z.array(
@@ -28,6 +35,22 @@ export const quizResponseSchema = z.object({
   ),
   title: z.string(),
 });
+
+export const subjectsResponseSchema = z.array(
+  z.object({
+    id: z.string(),
+    examType: z.string(),
+    name: z.string(),
+  })
+)
+
+export const subjectTopicsResponseSchema = z.array(
+  z.object({
+    id: z.string(),
+    subjectId: z.string(),
+    name: z.string(),
+  })
+)
 
 export const attemptRequestSchema = z.object({
   id: z.string().min(1, 'Quiz ID is required'),
@@ -105,3 +128,4 @@ export type AttemptDetailData = z.infer<typeof attemptDetailResponseSchema>;
 export type AttemptsResponseData = z.infer<typeof attemptsResponseSchema>;
 export type SubmitResponseData = z.infer<typeof submitResponseSchema>;
 export type QuizzesResponseData = z.infer<typeof quizzesResponseSchema>;
+export type GeneratePracticeQuizRequestData = z.infer<typeof generatePracticeQuizRequestSchema>;

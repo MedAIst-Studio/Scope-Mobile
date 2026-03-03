@@ -1,6 +1,7 @@
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { Eye, EyeOff } from 'lucide-react-native';
@@ -16,6 +17,7 @@ export enum FormFieldType {
   TEXTAREA = 'textarea',
   NUMBER = 'number',
   CHECKBOX = 'checkbox',
+  SELECT = 'select',
 }
 
 interface DynamicFormFieldProps<
@@ -33,6 +35,8 @@ interface DynamicFormFieldProps<
   labelClassName?: string;
   required?: boolean;
   description?: string;
+  options?: { label: string; value: string }[];
+  isLoading?: boolean;
 }
 
 function DynamicFormField<
@@ -50,6 +54,8 @@ function DynamicFormField<
   labelClassName,
   required = false,
   description,
+  options,
+  isLoading = false,
 }: DynamicFormFieldProps<TFieldValues, TName>) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -87,6 +93,30 @@ function DynamicFormField<
 
   const renderInput = (field: any, error?: string) => {
     const hasError = !!error;
+
+    if (type === FormFieldType.SELECT && options) {
+      const selectedOption = options.find((opt) => opt.value === field.value);
+      return (
+        <View className="relative w-full">
+          <Select
+            value={selectedOption ? { value: selectedOption.value, label: selectedOption.label } : undefined}
+            onValueChange={(option) => field.onChange(option?.value)}
+            disabled={disabled || isLoading}
+          >
+            <SelectTrigger className={cn('w-full h-12', hasError && 'border-destructive', inputClassName)}>
+              <SelectValue placeholder={isLoading ? 'Yükleniyor...' : placeholder as string} />
+            </SelectTrigger>
+            <SelectContent>
+              {options.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value} label={opt.label}>
+                  <Text className="text-sm font-medium">{opt.label}</Text>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </View>
+      );
+    }
 
     if (type === FormFieldType.CHECKBOX) {
       return (
@@ -172,3 +202,4 @@ function DynamicFormField<
 
 export { DynamicFormField };
 export type { DynamicFormFieldProps };
+

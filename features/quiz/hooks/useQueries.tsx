@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { UsageStatsResponse } from "@/features/streaks/validation";
 import { quizAPI } from "../api";
-import { AttemptDetailData, AttemptRequestData, QuizRequestData } from "../validation";
+import { AttemptDetailData, AttemptRequestData, GeneratePracticeQuizRequestData, QuizRequestData } from "../validation";
 
 export const useQuizzes = () => {
   return useQuery({
@@ -109,5 +109,59 @@ export const useSubmissionDetails = (id: string) => {
       return data as AttemptDetailData;
     },
     enabled: !!id,
+  });
+};
+
+export const useSubjects = (examType: "TYT" | "AYT" | null) => {
+  return useQuery({
+    queryKey: ["subjects", examType],
+    queryFn: async () => {
+      if (!examType) return [];
+      const { data, error } = await quizAPI.getSubjects(examType);
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+    enabled: !!examType,
+  });
+};
+
+export const useSubjectTopics = (subjectId: string | null) => {
+  return useQuery({
+    queryKey: ["subjectTopics", subjectId],
+    queryFn: async () => {
+      if (!subjectId) return [];
+      const { data, error } = await quizAPI.getSubjectTopics(subjectId);
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+    enabled: !!subjectId,
+  });
+};
+
+export const useCreatePracticeQuiz = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: GeneratePracticeQuizRequestData) => {
+      const { error, data: responseData } = await quizAPI.createPracticeQuiz(data);
+
+      if (error) {
+        throw error;
+      }
+
+      return responseData;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "usage"] });
+    },
   });
 };
