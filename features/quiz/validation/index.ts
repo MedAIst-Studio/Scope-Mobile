@@ -66,16 +66,16 @@ export const attemptDetailResponseSchema = z.object({
 export const attemptsResponseSchema = z.object({
   attempts: z.array(
     z.object({
+      completed_at: z.string(),
       id: z.string(),
       percentage: z.number(),
       quiz_id: z.string(),
       quiz_title: z.string(),
       score: z.number(),
-      time_spent_seconds: z.number(),
       total_questions: z.number(),
     })
   ),
-  total_count: z.number(),
+  count: z.number(),
 });
 
 export const submitResponseSchema = z.object({
