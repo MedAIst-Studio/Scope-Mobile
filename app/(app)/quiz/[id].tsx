@@ -14,7 +14,7 @@ export default function QuizDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 
-  const { data: quiz, isLoading, error } = useQuizQuery(id!);
+  const { data: quiz, isLoading, error } = useQuizQuery(id);
   const { mutateAsync: submitQuiz, isPending: isSubmitting } = useSubmitQuiz();
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -47,7 +47,7 @@ export default function QuizDetailScreen() {
   const handleSelectOption = (optionLabel: string) => {
     setAnswers((prev) => ({
       ...prev,
-      [currentQuestion.no]: optionLabel,
+      [currentQuestionIndex + 1]: optionLabel,
     }));
   };
 
@@ -130,7 +130,7 @@ export default function QuizDetailScreen() {
         {currentQuestion ? (
           <QuizQuestion
             question={currentQuestion}
-            selectedOption={answers[currentQuestion.no]}
+            selectedOption={answers[currentQuestionIndex + 1]}
             onSelectOption={handleSelectOption}
           />
         ) : (

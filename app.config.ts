@@ -38,6 +38,7 @@ export default {
       },
       versionCode: 11,
       package: IS_DEV ? 'com.kuarulabs.scope.dev' : 'com.kuarulabs.scope',
+      permissions: ['com.android.vending.BILLING'],
     },
     web: {
       bundler: 'metro',

@@ -1,21 +1,28 @@
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { FilesList } from '@/features/files/components/FilesList';
 import { SearchBar } from '@/features/files/components/SearchBar';
 import { UploadFile } from '@/features/files/components/UploadFile';
-import { useDeleteFile, useFiles } from '@/features/files/hooks';
+import { useDeleteFile, useFiles, useSaveFile } from '@/features/files/hooks';
+import { useFeatureLimit } from '@/features/usage';
+import { errorEventBus } from '@/lib/error-handling/ErrorEventBus';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { AlertCircle, Upload } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FilesScreen() {
   const { data: files, isLoading, error, refetch } = useFiles();
   const { mutate: deleteFile } = useDeleteFile();
+  const { mutate: saveFile } = useSaveFile();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'images' | 'documents'>('all');
+  const [savingFileId, setSavingFileId] = useState<string | null>(null);
   const router = useRouter();
+  const fileUploadLimit = useFeatureLimit('file_upload');
 
   const isImage = (fileName: string) => {
     const ext = fileName.toLowerCase().split('.').pop();
@@ -52,6 +59,19 @@ export default function FilesScreen() {
     ]);
   };
 
+  const handleSaveFile = (fileId: string) => {
+    setSavingFileId(fileId);
+    saveFile(fileId, {
+      onSettled: () => {
+        setSavingFileId((current) => (current === fileId ? null : current));
+      },
+    });
+  };
+
+  const hasTemporaryImages = useMemo(() => {
+    return files?.some((f) => isImage(f.title) && !f.is_saved) ?? false;
+  }, [files]);
+
   return (
     <SafeAreaView className="flex-1 bg-background px-4" edges={['top', 'left', 'right']}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -83,9 +103,34 @@ export default function FilesScreen() {
           ))}
         </View>
 
+        {hasTemporaryImages && (
+          <View className="mb-4 flex-row items-center gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4">
+            <View className="rounded-full bg-amber-500/10 p-2">
+              <Icon as={AlertCircle} size={20} className="text-amber-600" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-[13px] font-semibold text-amber-900">Önemli Hatırlatma</Text>
+              <Text className="text-xs text-amber-700/80">
+                Geçici resim dosyaları 7 gün sonra silinir. Kalıcı hale getirmek için kaydedin.
+              </Text>
+            </View>
+          </View>
+        )}
+
         {!searchQuery.trim() && filterType === 'all' && (
           <View className="mb-4">
-            <UploadFile />
+            {fileUploadLimit.isAtLimit ? (
+              <TouchableOpacity
+                onPress={() => errorEventBus.emit('SHOW_UPGRADE_MODAL', { feature: 'file_upload' })}
+                className="items-center justify-center rounded-2xl border border-dashed border-border bg-muted/30 py-8"
+                activeOpacity={0.7}
+              >
+                <Icon as={Upload} size={28} className="mb-2 text-muted-foreground" />
+                <Text className="text-sm text-muted-foreground">Dosya yükleme limitine ulaştınız</Text>
+              </TouchableOpacity>
+            ) : (
+              <UploadFile />
+            )}
           </View>
         )}
 
@@ -108,6 +153,8 @@ export default function FilesScreen() {
               if (file) handleChatStart(file);
             }}
             onDeleteFile={handleDeleteFile}
+            onSaveFile={handleSaveFile}
+            savingFileId={savingFileId}
           />
         )}
       </ScrollView>

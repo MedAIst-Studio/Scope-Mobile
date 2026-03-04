@@ -2,6 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
+import { useFeatureLimit } from '@/features/usage';
+import { errorEventBus } from '@/lib/error-handling/ErrorEventBus';
 import { useRouter } from 'expo-router';
 import { BarChart2, Plus, Search } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
@@ -26,13 +28,16 @@ export const QuizListScreen: React.FC = () => {
   }, [quizzes, searchQuery]);
 
   const handleStartQuiz = (quizId: string) => {
-    router.push({
-      pathname: '/(app)/quiz/[id]',
-      params: { id: quizId },
-    });
+    router.push(`/(app)/quiz/${quizId}`);
   };
 
+  const quizLimit = useFeatureLimit('quiz');
+
   const handleCreateQuiz = () => {
+    if (quizLimit.isAtLimit) {
+      errorEventBus.emit('SHOW_UPGRADE_MODAL', { feature: 'quiz' });
+      return;
+    }
     router.push('/(app)/quiz/create');
   };
 

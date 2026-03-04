@@ -1,7 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
-import { Bell, HelpCircle, Palette } from 'lucide-react-native';
+import { useSubscription } from '@/features/subscription';
+import { useRouter } from 'expo-router';
+import { Activity, Bell, CreditCard, HelpCircle, Palette, RotateCcw, Sparkles } from 'lucide-react-native';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,6 +13,8 @@ import { ThemeSelector } from './ThemeSelector';
 
 export const SettingsScreen: React.FC = () => {
   const { settings, updateTheme, toggleNotifications } = useSettings();
+  const { presentPaywall, presentCustomerCenter, restorePurchases } = useSubscription();
+  const router = useRouter();
 
   const handleHelpPress = () => {
     console.log('Help pressed');
@@ -37,6 +41,39 @@ export const SettingsScreen: React.FC = () => {
               </View>
               <ThemeSelector selectedTheme={settings.theme} onThemeChange={updateTheme} />
             </View>
+          </Card>
+        </View>
+
+        {/* Subscription Group */}
+        <View className="mb-8">
+          <Text className="mb-4 ml-1 text-xs font-bold uppercase tracking-widest text-muted-foreground/40">
+            Abonelik
+          </Text>
+          <Card className="gap-1 rounded-[2.5rem] border-border/20 p-3 shadow-sm">
+            <SettingsItem
+              icon={Sparkles}
+              title="Paketlere Göz At"
+              subtitle="Tüm özelliklerin kilidini aç"
+              onPress={presentPaywall}
+            />
+            <SettingsItem
+              icon={CreditCard}
+              title="Abonelik Yönetimi"
+              subtitle={'Abonelik detaylarınızı görüntüleyin'}
+              onPress={presentCustomerCenter}
+            />
+            <SettingsItem
+              icon={RotateCcw}
+              title="Satın Alımları Geri Yükle"
+              subtitle="Önceki satın alımlarınızı geri yükleyin"
+              onPress={restorePurchases}
+            />
+            <SettingsItem
+              icon={Activity}
+              title="Kullanım Durumu"
+              subtitle="Günlük limitlerini ve kullanımını gör"
+              onPress={() => router.push('/(tabs)/(settings)/usage')}
+            />
           </Card>
         </View>
 

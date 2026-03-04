@@ -176,10 +176,12 @@ export const useSendMessage = () => {
         });
       }
 
-      const currentStreak = queryClient.getQueryData<UsageStatsResponse>(["streak"]);
+      const currentStreak = queryClient.getQueryData<UsageStatsResponse>(["streak", 'user', "usage"]);
+
+      queryClient.invalidateQueries({ queryKey: ['user', 'usage'] });
 
       if (currentStreak && currentStreak.has_played_today === false) {
-        queryClient.invalidateQueries({ queryKey: ['streak'] });
+        queryClient.invalidateQueries({ queryKey: ['streak', 'user', 'usage'] });
       }
     },
     onError: (error: Error, variables, context) => {

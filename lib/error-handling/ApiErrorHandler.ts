@@ -41,6 +41,13 @@ export class ApiErrorHandler {
     }
 
     if (status === 403) {
+      if (data?.feature) {
+        errorEventBus.emit('SHOW_UPGRADE_MODAL', {
+          feature: data.feature,
+        });
+        return;
+      }
+
       errorEventBus.emit('SHOW_TOAST', {
         title: 'Erişim Engellendi',
         message: 'Bu işlemi yapmaya yetkiniz yok.',

@@ -12,21 +12,25 @@ export const quizCreateResponseSchema = z.object({
 });
 
 export const quizResponseSchema = z.object({
+  documentId: z.string(),
   id: z.string(),
   questions: z.array(
     z.object({
-      correct_option: z.string(),
-      no: z.number(),
+      correctOptionLabel: z.string(),
+      explanation: z.string(),
       options: z.array(
         z.object({
+          isCorrect: z.boolean(),
           label: z.string(),
+          no: z.number(),
           text: z.string(),
         })
       ),
-      text: z.string(),
+      questionText: z.string(),
     })
   ),
   title: z.string(),
+  userId: z.string(),
 });
 
 export const attemptRequestSchema = z.object({
@@ -62,16 +66,16 @@ export const attemptDetailResponseSchema = z.object({
 export const attemptsResponseSchema = z.object({
   attempts: z.array(
     z.object({
+      completed_at: z.string(),
       id: z.string(),
       percentage: z.number(),
       quiz_id: z.string(),
       quiz_title: z.string(),
       score: z.number(),
-      time_spent_seconds: z.number(),
       total_questions: z.number(),
     })
   ),
-  total_count: z.number(),
+  count: z.number(),
 });
 
 export const submitResponseSchema = z.object({
@@ -92,9 +96,10 @@ export const submitResponseSchema = z.object({
 
 export const quizzesResponseSchema = z.array(
   z.object({
-    quizId: z.string(),
+    id: z.string(),
     title: z.string(),
     createdAt: z.string(),
+    totalQuestions: z.number(),
   })
 );
 

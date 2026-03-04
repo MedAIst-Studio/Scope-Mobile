@@ -26,3 +26,19 @@ export const userPreferencesRequest = z.object({
 });
 
 export type UserPreferencesRequest = z.infer<typeof userPreferencesRequest>;
+
+// Usage schemas
+export const featureUsageSchema = z.object({
+  limit: z.number(),
+  unlimited: z.boolean(),
+  used: z.number(),
+});
+
+export const usageResponseSchema = z.object({
+  period: z.string(),
+  plan: z.string(),
+  usage: z.record(z.string(), featureUsageSchema),
+});
+
+export type FeatureUsage = z.infer<typeof featureUsageSchema>;
+export type UsageResponse = z.infer<typeof usageResponseSchema>;

@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/api';
 
-import { filesResponseSchema } from '../validation';
+import { filesResponseSchema, saveFileResponseSchema } from '../validation';
 
 export const fileAPI = {
   uploadFile: async (
@@ -43,6 +43,14 @@ export const fileAPI = {
 
   deleteFile: async (fileId: string) => {
     const { error } = await apiClient.delete(`/files/${fileId}`);
+
+    return { error };
+  },
+
+  saveFile: async (fileId: string) => {
+    const { error } = await apiClient.patch(`/files/${fileId}/save`, {}, {
+      response: saveFileResponseSchema,
+    });
 
     return { error };
   },

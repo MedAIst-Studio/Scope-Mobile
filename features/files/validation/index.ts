@@ -8,6 +8,11 @@ export const filesResponseSchema = z
       created_at: z.string(),
       size: z.number(),
       url: z.string().optional(),
+      is_saved: z.boolean().optional(),
     })
   )
   .nullable();
+
+export const saveFileResponseSchema = z.object({
+  is_saved: z.boolean(),
+});

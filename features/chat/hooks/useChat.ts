@@ -1,4 +1,5 @@
 import { useUploadFile } from '@/features/files/hooks';
+import { compressImage } from '@/lib/image/compressImage';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -122,10 +123,11 @@ export const useChat = () => {
         imageUrl = imageAttachment.uri;
       } else {
         try {
+          const compressedUri = await compressImage(imageAttachment.uri);
           const response = await uploadFile({
             file_title: imageAttachment.name,
             file_data: {
-              uri: imageAttachment.uri,
+              uri: compressedUri,
               name: imageAttachment.name,
               type: 'image/jpeg',
             },

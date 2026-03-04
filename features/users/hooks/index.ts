@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import * as SecureStore from 'expo-secure-store';
 import { Alert } from 'react-native';
 
 import { AuthAPI } from '@/features/auth/api';
@@ -6,6 +7,7 @@ import { handleLogout } from '@/features/auth/utils';
 
 import { userAPI } from '../api';
 import { User } from '../types';
+import type { UsageResponse } from '../validations';
 
 // User details query
 export const useUserDetails = () => {
@@ -18,7 +20,7 @@ export const useUserDetails = () => {
         throw new Error(error.message || 'Kullanıcı bilgileri alınamadı');
       }
 
-      return data as User;
+      return data as unknown as User;
     },
     staleTime: Infinity,
     refetchOnMount: false,
@@ -81,12 +83,31 @@ export const useDeleteAccount = () => {
       }
     },
     onSuccess: async () => {
-      await AuthAPI.logout();
+      const refreshToken = await SecureStore.getItemAsync('refreshToken');
+      await AuthAPI.logout(refreshToken || '');
       await handleLogout();
       Alert.alert('Başarılı', 'Hesap başarıyla silindi');
     },
     onError: (error: Error) => {
       Alert.alert('Hata', error.message);
     },
+  });
+};
+
+// Usage query
+export const useUsage = () => {
+  return useQuery<UsageResponse>({
+    queryKey: ['user', 'usage'],
+    queryFn: async (): Promise<UsageResponse> => {
+      const { data, error } = await userAPI.getUsage();
+
+      if (error) {
+        throw new Error(error.message || 'Kullanım bilgileri alınamadı');
+      }
+
+      return data as unknown as UsageResponse;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true,
   });
 };

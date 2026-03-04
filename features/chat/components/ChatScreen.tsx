@@ -11,6 +11,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Icon } from '@/components/ui/icon';
 import { ImageCropper } from '@/features/camera/components/ImageCropper';
+import { useFeatureLimit } from '@/features/usage';
+import { errorEventBus } from '@/lib/error-handling/ErrorEventBus';
+import { compressImage } from '@/lib/image/compressImage';
 import { cn } from '@/lib/utils';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -142,6 +145,8 @@ export const ChatScreen: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const chatId = Array.isArray(id) ? id[0] : id;
   const insets = useSafeAreaInsets();
+  const messageLimit = useFeatureLimit('message');
+  const pdfChatLimit = useFeatureLimit('pdf_chat');
 
   const [renameModalVisible, setRenameModalVisible] = useState(false);
   const [isHeaderMenuVisible, setIsHeaderMenuVisible] = useState(false);
@@ -175,6 +180,16 @@ export const ChatScreen: React.FC = () => {
     uploadFile,
   } = useChat();
 
+  const handleSendWithLimitCheck = () => {
+    const limit = activeFile ? pdfChatLimit : messageLimit;
+    const feature = activeFile ? 'pdf_chat' : 'message';
+    if (limit.isAtLimit) {
+      errorEventBus.emit('SHOW_UPGRADE_MODAL', { feature });
+      return;
+    }
+    handleSendMessage();
+  };
+
   const [croppingImage, setCroppingImage] = useState<string | null>(null);
 
   const handlePickImage = async () => {
@@ -187,17 +202,19 @@ export const ChatScreen: React.FC = () => {
   const handleCropConfirm = async (croppedUri: string) => {
     setCroppingImage(null);
 
+    const compressedUri = await compressImage(croppedUri);
+
     addAttachment({
       type: 'image',
       name: 'chat_image.jpg',
-      uri: croppedUri,
+      uri: compressedUri,
     });
 
     try {
       uploadFile({
         file_title: 'chat_image.jpg',
         file_data: {
-          uri: croppedUri,
+          uri: compressedUri,
           name: 'chat_image.jpg',
           type: 'image/jpeg',
         },
@@ -386,7 +403,7 @@ export const ChatScreen: React.FC = () => {
             isSending={isSending}
             inputHeight={inputHeight}
             onChangeText={setMessage}
-            onSend={handleSendMessage}
+            onSend={handleSendWithLimitCheck}
             onContentSizeChange={handleContentSizeChange}
             onAttachPress={() => setIsAttachMenuVisible(true)}
             onRemoveAttachment={removeAttachment}

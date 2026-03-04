@@ -1,7 +1,8 @@
-import { errorEventBus, ToastPayload } from '@/lib/error-handling/ErrorEventBus';
+import { errorEventBus, ToastPayload, type UpgradeFeature } from '@/lib/error-handling/ErrorEventBus';
 import { useRouter } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Toast } from '../ui/Toast';
+import { UpgradeModal } from '../upgrade-modal';
 
 interface GlobalErrorContextType {
   showToast: (payload: ToastPayload) => void;
@@ -11,6 +12,7 @@ const GlobalErrorContext = createContext<GlobalErrorContextType | undefined>(und
 
 export const GlobalErrorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toast, setToast] = useState<ToastPayload | null>(null);
+  const [upgradeFeature, setUpgradeFeature] = useState<UpgradeFeature | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -22,9 +24,14 @@ export const GlobalErrorProvider: React.FC<{ children: React.ReactNode }> = ({ c
       router.replace('/(auth)/login');
     });
 
+    const unsubUpgrade = errorEventBus.subscribe('SHOW_UPGRADE_MODAL', (payload) => {
+      setUpgradeFeature(payload?.feature ?? null);
+    });
+
     return () => {
       unsubToast();
       unsubRedirect();
+      unsubUpgrade();
     };
   }, [router]);
 
@@ -45,6 +52,10 @@ export const GlobalErrorProvider: React.FC<{ children: React.ReactNode }> = ({ c
           onHide={() => setToast(null)}
         />
       )}
+      <UpgradeModal
+        feature={upgradeFeature}
+        onClose={() => setUpgradeFeature(null)}
+      />
     </GlobalErrorContext.Provider>
   );
 };
@@ -56,3 +67,4 @@ export const useGlobalError = () => {
   }
   return context;
 };
+

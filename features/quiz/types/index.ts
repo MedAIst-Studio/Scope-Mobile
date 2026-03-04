@@ -68,7 +68,8 @@ export interface QuizFilters {
 }
 
 export interface QuizListItem {
-  quizId: string;
+  id: string;
   title: string;
   createdAt: string;
+  totalQuestions: number;
 }
