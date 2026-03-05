@@ -47,6 +47,8 @@ export default {
     plugins: [
       'expo-router',
       'expo-secure-store',
+      '@react-native-firebase/app',
+      '@react-native-firebase/auth',
       [
         '@react-native-google-signin/google-signin',
         {
@@ -65,6 +67,14 @@ export default {
           isAutoInitEnabled: true,
           iosUserTrackingPermission:
             'This identifier will be used to deliver personalized ads to you.',
+        },
+      ],
+      [
+        '@sentry/react-native/expo',
+        {
+          url: 'https://sentry.io/',
+          project: 'react-native',
+          organization: 'kuaru-labs',
         },
       ],
     ],
