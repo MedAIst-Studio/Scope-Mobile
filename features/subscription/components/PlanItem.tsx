@@ -61,66 +61,74 @@ export const PlanItem: React.FC<PlanItemProps> = ({
     <Pressable
       onPress={onPress}
       className={cn(
-        'mb-5 flex-row items-center rounded-[32px] border-2 p-6 transition-all',
+        'relative mb-4 flex-row items-center rounded-3xl border-2 p-4 transition-all',
         isActive
-          ? 'border-primary bg-primary/5 shadow-xl shadow-primary/20'
+          ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
           : 'border-border bg-card'
       )}>
+      {/* Most Popular Absolute Badge */}
+      {isMostPopular && (
+        <View className="absolute -top-3 left-6 rounded-full bg-orange-500 px-3 py-1 shadow-sm shadow-orange-500/30">
+          <Text className="text-[10px] font-black uppercase text-white">En Popüler</Text>
+        </View>
+      )}
+
       {/* Tier Icon Container */}
       <View
         className={cn(
-          'mr-5 h-14 w-14 items-center justify-center rounded-[20px]',
-          isActive ? 'bg-primary shadow-lg shadow-primary/30' : 'bg-muted'
+          'mr-4 h-12 w-12 items-center justify-center rounded-2xl',
+          isActive ? 'bg-primary shadow-md shadow-primary/20' : 'bg-muted'
         )}>
-        <Text className="text-2xl">{icon}</Text>
+        <Text className="text-xl">{icon}</Text>
       </View>
 
       {/* Plan Details */}
       <View className="flex-1">
-        <View className="flex-row flex-wrap items-center">
+        <View className="flex-row items-baseline justify-between">
           <Text
             className={cn(
-              'mb-1 mr-2 text-xl font-bold tracking-tight',
-              isActive ? 'text-foreground' : 'text-foreground'
+              'text-lg font-bold tracking-tight',
+              isActive ? 'text-primary' : 'text-foreground'
             )}>
             {tierName}
           </Text>
-          {isMostPopular && (
-            <View className="mb-1 mr-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-2 py-0.5">
-              <Text className="text-[10px] font-black uppercase text-orange-600">En Popüler</Text>
-            </View>
-          )}
-          {savings && (
-            <View className="mb-1 rounded-full border border-green-500/20 bg-green-500/10 px-2 py-0.5">
-              <Text className="text-[10px] font-black uppercase text-green-600">
-                %{savings} Kazanç
-              </Text>
-            </View>
-          )}
         </View>
-        <View className="flex-row items-center">
-          <Text
-            className="mr-2 flex-shrink text-[14px] font-medium text-muted-foreground"
-            numberOfLines={1}>
-            {description}
-          </Text>
-          {trialDays && (
-            <View className="rounded-md bg-primary/10 px-1.5 py-0.5">
-              <Text className="text-[10px] font-extrabold uppercase text-primary">
-                {trialDays} GÜN DENEME
-              </Text>
-            </View>
-          )}
-        </View>
+
+        <Text
+          className="mt-0.5 text-xs font-medium text-muted-foreground"
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {description}
+        </Text>
+
+        {/* Secondary Badges Row */}
+        {(savings || trialDays) && (
+          <View className="mt-2 flex-row items-center gap-2">
+            {savings && (
+              <View className="rounded-full border border-green-500/20 bg-green-500/10 px-2 py-0.5">
+                <Text className="text-[9px] font-black uppercase text-green-600">
+                  %{savings} Kazanç
+                </Text>
+              </View>
+            )}
+            {trialDays && (
+              <View className="rounded-md bg-primary/10 px-1.5 py-0.5">
+                <Text className="text-[9px] font-extrabold uppercase text-primary">
+                  {trialDays} Gün Deneme
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
       </View>
 
-      {/* Price */}
-      <View className="ml-2 items-end">
-        <Text className={cn('text-2xl font-black', isActive ? 'text-primary' : 'text-foreground')}>
+      {/* Price Section */}
+      <View className="ml-3 items-end">
+        <Text className={cn('text-xl font-black', isActive ? 'text-primary' : 'text-foreground')}>
           {priceString}
         </Text>
         {!id.includes('free') && (
-          <Text className="text-[11px] font-black uppercase tracking-tighter text-muted-foreground">
+          <Text className="text-[10px] font-bold uppercase tracking-tighter text-muted-foreground/60">
             /{period}
           </Text>
         )}

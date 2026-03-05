@@ -6,7 +6,7 @@ export default {
   expo: {
     name: IS_DEV ? 'Scope Dev' : 'Scope',
     slug: 'Scope',
-    version: '1.1.2',
+    version: '1.1.3',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
     scheme: 'scope',
@@ -15,7 +15,7 @@ export default {
     updates: {
       url: 'https://u.expo.dev/2fb3b0c8-e8a1-443b-b4da-7748ebcf38ac',
     },
-    runtimeVersion: '1.1.2',
+    runtimeVersion: '1.1.3',
     splash: {
       image: './assets/images/splash.png',
       resizeMode: 'contain',
@@ -35,7 +35,7 @@ export default {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#1E1E1E',
       },
-      versionCode: 12,
+      versionCode: 13,
       package: IS_DEV ? 'com.kuarulabs.scope.dev' : 'com.kuarulabs.scope',
       permissions: ['com.android.vending.BILLING'],
     },
