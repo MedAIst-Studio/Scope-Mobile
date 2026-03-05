@@ -58,54 +58,54 @@
   }
 
   .dark:root {
-    /* Harmonized Stone Dark Theme */
-    --background: 24 15% 4%;
+    /* Harmonized Stone Dark Theme - Optimized (Less Black) */
+    --background: 24 10% 9%;
     --foreground: 30 10% 98%;
-    --card: 24 10% 6%;
+    --card: 24 10% 12%;
     --card-foreground: 30 10% 98%;
-    --popover: 24 10% 6%;
+    --popover: 24 10% 12%;
     --popover-foreground: 30 10% 98%;
 
     /* Primary */
-    --primary: 15 90% 60%;
+    --primary: 15 90% 64%;
     --primary-foreground: 0 0% 100%;
-    --primary-dark: 15 90% 50%;
+    --primary-dark: 15 90% 55%;
 
-    --secondary: 24 10% 12%;
+    --secondary: 24 10% 18%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 24 10% 12%;
-    --muted-foreground: 30 5% 60%;
+    --muted: 24 10% 18%;
+    --muted-foreground: 30 5% 65%;
 
-    --accent: 24 10% 12%;
+    --accent: 24 10% 18%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 24 10% 15%;
-    --input: 24 10% 15%;
-    --ring: 15 90% 53%;
+    --border: 24 10% 22%;
+    --input: 24 10% 22%;
+    --ring: 15 90% 58%;
 
-    /* Custom Dark Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    /* Custom Dark Shadows - Adjusted for lighter background */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
 
-    --sidebar: 24 10% 6%;
+    --sidebar: 24 10% 10%;
     --sidebar-foreground: 30 10% 98%;
-    --sidebar-primary: 15 90% 60%;
+    --sidebar-primary: 15 90% 64%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 24 10% 16%;
+    --sidebar-accent: 24 10% 18%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 24 10% 16%;
-    --sidebar-ring: 15 90% 60%;
+    --sidebar-border: 24 10% 18%;
+    --sidebar-ring: 15 90% 64%;
 
     /* Charts */
-    --chart-1: 15 90% 60%;
-    --chart-2: 30 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 30 65% 60%;
-    --chart-5: 15 75% 55%;
+    --chart-1: 15 90% 64%;
+    --chart-2: 30 60% 50%;
+    --chart-3: 30 80% 60%;
+    --chart-4: 30 65% 65%;
+    --chart-5: 15 75% 60%;
   }
 }

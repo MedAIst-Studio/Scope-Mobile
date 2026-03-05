@@ -89,7 +89,7 @@ export const MathMarkdownRenderer: React.FC<MathMarkdownRendererProps> = ({
                   <div style="
                     color: ${textColor};
                     text-align: center;
-                    font-size: 14px;
+                    font-size: 15px;
                     overflow-x: auto;
                   ">
                     ${part.content}
@@ -116,7 +116,7 @@ export const MathMarkdownRenderer: React.FC<MathMarkdownRendererProps> = ({
                     <div style="
                       color: ${textColor}; 
                       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', sans-serif;
-                      font-size: 14px;
+                      font-size: 15px;
                       line-height: 1.6;
                       overflow-x: auto;
                     ">
@@ -141,8 +141,8 @@ export const MathMarkdownRenderer: React.FC<MathMarkdownRendererProps> = ({
                     ...styles,
                     body: {
                       color: textColor,
-                      fontSize: 16,
-                      lineHeight: 23,
+                      fontSize: 17,
+                      lineHeight: 25,
                     },
                   } as any
                 }>

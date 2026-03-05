@@ -2,13 +2,14 @@ import { Platform, StyleSheet } from 'react-native';
 
 export const getMarkdownStyles = (textColor: string, isUser: boolean, isDark: boolean) => {
   return StyleSheet.create({
-    body: { color: textColor, fontSize: 16, lineHeight: 24 },
+    body: { color: textColor, fontSize: 17, lineHeight: 26 },
     paragraph: { marginVertical: 2 },
     strong: { fontWeight: 'bold', color: textColor },
     em: { fontStyle: 'italic', color: textColor },
-    heading1: { fontSize: 22, fontWeight: 'bold', marginVertical: 8, color: textColor },
-    heading2: { fontSize: 18, fontWeight: 'bold', marginVertical: 6, color: textColor },
-    heading3: { fontSize: 16, fontWeight: 'bold', marginVertical: 4, color: textColor },
+    heading1: { fontSize: 24, fontWeight: 'bold', marginVertical: 10, color: textColor },
+    heading2: { fontSize: 20, fontWeight: 'bold', marginVertical: 8, color: textColor },
+    heading3: { fontSize: 18, fontWeight: 'bold', marginVertical: 6, color: textColor },
+
     list_item: { flexDirection: 'row', alignItems: 'flex-start', marginVertical: 2 },
     bullet_list: { marginVertical: 4 },
     ordered_list: { marginVertical: 4 },
