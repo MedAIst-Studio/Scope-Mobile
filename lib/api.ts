@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react-native';
 import axios, {
   type AxiosError,
   type AxiosInstance,
@@ -63,6 +64,9 @@ axiosInstance.interceptors.request.use(
   },
   (error: any) => {
     logger.error('Request interceptor error', error);
+    Sentry.captureException(error, {
+      tags: { source: 'api_request_interceptor' },
+    });
 
     return Promise.reject(createApiError(error, 'REQUEST_INTERCEPTOR_ERROR'));
   }
@@ -153,6 +157,9 @@ axiosInstance.interceptors.response.use(
         isRefreshing = false;
 
         logger.error('Token refresh failed', refreshError);
+        Sentry.captureException(refreshError, {
+          tags: { source: 'token_refresh' },
+        });
 
         await SecureStore.deleteItemAsync('accessToken');
         await SecureStore.deleteItemAsync('refreshToken');
@@ -201,8 +208,17 @@ axiosInstance.interceptors.response.use(
 
     try {
       logger.error('API Error', apiError);
-    } catch (e) {
-    }
+      Sentry.captureException(error, {
+        tags: { source: 'api_response_interceptor' },
+        extra: {
+          apiError,
+          url: originalRequest?.url,
+          method: originalRequest?.method,
+          requestId: originalRequest?.requestId,
+          status: error.response?.status,
+        },
+      });
+    } catch (e) {}
 
     return Promise.reject(apiError);
   }
@@ -311,6 +327,13 @@ class ApiClient {
         error instanceof ValidationError
           ? createApiError(error, 'VALIDATION_ERROR')
           : createApiError(error, 'API_CLIENT_ERROR');
+
+      if (!(error instanceof ValidationError)) {
+        Sentry.captureException(error, {
+          tags: { source: 'api_client_request' },
+          extra: { url, method },
+        });
+      }
 
       return {
         data: null,
