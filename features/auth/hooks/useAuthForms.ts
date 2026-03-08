@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import * as Sentry from '@sentry/react-native';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AccessToken, LoginManager, Settings } from 'react-native-fbsdk-next';
@@ -111,6 +112,7 @@ export function useSocialAuth(setIsLoading: (loading: boolean) => void) {
         console.log('Play services not available or outdated');
       } else {
         console.error('Google Sign-In error:', error);
+        Sentry.captureException(error, { tags: { source: 'auth_google_signin' } });
       }
     } finally {
       setIsLoading(false);
@@ -138,6 +140,7 @@ export function useSocialAuth(setIsLoading: (loading: boolean) => void) {
       }
     } catch (error) {
       console.error('Facebook Sign-In error:', error);
+      Sentry.captureException(error, { tags: { source: 'auth_facebook_signin' } });
     } finally {
       setIsLoading(false);
     }

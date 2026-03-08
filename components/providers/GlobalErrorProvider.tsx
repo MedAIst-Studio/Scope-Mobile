@@ -1,4 +1,9 @@
-import { errorEventBus, ToastPayload, type UpgradeFeature } from '@/lib/error-handling/ErrorEventBus';
+import {
+  errorEventBus,
+  ToastPayload,
+  type UpgradeFeature,
+} from '@/lib/error-handling/ErrorEventBus';
+import * as Sentry from '@sentry/react-native';
 import { useRouter } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Toast } from '../ui/Toast';
@@ -37,6 +42,14 @@ export const GlobalErrorProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const showToast = (payload: ToastPayload) => {
     setToast(payload);
+
+    if (payload.type === 'error') {
+      Sentry.captureMessage(payload.title || 'Error Toast', {
+        level: 'warning',
+        tags: { source: 'global_error_provider_toast' },
+        extra: { message: payload.message },
+      });
+    }
   };
 
   return (
@@ -52,10 +65,7 @@ export const GlobalErrorProvider: React.FC<{ children: React.ReactNode }> = ({ c
           onHide={() => setToast(null)}
         />
       )}
-      <UpgradeModal
-        feature={upgradeFeature}
-        onClose={() => setUpgradeFeature(null)}
-      />
+      <UpgradeModal feature={upgradeFeature} onClose={() => setUpgradeFeature(null)} />
     </GlobalErrorContext.Provider>
   );
 };
@@ -67,4 +77,3 @@ export const useGlobalError = () => {
   }
   return context;
 };
-

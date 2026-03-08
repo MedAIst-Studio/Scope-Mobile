@@ -6,6 +6,8 @@ export enum LogLevel {
   ERROR = 3,
 }
 
+import * as Sentry from '@sentry/react-native';
+
 export interface LogEntry {
   level: LogLevel;
   message: string;
@@ -228,8 +230,15 @@ class Logger {
 
   error(message: string, error?: Error | any) {
     const errorObj = error instanceof Error ? error : new Error(String(error));
-
     this.log(LogLevel.ERROR, message, error, errorObj);
+
+    // Explicitly add breadcrumb BEFORE capturing the exception for context
+    Sentry.addBreadcrumb({ category: 'error', message, data: error, level: 'error' });
+
+    // As long as the error isn't explicitly ignored by Api Error Handler earlier, we capture it.
+    if (!message.includes('API Error')) {
+      Sentry.captureException(errorObj, { tags: { source: 'logger_error' }, extra: { message } });
+    }
   }
 
   generateRequestId(): string {
@@ -249,9 +258,7 @@ class Logger {
 
     if (isDev) {
       // Detaylı log - Development
-      console.group(
-        `%c→ ${request.method} %c${request.url}`,
-      );
+      console.group(`${request.method} ${request.url}`);
 
       console.log('request.id', request.id);
 
@@ -285,10 +292,7 @@ class Logger {
         }
       }
 
-      console.log(
-        'Timestamp:',
-        request.timestamp.toLocaleTimeString()
-      );
+      console.log('Timestamp:', request.timestamp.toLocaleTimeString());
       console.groupEnd();
     } else {
       // Basit log - Production
@@ -314,7 +318,7 @@ class Logger {
       const statusIcon = isError ? '❌' : isSuccess ? '✅' : '⚠️';
 
       console.group(
-        `${statusIcon} ${response.status} ${response.duration}ms ${requestInfo?.method || ''} ${requestInfo?.url || ''}`,
+        `${statusIcon} ${response.status} ${response.duration}ms ${requestInfo?.method || ''} ${requestInfo?.url || ''}`
       );
 
       console.log('Request ID:', response.requestId);
@@ -334,21 +338,12 @@ class Logger {
 
       // Performance warning
       if (response.duration > 3000) {
-        console.warn(
-          '🐌 Slow Response',
-          `${response.duration}ms`
-        );
+        console.warn('🐌 Slow Response', `${response.duration}ms`);
       } else if (response.duration > 1000) {
-        console.warn(
-          '⏱️ Moderate Response',
-          `${response.duration}ms`
-        );
+        console.warn('⏱️ Moderate Response', `${response.duration}ms`);
       }
 
-      console.log(
-        'Timestamp:',
-        response.timestamp.toLocaleTimeString()
-      );
+      console.log('Timestamp:', response.timestamp.toLocaleTimeString());
       console.groupEnd();
     } else {
       // Basit log - Production

@@ -7,9 +7,9 @@ import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
+import React from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import 'react-native-reanimated';
-import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 export { ErrorBoundary } from 'expo-router';
 
 import { AuthGuard, AuthProvider } from '@/features/auth';
@@ -17,8 +17,20 @@ import { RevenueCatProvider } from '@/features/subscription';
 import { UsageProvider } from '@/features/usage';
 
 import { UpdateLockModal } from '@/components/update-lock-modal';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
+
+const routingInstrumentation = Sentry.reactNavigationIntegration({
+  enableTimeToInitialDisplay: true,
+});
 
 Sentry.init({
   dsn: 'https://e7c2e4e3685a2fe1ed37817059eb445b@o4510993796825088.ingest.de.sentry.io/4510993798201424',
@@ -33,27 +45,24 @@ Sentry.init({
   // Configure Session Replay
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1,
-  integrations: [Sentry.mobileReplayIntegration()],
+  integrations: [Sentry.mobileReplayIntegration(), routingInstrumentation],
+  tracesSampleRate: 1.0,
 
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
   // spotlight: __DEV__,
 });
 
-configureReanimatedLogger({
-  level: ReanimatedLogLevel.warn,
-  strict: false,
-});
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
-});
+import { useNavigationContainerRef } from 'expo-router';
 
 export default Sentry.wrap(function RootLayout() {
   const { colorScheme } = useColorScheme();
+  const ref = useNavigationContainerRef();
+
+  React.useEffect(() => {
+    if (ref) {
+      routingInstrumentation.registerNavigationContainer(ref);
+    }
+  }, [ref]);
 
   return (
     <QueryClientProvider client={queryClient}>

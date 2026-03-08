@@ -9,6 +9,8 @@ import { userAPI } from '../api';
 import { User } from '../types';
 import type { UsageResponse } from '../validations';
 
+import * as Sentry from '@sentry/react-native';
+
 // User details query
 export const useUserDetails = () => {
   return useQuery<User>({
@@ -18,6 +20,14 @@ export const useUserDetails = () => {
 
       if (error) {
         throw new Error(error.message || 'Kullanıcı bilgileri alınamadı');
+      }
+
+      if (data?.id) {
+        Sentry.setUser({
+          id: data.id,
+          email: data.email,
+          username: data.username,
+        });
       }
 
       return data as unknown as User;
@@ -102,7 +112,8 @@ export const useUsage = () => {
       const { data, error } = await userAPI.getUsage();
 
       if (error) {
-        throw new Error(error.message || 'Kullanım bilgileri alınamadı');
+        const errorObj = new Error(error.message || 'Kullanım bilgileri alınamadı');
+        throw errorObj;
       }
 
       return data as unknown as UsageResponse;
