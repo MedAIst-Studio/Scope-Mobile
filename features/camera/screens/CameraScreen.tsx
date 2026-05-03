@@ -12,7 +12,9 @@ import { RefreshCw, X } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { GalleryPickerButton } from '../components/GalleryPickerButton';
 import { ImageCropper } from '../components/ImageCropper';
+import { useGalleryPicker } from '../hooks/useGalleryPicker';
 
 const AUTO_SEND_PREF_KEY = 'camera.auto_send_enabled';
 
@@ -26,6 +28,10 @@ export default function CameraScreen() {
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
   const ocrLimit = useFeatureLimit('ocr');
+
+  const { openGallery, isLoading: isGalleryLoading } = useGalleryPicker({
+    onImageSelected: (uri) => setCroppingImage(uri),
+  });
 
   useEffect(() => {
     SecureStore.getItemAsync(AUTO_SEND_PREF_KEY).then((value) => {
@@ -150,11 +156,7 @@ export default function CameraScreen() {
             </View>
 
             <View className="flex-row items-center justify-between bg-black/20 p-8">
-              <TouchableOpacity
-                onPress={toggleCameraFacing}
-                className="rounded-full bg-black/40 p-3">
-                <Icon as={RefreshCw} color="white" size={24} />
-              </TouchableOpacity>
+              <GalleryPickerButton onPress={openGallery} isLoading={isGalleryLoading} />
 
               <TouchableOpacity
                 onPress={takePicture}
@@ -162,7 +164,11 @@ export default function CameraScreen() {
                 <View className="h-16 w-16 rounded-full border-2 border-black bg-white" />
               </TouchableOpacity>
 
-              <View className="w-12" />
+              <TouchableOpacity
+                onPress={toggleCameraFacing}
+                className="rounded-full bg-black/40 p-3">
+                <Icon as={RefreshCw} color="white" size={24} />
+              </TouchableOpacity>
             </View>
           </SafeAreaView>
         </CameraView>
