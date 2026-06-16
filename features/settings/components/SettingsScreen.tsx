@@ -3,7 +3,15 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { useSubscription } from '@/features/subscription';
 import { useRouter } from 'expo-router';
-import { Activity, Bell, CreditCard, HelpCircle, Palette, RotateCcw, Sparkles } from 'lucide-react-native';
+import {
+  Activity,
+  Bell,
+  CreditCard,
+  HelpCircle,
+  Palette,
+  RotateCcw,
+  Sparkles,
+} from 'lucide-react-native';
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -130,7 +138,7 @@ export const SettingsScreen: React.FC = () => {
 
         <View className="mb-12 items-center">
           <Text className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/20">
-            Scope Version 1.1.1
+            Scope Version 1.1.3
           </Text>
         </View>
       </ScrollView>
