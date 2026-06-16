@@ -10,9 +10,13 @@ import {
   Image as ImageIcon,
   MessageCircle,
   Trash2,
+  Youtube,
+  FileText as FileTextIcon,
+  Sparkles,
 } from 'lucide-react-native';
 import React from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
+import { useExtractNotes } from '../hooks';
 import { File as FileType } from '../types';
 
 interface FileCardProps {
@@ -20,12 +24,21 @@ interface FileCardProps {
   onChatStart: (fileId: string) => void;
   onDelete?: (fileId: string) => void;
   onPreview?: (file: FileType) => void;
+  onViewNotes?: (file: FileType) => void;
   onSave?: (fileId: string) => void;
   isSaving?: boolean;
 }
 
-const getFileInfo = (fileName: string) => {
-  const ext = fileName.toLowerCase().split('.').pop() || '';
+const getFileInfo = (file: FileType) => {
+  const ext = file.title.toLowerCase().split('.').pop() || '';
+
+  if (file.file_type === 'youtube') {
+    return {
+      icon: Youtube,
+      bgColor: 'bg-red-500/10',
+      iconColor: 'text-red-500',
+    };
+  }
 
   if (['pdf'].includes(ext)) {
     return {
@@ -55,6 +68,7 @@ export const FileCard: React.FC<FileCardProps> = ({
   onChatStart,
   onDelete,
   onPreview,
+  onViewNotes,
   onSave,
   isSaving,
 }) => {
@@ -65,18 +79,22 @@ export const FileCard: React.FC<FileCardProps> = ({
     year: 'numeric',
   });
 
-  const { icon, bgColor, iconColor } = getFileInfo(file.title);
+  const { icon, bgColor, iconColor } = getFileInfo(file);
 
-  const isImage = ['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(
+  const isImage = file.file_type === 'image' || ['jpg', 'jpeg', 'png', 'webp', 'heic'].includes(
     file.title.toLowerCase().split('.').pop() || ''
   );
+  const isYouTube = file.file_type === 'youtube';
   const isSaved = file.is_saved ?? false;
+  const hasExtractedText = !!file.extracted_text;
+
+  const { mutate: extractNotes, isPending: isExtracting } = useExtractNotes();
 
   return (
     <Card className="mb-4">
       <CardHeader className="flex-row items-center gap-4">
         <TouchableOpacity
-          activeOpacity={isImage ? 0.7 : 1}
+          activeOpacity={isImage || isYouTube ? 0.7 : 1}
           onPress={() => isImage && onPreview?.(file)}
           className={cn(
             'h-14 w-14 items-center justify-center overflow-hidden rounded-2xl',
@@ -84,6 +102,8 @@ export const FileCard: React.FC<FileCardProps> = ({
           )}>
           {isImage && file.url ? (
             <Image source={{ uri: file.url }} className="h-full w-full" resizeMode="cover" />
+          ) : isYouTube && file.thumbnail_url ? (
+            <Image source={{ uri: file.thumbnail_url }} className="h-full w-full" resizeMode="cover" />
           ) : (
             <Icon as={icon} size={28} className={iconColor} />
           )}
@@ -100,7 +120,7 @@ export const FileCard: React.FC<FileCardProps> = ({
           </View>
         </View>
 
-        {onDelete && (
+        {onDelete ? (
           <Button
             size="icon-sm"
             variant="ghost"
@@ -108,18 +128,16 @@ export const FileCard: React.FC<FileCardProps> = ({
             className="h-10 w-10">
             <Icon as={Trash2} size={20} className="text-destructive/60" />
           </Button>
-        )}
+        ) : null}
       </CardHeader>
 
       <CardContent className="flex-row items-center justify-between pt-0">
-        <View className="flex-1">
+        <View className="flex-1 flex-row gap-2">
           {isImage && !isSaved ? (
-            <>
-              <Badge variant="outline" className="self-start border-amber-500/40 bg-amber-500/10">
-                <View className="mr-1.5 h-1.5 w-1.5 rounded-full bg-amber-500" />
-                <Text className="text-[10px] font-bold text-amber-600 uppercase">Geçici Görsel</Text>
-              </Badge>
-            </>
+            <Badge variant="outline" className="self-start border-amber-500/40 bg-amber-500/10">
+              <View className="mr-1.5 h-1.5 w-1.5 rounded-full bg-amber-500" />
+              <Text className="text-[10px] font-bold text-amber-600 uppercase">Geçici Görsel</Text>
+            </Badge>
           ) : (
             <Badge
               variant="default"
@@ -142,31 +160,60 @@ export const FileCard: React.FC<FileCardProps> = ({
               </Text>
             </Badge>
           )}
+
+          {(hasExtractedText || isYouTube) ? (
+            <TouchableOpacity onPress={() => onViewNotes && onViewNotes(file)}>
+              <Badge variant="outline" className="self-start border-purple-500/40 bg-purple-500/10">
+                <Icon as={FileTextIcon} size={10} className="mr-1 text-purple-600" />
+                <Text className="text-[10px] font-bold text-purple-600 uppercase">
+                  {isYouTube ? 'Transkripti Gör' : 'Notları Gör'}
+                </Text>
+              </Badge>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </CardContent>
 
-      <CardFooter className="flex-row gap-2 pt-2">
-        {isImage && onSave && (
-          <Button
-            onPress={() => onSave(file.id)}
-            disabled={isSaving}
-            variant="outline"
-            className={cn(
-              "flex-1 h-11 flex-row items-center justify-center",
-              isSaved ? "border-destructive/40 bg-destructive/5" : "border-primary/40 bg-primary/5"
-            )}>
-            <Text className={cn("text-xs font-semibold", isSaved ? "text-destructive" : "text-primary")}>
-              {isSaving ? '...' : (isSaved ? 'Kaydı Kaldır' : 'Kaydet')}
-            </Text>
-          </Button>
-        )}
-        <Button
-          onPress={() => onChatStart(file.id)}
-          className={cn('h-11 flex-row items-center justify-center gap-2', isImage ? 'flex-[2]' : 'w-full')}
-          size="default">
-          <Icon as={MessageCircle} size={18} className="text-primary-foreground" />
-          <Text className="text-sm font-bold text-primary-foreground">Sohbeti Başlat</Text>
-        </Button>
+      <CardFooter className="flex-col gap-2 pt-2">
+        <View className="flex-row w-full gap-2">
+          {(isImage && onSave) ? (
+            <Button
+              onPress={() => onSave(file.id)}
+              disabled={isSaving}
+              variant="outline"
+              className={cn(
+                "flex-1 h-11 flex-row items-center justify-center",
+                isSaved ? "border-destructive/40 bg-destructive/5" : "border-primary/40 bg-primary/5"
+              )}>
+              <Text className={cn("text-xs font-semibold", isSaved ? "text-destructive" : "text-primary")}>
+                {isSaving ? '...' : (isSaved ? 'Kaydı Kaldır' : 'Kaydet')}
+              </Text>
+            </Button>
+          ) : null}
+
+          {(isImage && !hasExtractedText && isSaved) ? (
+            <Button
+              onPress={() => extractNotes(file.id)}
+              disabled={isExtracting}
+              variant="outline"
+              className="flex-1 h-11 flex-row items-center justify-center border-purple-500/40 bg-purple-500/5">
+              <Icon as={Sparkles} size={16} className="text-purple-600 mr-1.5" />
+              <Text className="text-xs font-semibold text-purple-600">
+                {isExtracting ? 'Çıkarılıyor...' : 'Not Çıkar'}
+              </Text>
+            </Button>
+          ) : null}
+
+          {(!isImage || (isImage && hasExtractedText) || (isImage && !isSaved)) ? (
+            <Button
+              onPress={() => onChatStart(file.id)}
+              className="flex-1 h-11 flex-row items-center justify-center gap-2"
+              size="default">
+              <Icon as={MessageCircle} size={18} className="text-primary-foreground" />
+              <Text className="text-sm font-bold text-primary-foreground">Sohbeti Başlat</Text>
+            </Button>
+          ) : null}
+        </View>
       </CardFooter>
     </Card>
   );

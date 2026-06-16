@@ -19,7 +19,7 @@ export default function FilesScreen() {
   const { mutate: deleteFile } = useDeleteFile();
   const { mutate: saveFile } = useSaveFile();
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'images' | 'documents'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'images' | 'documents' | 'youtube'>('all');
   const [savingFileId, setSavingFileId] = useState<string | null>(null);
   const router = useRouter();
   const fileUploadLimit = useFeatureLimit('file_upload');
@@ -37,8 +37,9 @@ export default function FilesScreen() {
   const filteredFiles =
     files?.filter((f) => {
       const matchesSearch = f.title.toLowerCase().includes(searchQuery.toLowerCase());
-      if (filterType === 'images') return matchesSearch && isImage(f.title);
-      if (filterType === 'documents') return matchesSearch && isDocument(f.title);
+      if (filterType === 'images') return matchesSearch && f.file_type === 'image';
+      if (filterType === 'documents') return matchesSearch && f.file_type === 'pdf';
+      if (filterType === 'youtube') return matchesSearch && f.file_type === 'youtube';
       return matchesSearch;
     }) || [];
 
@@ -82,6 +83,7 @@ export default function FilesScreen() {
             { id: 'all', label: 'Tümü' },
             { id: 'images', label: 'Resimler' },
             { id: 'documents', label: 'Belgeler' },
+            { id: 'youtube', label: 'Videolar' },
           ].map((tab) => (
             <TouchableOpacity
               key={tab.id}

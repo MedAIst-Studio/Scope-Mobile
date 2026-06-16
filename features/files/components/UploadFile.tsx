@@ -6,6 +6,7 @@ import { CloudUpload, Upload } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
 import { useUploadFile } from '../hooks';
+import { YouTubeInput } from './YouTubeInput';
 
 export const UploadFile: React.FC = () => {
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
@@ -37,6 +38,7 @@ export const UploadFile: React.FC = () => {
   };
 
   return (
+    <>
     <View className="mb-6 items-center justify-center rounded-[2rem] border-2 border-dashed border-border/40 bg-card/50 p-6">
       <View className="mb-4 h-20 w-20 items-center justify-center rounded-3xl bg-primary/10">
         {isUploading ? (
@@ -68,5 +70,7 @@ export const UploadFile: React.FC = () => {
         PDF, FOTOĞRAF • MAKSİMUM 10MB
       </Text>
     </View>
+    <YouTubeInput />
+    </>
   );
 };

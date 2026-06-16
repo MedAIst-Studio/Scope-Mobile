@@ -142,3 +142,70 @@ export const useSaveFile = () => {
     },
   });
 };
+
+export const useSubmitYouTubeLink = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (url: string) => {
+      const { data, error } = await fileAPI.submitYouTubeLink(url);
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FILES_QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: ['user', 'usage'] });
+    },
+    onError: (error: Error) => {
+      Alert.alert('Hata', error.message || 'YouTube linki eklenirken bir hata oluştu.');
+    },
+  });
+};
+
+export const useExtractNotes = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (fileId: string) => {
+      const { data, error } = await fileAPI.extractNotes(fileId);
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FILES_QUERY_KEY] });
+    },
+    onError: (error: Error) => {
+      Alert.alert('Hata', error.message || 'Not çıkarılırken bir hata oluştu.');
+    },
+  });
+};
+
+export const useUpdateNotes = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ fileId, text }: { fileId: string; text: string }) => {
+      const { data, error } = await fileAPI.updateNotes(fileId, text);
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [FILES_QUERY_KEY] });
+    },
+    onError: (error: Error) => {
+      Alert.alert('Hata', error.message || 'Not güncellenirken bir hata oluştu.');
+    },
+  });
+};

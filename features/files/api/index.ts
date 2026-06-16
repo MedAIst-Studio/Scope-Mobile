@@ -48,10 +48,38 @@ export const fileAPI = {
   },
 
   saveFile: async (fileId: string) => {
-    const { error } = await apiClient.patch(`/files/${fileId}/save`, {}, {
-      response: saveFileResponseSchema,
-    });
+    const { error } = await apiClient.patch(
+      `/files/${fileId}/save`,
+      {},
+      {
+        response: saveFileResponseSchema,
+      }
+    );
 
     return { error };
+  },
+
+  submitYouTubeLink: async (url: string) => {
+    const { data, error } = await apiClient.request({
+      url: '/files/youtube',
+      method: 'POST',
+      data: { url },
+      timeout: 5 * 60 * 1000, // 5 minutes
+    });
+    return { data, error };
+  },
+
+  extractNotes: async (fileId: string) => {
+    const { data, error } = await apiClient.request({
+      url: `/files/${fileId}/extract-notes`,
+      method: 'POST',
+      timeout: 5 * 60 * 1000, // 5 minutes
+    });
+    return { data, error };
+  },
+
+  updateNotes: async (fileId: string, text: string) => {
+    const { data, error } = await apiClient.put(`/files/${fileId}/notes`, { text });
+    return { data, error };
   },
 };

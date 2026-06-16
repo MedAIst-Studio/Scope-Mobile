@@ -4,6 +4,7 @@ import { ScrollView, View } from 'react-native';
 import { File } from '../types';
 import { FileCard } from './FileCard';
 import { ImagePreviewModal } from './ImagePreviewModal';
+import { NotesViewerModal } from './NotesViewerModal';
 
 interface FilesListProps {
   files: File[];
@@ -21,6 +22,7 @@ export const FilesList: React.FC<FilesListProps> = ({
   savingFileId,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [viewingNotesFile, setViewingNotesFile] = useState<File | null>(null);
 
   if (files.length === 0) {
     return (
@@ -50,6 +52,7 @@ export const FilesList: React.FC<FilesListProps> = ({
             onSave={onSaveFile}
             isSaving={savingFileId === file.id}
             onPreview={setSelectedFile}
+            onViewNotes={setViewingNotesFile}
           />
         ))}
       </ScrollView>
@@ -60,6 +63,19 @@ export const FilesList: React.FC<FilesListProps> = ({
         imageUrl={selectedFile?.url}
         title={selectedFile?.title || ''}
         size={selectedFile?.size}
+      />
+
+      <NotesViewerModal
+        isVisible={!!viewingNotesFile}
+        onClose={() => setViewingNotesFile(null)}
+        fileId={viewingNotesFile?.id || ''}
+        initialText={viewingNotesFile?.extracted_text || ''}
+        title={viewingNotesFile?.title || ''}
+        onNotesUpdated={(newText) => {
+          if (viewingNotesFile) {
+            viewingNotesFile.extracted_text = newText;
+          }
+        }}
       />
     </>
   );
