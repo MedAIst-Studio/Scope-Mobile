@@ -5,6 +5,8 @@ import { Edit2, Save, X } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { useUpdateNotes } from '../hooks';
+import { MathMarkdownRenderer } from '@/features/chat/components/MathMarkdownRenderer';
+import { useColorScheme } from 'nativewind';
 
 interface NotesViewerModalProps {
   isVisible: boolean;
@@ -26,6 +28,8 @@ export const NotesViewerModal: React.FC<NotesViewerModalProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(initialText);
   const { mutate: updateNotes, isPending } = useUpdateNotes();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   useEffect(() => {
     if (isVisible) {
@@ -90,9 +94,15 @@ export const NotesViewerModal: React.FC<NotesViewerModalProps> = ({
           />
         ) : (
           <ScrollView className="flex-1 p-4">
-            <Text className="pb-8 text-base leading-relaxed text-foreground">
-              {text || 'Henüz not bulunmuyor.'}
-            </Text>
+            {text ? (
+              <View className="pb-8">
+                <MathMarkdownRenderer content={text} isUser={false} isDark={isDark} />
+              </View>
+            ) : (
+              <Text className="pb-8 text-base leading-relaxed text-foreground">
+                Henüz not bulunmuyor.
+              </Text>
+            )}
           </ScrollView>
         )}
       </KeyboardAvoidingView>

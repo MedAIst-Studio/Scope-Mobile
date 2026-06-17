@@ -125,10 +125,11 @@ export default function FilesScreen() {
               <TouchableOpacity
                 onPress={() => errorEventBus.emit('SHOW_UPGRADE_MODAL', { feature: 'file_upload' })}
                 className="items-center justify-center rounded-2xl border border-dashed border-border bg-muted/30 py-8"
-                activeOpacity={0.7}
-              >
+                activeOpacity={0.7}>
                 <Icon as={Upload} size={28} className="mb-2 text-muted-foreground" />
-                <Text className="text-sm text-muted-foreground">Dosya yükleme limitine ulaştınız</Text>
+                <Text className="text-sm text-muted-foreground">
+                  Dosya yükleme limitine ulaştınız
+                </Text>
               </TouchableOpacity>
             ) : (
               <UploadFile />

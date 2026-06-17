@@ -161,16 +161,6 @@ export const FileCard: React.FC<FileCardProps> = ({
             </Badge>
           )}
 
-          {(hasExtractedText || isYouTube) ? (
-            <TouchableOpacity onPress={() => onViewNotes && onViewNotes(file)}>
-              <Badge variant="outline" className="self-start border-purple-500/40 bg-purple-500/10">
-                <Icon as={FileTextIcon} size={10} className="mr-1 text-purple-600" />
-                <Text className="text-[10px] font-bold text-purple-600 uppercase">
-                  {isYouTube ? 'Transkripti Gör' : 'Notları Gör'}
-                </Text>
-              </Badge>
-            </TouchableOpacity>
-          ) : null}
         </View>
       </CardContent>
 
@@ -200,6 +190,18 @@ export const FileCard: React.FC<FileCardProps> = ({
               <Icon as={Sparkles} size={16} className="text-purple-600 mr-1.5" />
               <Text className="text-xs font-semibold text-purple-600">
                 {isExtracting ? 'Çıkarılıyor...' : 'Not Çıkar'}
+              </Text>
+            </Button>
+          ) : null}
+
+          {(hasExtractedText || isYouTube) ? (
+            <Button
+              onPress={() => onViewNotes && onViewNotes(file)}
+              variant="outline"
+              className="flex-1 h-11 flex-row items-center justify-center border-purple-500/40 bg-purple-500/5">
+              <Icon as={FileTextIcon} size={16} className="text-purple-600 mr-1.5" />
+              <Text className="text-xs font-semibold text-purple-600">
+                {isYouTube ? 'Transkripti Gör' : 'Notları Gör'}
               </Text>
             </Button>
           ) : null}
