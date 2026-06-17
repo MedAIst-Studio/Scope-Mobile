@@ -6,6 +6,7 @@ import { CloudUpload, Upload } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
 import { useUploadFile } from '../hooks';
+import { AudioRecorder } from './AudioRecorder';
 import { YouTubeInput } from './YouTubeInput';
 
 export const UploadFile: React.FC = () => {
@@ -14,7 +15,7 @@ export const UploadFile: React.FC = () => {
   const handleFileUpload = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: ['application/pdf', 'image/*'],
+        type: ['application/pdf', 'image/*', 'audio/*'],
         copyToCacheDirectory: true,
       });
 
@@ -29,7 +30,11 @@ export const UploadFile: React.FC = () => {
           name: file.name,
           type:
             file.mimeType ||
-            (file.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/jpeg'),
+            (file.name.toLowerCase().endsWith('.pdf') 
+              ? 'application/pdf' 
+              : file.name.match(/\.(m4a|mp3|wav|webm|ogg)$/i) 
+                ? 'audio/m4a' 
+                : 'image/jpeg'),
         },
       });
     } catch (error) {
@@ -67,9 +72,10 @@ export const UploadFile: React.FC = () => {
       </Button>
 
       <Text className="mt-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
-        PDF, FOTOĞRAF • MAKSİMUM 10MB
+        PDF, FOTOĞRAF, SES • MAKSİMUM 25MB
       </Text>
     </View>
+    <AudioRecorder />
     <YouTubeInput />
     </>
   );

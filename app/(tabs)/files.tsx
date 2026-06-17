@@ -19,7 +19,7 @@ export default function FilesScreen() {
   const { mutate: deleteFile } = useDeleteFile();
   const { mutate: saveFile } = useSaveFile();
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'images' | 'documents' | 'youtube'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'images' | 'documents' | 'youtube' | 'audio'>('all');
   const [savingFileId, setSavingFileId] = useState<string | null>(null);
   const router = useRouter();
   const fileUploadLimit = useFeatureLimit('file_upload');
@@ -40,6 +40,7 @@ export default function FilesScreen() {
       if (filterType === 'images') return matchesSearch && f.file_type === 'image';
       if (filterType === 'documents') return matchesSearch && f.file_type === 'pdf';
       if (filterType === 'youtube') return matchesSearch && f.file_type === 'youtube';
+      if (filterType === 'audio') return matchesSearch && f.file_type === 'audio';
       return matchesSearch;
     }) || [];
 
@@ -78,12 +79,13 @@ export default function FilesScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
 
-        <View className="mb-6 flex-row gap-2">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-6 flex-row gap-2">
           {[
             { id: 'all', label: 'Tümü' },
             { id: 'images', label: 'Resimler' },
             { id: 'documents', label: 'Belgeler' },
             { id: 'youtube', label: 'Videolar' },
+            { id: 'audio', label: 'Sesler' },
           ].map((tab) => (
             <TouchableOpacity
               key={tab.id}
@@ -103,7 +105,7 @@ export default function FilesScreen() {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
 
         {hasTemporaryImages && (
           <View className="mb-4 flex-row items-center gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4">

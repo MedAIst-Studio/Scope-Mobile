@@ -13,6 +13,7 @@ import {
   Youtube,
   FileText as FileTextIcon,
   Sparkles,
+  Mic,
 } from 'lucide-react-native';
 import React from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
@@ -45,6 +46,14 @@ const getFileInfo = (file: FileType) => {
       icon: FileText,
       bgColor: 'bg-red-500/10',
       iconColor: 'text-red-500',
+    };
+  }
+
+  if (['m4a', 'mp3', 'wav', 'webm', 'ogg'].includes(ext) || file.file_type === 'audio') {
+    return {
+      icon: Mic,
+      bgColor: 'bg-emerald-500/10',
+      iconColor: 'text-emerald-500',
     };
   }
 
@@ -85,6 +94,9 @@ export const FileCard: React.FC<FileCardProps> = ({
     file.title.toLowerCase().split('.').pop() || ''
   );
   const isYouTube = file.file_type === 'youtube';
+  const isAudio = file.file_type === 'audio' || ['m4a', 'mp3', 'wav', 'webm', 'ogg'].includes(
+    file.title.toLowerCase().split('.').pop() || ''
+  );
   const isSaved = file.is_saved ?? false;
   const hasExtractedText = !!file.extracted_text;
 
@@ -194,14 +206,14 @@ export const FileCard: React.FC<FileCardProps> = ({
             </Button>
           ) : null}
 
-          {(hasExtractedText || isYouTube) ? (
+          {(hasExtractedText || isYouTube || isAudio) ? (
             <Button
               onPress={() => onViewNotes && onViewNotes(file)}
               variant="outline"
               className="flex-1 h-11 flex-row items-center justify-center border-purple-500/40 bg-purple-500/5">
               <Icon as={FileTextIcon} size={16} className="text-purple-600 mr-1.5" />
               <Text className="text-xs font-semibold text-purple-600">
-                {isYouTube ? 'Transkripti Gör' : 'Notları Gör'}
+                {(isYouTube || isAudio) ? 'Transkripti Gör' : 'Notları Gör'}
               </Text>
             </Button>
           ) : null}
