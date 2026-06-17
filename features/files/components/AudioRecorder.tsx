@@ -11,7 +11,7 @@ export const AudioRecorder: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedUri, setRecordedUri] = useState<string | null>(null);
   const [duration, setDuration] = useState(0);
-  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
+  const [timerInterval, setTimerInterval] = useState<any>(null);
 
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
 

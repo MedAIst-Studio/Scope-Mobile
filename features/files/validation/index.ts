@@ -9,7 +9,7 @@ export const filesResponseSchema = z
       size: z.number(),
       url: z.string().optional(),
       is_saved: z.boolean().optional(),
-      file_type: z.enum(['pdf', 'image', 'youtube']).optional(),
+      file_type: z.enum(['pdf', 'image', 'youtube', 'audio']).optional(),
       source_url: z.string().nullable().optional(),
       extracted_text: z.string().nullable().optional(),
       thumbnail_url: z.string().nullable().optional(),

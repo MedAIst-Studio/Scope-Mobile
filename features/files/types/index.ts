@@ -5,10 +5,10 @@ export type File = {
   size: number;
   url?: string;
   is_saved?: boolean;
-  file_type?: 'pdf' | 'image' | 'youtube';
-  source_url?: string;
-  extracted_text?: string;
-  thumbnail_url?: string;
+  file_type?: 'pdf' | 'image' | 'youtube' | 'audio';
+  source_url?: string | null;
+  extracted_text?: string | null;
+  thumbnail_url?: string | null;
 };
 
 export type SubmitYouTubeResponse = {
