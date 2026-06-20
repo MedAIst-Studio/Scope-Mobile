@@ -32,6 +32,11 @@ const routingInstrumentation = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: true,
 });
 
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
+
 Sentry.init({
   dsn: 'https://e7c2e4e3685a2fe1ed37817059eb445b@o4510993796825088.ingest.de.sentry.io/4510993798201424',
 
@@ -53,6 +58,7 @@ Sentry.init({
 });
 
 import { useNavigationContainerRef } from 'expo-router';
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 
 export default Sentry.wrap(function RootLayout() {
   const { colorScheme } = useColorScheme();

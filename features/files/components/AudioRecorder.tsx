@@ -2,8 +2,8 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { Audio } from 'expo-av';
 import { Mic, Send, Square, Trash2 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
-import { Platform, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Platform, TouchableOpacity, View } from 'react-native';
 import { useUploadFile } from '../hooks';
 
 export const AudioRecorder: React.FC = () => {
@@ -11,24 +11,29 @@ export const AudioRecorder: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedUri, setRecordedUri] = useState<string | null>(null);
   const [duration, setDuration] = useState(0);
-  const [timerInterval, setTimerInterval] = useState<any>(null);
+
+  const recordingRef = useRef<Audio.Recording | null>(null);
+  const timerIntervalRef = useRef<any>(null);
 
   const { mutate: uploadFile, isPending: isUploading } = useUploadFile();
 
   useEffect(() => {
     return () => {
-      if (recording) {
-        recording.stopAndUnloadAsync();
+      // Cleanup on unmount
+      if (recordingRef.current) {
+        recordingRef.current.stopAndUnloadAsync().catch(() => {});
       }
-      if (timerInterval) clearInterval(timerInterval);
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
     };
-  }, [recording, timerInterval]);
+  }, []);
 
   const startRecording = async () => {
     try {
       const permission = await Audio.requestPermissionsAsync();
       if (permission.status !== 'granted') {
-        alert('Ses kaydı için mikrofon izni gereklidir.');
+        Alert.alert('İzin Gerekli', 'Ses kaydı için mikrofon izni gereklidir. Lütfen ayarlardan izin verin.');
         return;
       }
 
@@ -37,33 +42,46 @@ export const AudioRecorder: React.FC = () => {
         playsInSilentModeIOS: true,
       });
 
-      const { recording } = await Audio.Recording.createAsync(
+      const { recording: newRecording } = await Audio.Recording.createAsync(
         Audio.RecordingOptionsPresets.HIGH_QUALITY
       );
-      setRecording(recording);
+      
+      recordingRef.current = newRecording;
+      setRecording(newRecording);
       setIsRecording(true);
       setDuration(0);
 
       const interval = setInterval(() => {
         setDuration((prev) => prev + 1);
       }, 1000);
-      setTimerInterval(interval);
+      timerIntervalRef.current = interval;
     } catch (err) {
       console.error('Failed to start recording', err);
+      Alert.alert('Hata', 'Ses kaydı başlatılamadı. Lütfen mikrofonunuzun kullanımda olmadığından emin olun.');
     }
   };
 
   const stopRecording = async () => {
-    if (!recording) return;
+    if (!recordingRef.current) return;
     try {
-      if (timerInterval) clearInterval(timerInterval);
-      await recording.stopAndUnloadAsync();
-      const uri = recording.getURI();
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
+      await recordingRef.current.stopAndUnloadAsync();
+      const uri = recordingRef.current.getURI();
       setRecordedUri(uri);
+      
+      recordingRef.current = null;
       setRecording(null);
       setIsRecording(false);
+      
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+      });
     } catch (error) {
       console.error('Failed to stop recording', error);
+      Alert.alert('Hata', 'Kayıt durdurulurken bir sorun oluştu.');
     }
   };
 
@@ -154,3 +172,4 @@ export const AudioRecorder: React.FC = () => {
     </View>
   );
 };
+

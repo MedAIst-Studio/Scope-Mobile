@@ -50,6 +50,12 @@ export default {
       '@react-native-firebase/app',
       '@react-native-firebase/auth',
       [
+        'expo-av',
+        {
+          microphonePermission: 'Scope uygulamasının ses kaydedebilmesi için mikrofonunuza erişmesi gerekiyor.',
+        },
+      ],
+      [
         '@react-native-google-signin/google-signin',
         {
           iosUrlScheme: process.env.EXPO_PUBLIC_GOOGLE_IOS_URL_SCHEME,
